@@ -76,7 +76,7 @@ t.getAll();
 
 */
 
-var CONFIGCAT_ICON = './images/cat_red.svg';
+var CONFIGCAT_ICON = './images/cat_white.svg';
 
 var cardButtonCallback = function (t) {
   return t.popup({
@@ -134,7 +134,7 @@ TrelloPowerUp.initialize({
       // usually you will provide a callback function to be run on button click
       // we recommend that you use a popup on click generally
       icon: CONFIGCAT_ICON, // don't use a colored icon here
-      text: 'Attach feature flag or setting',
+      text: 'Feature flag or setting',
       callback: cardButtonCallback
     }];
   },

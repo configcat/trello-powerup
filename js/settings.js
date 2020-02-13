@@ -135,7 +135,7 @@ document.getElementById('save').addEventListener('click', function () {
 
     t.get('card', 'shared', 'settings')
       .then(function (settings) {
-        settings = settings | [];
+        settings = settings || [];
         settings.push({
           environmentId: environmentSelector.value,
           settingId: settingSelector.value,

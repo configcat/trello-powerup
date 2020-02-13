@@ -76,7 +76,7 @@ t.getAll();
 
 */
 
-var CONFIGCAT_ICON = './images/cat-white.svg';
+var CONFIGCAT_ICON = './images/logo.png';
 
 var cardButtonCallback = function (t) {
   return t.popup({

@@ -33,7 +33,7 @@ t.render(function () {
       var settingValuesText = '';
       for (settingIndex = 0; settingIndex < settings.length; ++settingIndex) {
         var setting = settings[settingIndex];
-        httpGet('api/v1/' + setting.environmentId + '/settings/' + setting.settingId + '/value')
+        httpGet('api/v1/environments/' + setting.environmentId + '/settings/' + setting.settingId + '/value')
           .then(function (settingValue) {
             var settingValueText = setting.name;
 

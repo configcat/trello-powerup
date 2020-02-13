@@ -136,7 +136,7 @@ document.getElementById('save').addEventListener('click', function () {
     t.get('card', 'shared', 'settings')
       .then(function (settings) {
         settings = settings || [];
-        if (settings.filter(s => s.environmentId === environmentSelector.value && s.settingId === settingSelector.value)) {
+        if (settings.some(s => s.environmentId === environmentSelector.value && s.settingId === settingSelector.value)) {
           return new Promise(function () { t.closePopup() }).done();
         }
         else {

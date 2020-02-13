@@ -49,6 +49,8 @@ t.render(function () {
           if (products.products && products.products.length > 0) {
             productSelector.value = products.products[0].productId;
           }
+
+          return productChanged();
         })
     })
     .then(function () {
@@ -83,6 +85,7 @@ function productChanged() {
         }
         if (configs.configs && configs.configs.length > 0) {
           configSelector.value = configs.configs[0].configId;
+          return configChanged();
         }
       })
       .then(function () {

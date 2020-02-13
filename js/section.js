@@ -61,10 +61,11 @@ t.render(function () {
 
             settingValuesText = settingValuesText + '<br/><br/>' + settingValueText;
             settingValuesDiv.innerHtml = settingValuesText;
+          })
+          .then(function () {
+            return t.sizeTo('#content');
           });
       }
     })
-    .then(function () {
-      return t.sizeTo('#content');
-    });
+    ;
 });

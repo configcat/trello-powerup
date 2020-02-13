@@ -117,11 +117,11 @@ function configChanged() {
       .then(function (settings) {
         for (index = 0; index < settings.settings.length; ++index) {
           var setting = settings.settings[index];
-          addOpt(settingSelector, setting.settingIdId, setting.name)
+          addOpt(settingSelector, setting.settingId, setting.name)
         }
 
         if (settings.settings && settings.settings.length > 0) {
-          settingSelector.value = settings.settings[0].configId;
+          settingSelector.value = settings.settings[0].settingId;
         }
       })
       .done()

@@ -59,8 +59,8 @@ t.render(function () {
 
 function addOpt(selector, value, text) {
   var opt = document.createElement('option');
-  opt.appendChild(document.createTextNode(product.name));
-  opt.value = product.productId;
+  opt.appendChild(document.createTextNode(text));
+  opt.value = value;
   selector.appendChild(opt);
 }
 

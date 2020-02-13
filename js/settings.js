@@ -136,22 +136,24 @@ document.getElementById('save').addEventListener('click', function () {
     t.get('card', 'shared', 'settings')
       .then(function (settings) {
         settings = settings || [];
-        settings.push({
-          environmentId: environmentSelector.value,
-          settingId: settingSelector.value,
-          settingName: settingSelector.options[settingSelector.selectedIndex].text
-        });
+        if (!settings.filter(s => s.environmentId === environmentSelector.value && s.settingId === settingSelector.value)) {
+          settings.push({
+            environmentId: environmentSelector.value,
+            settingId: settingSelector.value,
+            settingName: settingSelector.options[settingSelector.selectedIndex].text
+          });
 
-        return t.set('card', 'shared', 'settings', settings)
-          .then(function () {
-            t.closePopup();
-          })
+          return t.set('card', 'shared', 'settings', settings)
+            .then(function () {
+              t.closePopup();
+            });
+        }
       })
       .catch(function () {
         var settings = [{
           environmentId: environmentSelector.value,
           settingId: settingSelector.value,
-          settingName: settingSelector.text
+          settingName: settingSelector.options[settingSelector.selectedIndex].text
         }];
 
         return t.set('card', 'shared', 'settings', settings)

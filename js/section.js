@@ -68,7 +68,8 @@ t.render(function () {
           })
           .then(function () {
             return t.sizeTo('#content');
-          });
+          })
+          .done();
       }
     })
     .then(function () {

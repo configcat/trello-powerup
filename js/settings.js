@@ -77,7 +77,7 @@ function productChanged() {
   removeOpts(configSelector);
 
   if (product) {
-    return httpGet("v1/products/" + product + "configs")
+    return httpGet("v1/products/" + product + "/configs")
       .then(function (configs) {
         for (index = 0; index < configs.configs.length; ++index) {
           var config = configs.configs[index];
@@ -89,7 +89,7 @@ function productChanged() {
         }
       })
       .then(function () {
-        return httpGet("v1/products/" + product + "environments")
+        return httpGet("v1/products/" + product + "/environments")
           .then(function (environments) {
             for (index = 0; index < environments.environments.length; ++index) {
               var environment = environments.environments[index];
@@ -113,7 +113,7 @@ function configChanged() {
   removeOpts(configSelector);
 
   if (config) {
-    return httpGet("v1/configs/" + config + "settings")
+    return httpGet("v1/configs/" + config + "/settings")
       .then(function (settings) {
         for (index = 0; index < settings.settings.length; ++index) {
           var setting = settings.settings[index];

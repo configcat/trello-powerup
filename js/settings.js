@@ -142,7 +142,7 @@ document.getElementById('save').addEventListener('click', function () {
           settingName: settingSelector.text
         });
 
-        t.set('card', 'shared', 'settings', settings)
+        return t.set('card', 'shared', 'settings', settings)
           .then(function () {
             t.closePopup();
           })

@@ -113,7 +113,7 @@ TrelloPowerUp.initialize({
   'card-back-section': function (t, options) {
     return t.get('card', 'shared', 'settings')
       .then(function (settings) {
-        if (settings) {
+        if (settings && settings.length > 0) {
           return {
             title: 'ConfigCat feature flags or settings',
             icon: CONFIGCAT_ICON, // Must be a gray icon, colored icons not allowed.

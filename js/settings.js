@@ -146,6 +146,18 @@ document.getElementById('save').addEventListener('click', function () {
           .then(function () {
             t.closePopup();
           })
+      })
+      .catch(function () {
+        var settings = [{
+          environmentId: environmentSelector.value,
+          settingId: settingSelector.value,
+          settingName: settingSelector.text
+        }];
+
+        return t.set('card', 'shared', 'settings', settings)
+          .then(function () {
+            t.closePopup();
+          })
       });
   }
 });

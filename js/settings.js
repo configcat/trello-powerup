@@ -148,6 +148,9 @@ document.getElementById('save').addEventListener('click', function () {
               t.closePopup();
             });
         }
+        else {
+          return new Promise(function () { t.closePopup() }).done();
+        }
       })
       .catch(function () {
         var settings = [{

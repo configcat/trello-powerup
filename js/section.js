@@ -45,8 +45,8 @@ t.render(function () {
               if (settingValue.rolloutRules || settingValue.rolloutRules.length > 0) {
                 for (rolloutRuleIndex = 0; rolloutRuleIndex < settingValue.rolloutRules.length; ++rolloutRuleIndex) {
                   var rolloutRule = settingValue.rolloutRules[rolloutRuleIndex];
-                  var rolloutRuleText = '<br/>&nbsp;&nbsp;IF <' + rolloutRule.comparisonAttribute + '> ' + rolloutRule.comparator
-                    + ' <' + rolloutRule.comparisonValue + '> THEN <' + rolloutRule.value + '>';
+                  var rolloutRuleText = '<br/>&nbsp;&nbsp;IF &lt;' + rolloutRule.comparisonAttribute + '&gt; ' + rolloutRule.comparator
+                    + ' <' + rolloutRule.comparisonValue + '> THEN &lt;' + rolloutRule.value + '&gt;';
                   settingValueText = settingValueText + rolloutRuleText;
                 }
               }
@@ -54,7 +54,7 @@ t.render(function () {
               if (settingValue.percentageRules || settingValue.percentageRules.length > 0) {
                 for (percentageRuleIndex = 0; percentageRuleIndex < settingValue.percentageRules.length; ++percentageRuleIndex) {
                   var percentageRule = settingValue.percentageRules[percentageRuleIndex];
-                  var percentageRuleText = '<br/>&nbsp;&nbsp;' + percentageRule.percentage + '% <' + percentageRule.value;
+                  var percentageRuleText = '<br/>&nbsp;&nbsp;' + percentageRule.percentage + '% &lt;' + percentageRule.value + '&gt;';
                   settingValueText = settingValueText + percentageRuleText;
                 }
               }

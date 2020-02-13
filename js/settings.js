@@ -133,7 +133,7 @@ function configChanged() {
 document.getElementById('save').addEventListener('click', function () {
   if (productSelector.value && configSelector.value && environmentSelector.value && settingSelector.value) {
 
-    t.get(('card', 'shared', 'settings')
+    t.get('card', 'shared', 'settings')
       .then(function (settings) {
         settings = settings | [];
         settings.push({
@@ -146,6 +146,6 @@ document.getElementById('save').addEventListener('click', function () {
           .then(function () {
             t.closePopup();
           })
-      })
-    }
-})
+      });
+  }
+});

@@ -76,12 +76,6 @@ t.getAll();
 
 */
 
-var settings = [];
-t.get('card', 'shared', 'settings')
-  .then(function (cardSettings) {
-    settings = cardSettings
-  });
-
 var CONFIGCAT_ICON = './images/cat_red.svg';
 
 var cardButtonCallback = function (t) {
@@ -96,8 +90,6 @@ var getBadges = function (t) {
   return t.card('name')
     .get('name')
     .then(function (cardName) {
-      console.log('We just loaded the card name for fun: ' + cardName);
-
       return [{
         // card detail badges (those that appear on the back of cards)
         // also support callback functions so that you can open for example

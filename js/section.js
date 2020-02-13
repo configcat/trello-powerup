@@ -57,9 +57,11 @@ t.render(function () {
                   settingValueText = settingValueText + percentageRuleText;
                 }
               }
+
+              settingValueText = settingValueText + 'Default value ➔ ' + settingValue.value;
             }
 
-            settingValuesText = settingValuesText + '<br/><br/>' + settingValueText;
+            settingValuesText = settingValuesText + settingValueText + '<br/><br/>';
             settingValuesDiv.innerHTML = settingValuesText;
           })
           .then(function () {

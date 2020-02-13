@@ -159,10 +159,10 @@ TrelloPowerUp.initialize({
   },
 
   'authorization-status': function (t, options) {
-    return t.get('member', 'private', 'basicAuthUserName')
+    return t.get('organization', 'shared', 'basicAuthUserName')
       .then(function (basicAuthUserName) {
         if (basicAuthUserName) {
-          return t.get('member', 'private', 'basicAuthPassword')
+          return t.get('organization', 'shared', 'basicAuthPassword')
             .then(function (basicAuthPassword) {
               if (basicAuthPassword) {
                 // TODO get all products with the basic auth information and return authorized: true only if that call was successful

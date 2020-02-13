@@ -17,7 +17,7 @@ function httpGet(url, settingIndex, settingName) {
         )
           .then(data => { return data.json(); })
           .then(function (data) {
-            resolve({settingValue: data, settingIndex: settingIndex, settingName: settingName});
+            resolve({ settingValue: data, settingIndex: settingIndex, settingName: settingName });
           })
           .catch(error => {
             reject(error);
@@ -34,8 +34,9 @@ t.render(function () {
       for (settingIndex = 0; settingIndex < settings.length; ++settingIndex) {
         var setting = settings[settingIndex];
         httpGet('v1/environments/' + setting.environmentId + '/settings/' + setting.settingId + '/value', settingIndex, setting.settingName)
-          .then(function (settingValue, currentSettingIndex, settingName) {
-            var settingValueText = settingName || '';
+          .then(function (data) {
+            var settingValueText = data.settingName || '';
+            var settingValue = data.settingValue;
 
             if ((!settingValue.rolloutRules || settingValue.rolloutRules.length === 0)
               && (!settingValue.percentageRules || settingValue.percentageRules.length === 0)) {
@@ -61,7 +62,7 @@ t.render(function () {
 
               settingValueText = settingValueText + '<br/>&nbsp;&nbspDefault value ➔ &lt;' + settingValue.value + '&gt;';
             }
-            settingValueText = settingValueText + '<br/>' + '<button onclick="removeSetting(' + currentSettingIndex + ')">Remove</button>'
+            settingValueText = settingValueText + '<br/>' + '<button onclick="removeSetting(' + data.settingIndex + ')">Remove</button>'
 
             settingValuesText = settingValuesText + settingValueText + '<hr/>';
             settingValuesDiv.innerHTML = settingValuesText;

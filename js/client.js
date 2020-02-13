@@ -110,16 +110,24 @@ TrelloPowerUp.initialize({
   // If you need to make an asynchronous request or action before you can reply to Trello
   // you can return a Promise (bluebird promises are included at TrelloPowerUp.Promise)
   // The Promise should resolve to the object type that is expected to be returned
-  'card-back-section': function(t, options){
-    return {
-      title: 'ConfigCat feature flags or settings',
-      icon: CONFIGCAT_ICON, // Must be a gray icon, colored icons not allowed.
-      content: {
-        type: 'iframe',
-        url: t.signUrl('./section.html'),
-        height: 230 // Max height is 500
-      }
-    };
+  'card-back-section': function (t, options) {
+    return t.get('card', 'shared', 'settings')
+      .then(function (settings) {
+        if (settings) {
+          return {
+            title: 'ConfigCat feature flags or settings',
+            icon: CONFIGCAT_ICON, // Must be a gray icon, colored icons not allowed.
+            content: {
+              type: 'iframe',
+              url: t.signUrl('./section.html'),
+              height: 230 // Max height is 500
+            }
+          };
+        }
+        else {
+          return [];
+        }
+      })
   },
   'card-buttons': function (t, options) {
     return [{

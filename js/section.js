@@ -61,8 +61,9 @@ t.render(function () {
 
               settingValueText = settingValueText + '<br/>&nbsp;&nbspDefault value ➔ ' + settingValue.value;
             }
+            settingValueText = settingValueText + '<br/>' + '<button click="removeSetting(' + settingIndex + ')">Remove</button>'
 
-            settingValuesText = settingValuesText + settingValueText + '<br/><br/>';
+            settingValuesText = settingValuesText + settingValueText + '<hr/>';
             settingValuesDiv.innerHTML = settingValuesText;
           })
           .then(function () {
@@ -74,3 +75,13 @@ t.render(function () {
       return t.sizeTo('#content');
     });
 });
+
+function removeSetting(index) {
+  return t.get('card', 'shared', 'settings')
+    .then(function (settings) {
+      settings = settings || [];
+      settings.splice(index, 1);
+
+      return t.set('card', 'shared', 'settings', settings);
+    });
+}

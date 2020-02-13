@@ -86,24 +86,6 @@ var cardButtonCallback = function (t) {
   });
 };
 
-var getBadges = function (t) {
-  return t.card('name')
-    .get('name')
-    .then(function (cardName) {
-      return [{
-        // card detail badges (those that appear on the back of cards)
-        // also support callback functions so that you can open for example
-        // open a popup on click
-        title: 'Popup Detail Badge', // for detail badges only
-        text: 'Popup',
-        icon: CONFIGCAT_ICON, // for card front badges only
-        callback: function (context) { // function to run on click
-          return cardButtonCallback(context);
-        }
-      }];
-    });
-};
-
 // We need to call initialize to get all of our capability handles set up and registered with Trello
 TrelloPowerUp.initialize({
   // NOTE about asynchronous responses

@@ -110,14 +110,14 @@ function productChanged() {
 
 function configChanged() {
   config = configSelector.value;
-  removeOpts(configSelector);
+  removeOpts(settingSelector);
 
   if (config) {
     return httpGet("v1/configs/" + config + "/settings")
       .then(function (settings) {
         for (index = 0; index < settings.settings.length; ++index) {
           var setting = settings.settings[index];
-          addOpt(productSelector, setting.settingIdId, setting.name)
+          addOpt(settingSelector, setting.settingIdId, setting.name)
         }
 
         if (settings.settings && settings.settings.length > 0) {

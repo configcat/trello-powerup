@@ -149,6 +149,11 @@ TrelloPowerUp.initialize({
       url: './authorize.html',
       height: 240,
     });
+  },
+  'on-disable': function (t, options) {
+    return t.remove('organization', 'shared', 'basicAuthUserName').then(function () {
+      return t.remove('organization', 'shared', 'basicAuthPassword');
+    });
   }
 });
 

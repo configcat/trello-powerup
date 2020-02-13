@@ -112,7 +112,7 @@ TrelloPowerUp.initialize({
   // The Promise should resolve to the object type that is expected to be returned
   'card-back-section': function(t, options){
     return {
-      title: 'My Card Back Section',
+      title: 'ConfigCat feature flags or settings',
       icon: CONFIGCAT_ICON, // Must be a gray icon, colored icons not allowed.
       content: {
         type: 'iframe',

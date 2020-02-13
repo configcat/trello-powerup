@@ -147,16 +147,6 @@ TrelloPowerUp.initialize({
       text: '👉 ' + options.url + ' 👈'
     };
   },
-  'show-settings': function (t, options) {
-    // when a user clicks the gear icon by your Power-Up in the Power-Ups menu
-    // what should Trello show. We highly recommend the popup in this case as
-    // it is the least disruptive, and fits in well with the rest of Trello's UX
-    return t.popup({
-      title: 'Settings',
-      url: './settings.html',
-      height: 250 // we can always resize later, but if we know the size in advance, its good to tell Trello
-    });
-  },
 
   'authorization-status': function (t, options) {
     return t.get('organization', 'shared', 'basicAuthUserName')

@@ -45,7 +45,7 @@ t.render(function () {
               if (settingValue.rolloutRules || settingValue.rolloutRules.length > 0) {
                 for (rolloutRuleIndex = 0; rolloutRuleIndex < settingValue.rolloutRules.length; ++rolloutRuleIndex) {
                   var rolloutRule = settingValue.rolloutRules[rolloutRuleIndex];
-                  var rolloutRuleText = '<br/>&nbsp;&nbsp;IF <' + rolloutRule.comparisonAttribute + '> ' + rolloutRule.comparator.toUpper()
+                  var rolloutRuleText = '<br/>&nbsp;&nbsp;IF <' + rolloutRule.comparisonAttribute + '> ' + rolloutRule.comparator
                     + ' <' + rolloutRule.comparisonValue + '> THEN <' + rolloutRule.value + '>';
                   settingValueText = settingValueText + rolloutRuleText;
                 }

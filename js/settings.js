@@ -11,17 +11,24 @@ var environmentSelector = document.getElementById('environment');
 var settingSelector = document.getElementById('setting');
 
 function httpGet(url) {
-  return new Promise((resolve, reject) => {
-    http.get('https://test-api.configcat.com/' + url, response => {
-      response.setEncoding('utf8');
-      response.pipe(bl((err, data) => {
-        if (err) {
-          reject(err);
-        }
-        resolve(data.toString());
-      }));
+  return Promise.all([
+    t.get('organization', 'shared', 'basicAuthUserName'),
+    t.get('organization', 'shared', 'basicAuthPassword')
+  ])
+    .spread(function (basicAuthUserName, basicAuthPassword) {
+      return new Promise((resolve, reject) => {
+        fetch('https://test-api.configcat.com/' + url,
+          { headers: { "Authorization": "Basic " + btoa(basicAuthUserName + ':' + basicAuthPassword) } }
+        )
+          .then(data => { return data.json(); })
+          .then(function (data) {
+            resolve(data);
+          })
+          .catch(error => {
+            reject(error);
+          });
+      });
     });
-  });
 }
 
 t.render(function () {
@@ -34,13 +41,13 @@ t.render(function () {
         .then(function (products) {
           removeOpts(productSelector);
 
-          for (index = 0; index < products.length; ++index) {
-            var product = products[index];
+          for (index = 0; index < products.products.length; ++index) {
+            var product = products.products[index];
             addOpt(productSelector, product.productId, product.name)
           }
 
-          if (products.length > 0) {
-            productSelector.value = products[0].productId;
+          if (products.products && products.products.length > 0) {
+            productSelector.value = products.products[0].productId;
           }
         })
     })
@@ -70,24 +77,24 @@ function productChanged() {
   if (product) {
     return httpGet("v1/products/" + product + "configs")
       .then(function (configs) {
-        for (index = 0; index < configs.length; ++index) {
-          var config = configs[index];
+        for (index = 0; index < configs.configs.length; ++index) {
+          var config = configs.configs[index];
           addOpt(configSelector, config.configId, config.name)
         }
-        if (configs.length > 0) {
-          configSelector.value = configs[0].configId;
+        if (configs.configs && configs.configs.length > 0) {
+          configSelector.value = configs.configs[0].configId;
         }
       })
       .then(function () {
         return httpGet("v1/products/" + product + "environments")
           .then(function (environments) {
-            for (index = 0; index < environments.length; ++index) {
-              var environment = environments[index];
+            for (index = 0; index < environments.environments.length; ++index) {
+              var environment = environments.environments[index];
               addOpt(environmentSelector, environment.environmentId, environment.name)
             }
 
-            if (environments.length > 0) {
-              environmentSelector.value = environments[0].environmentId;
+            if (environments.environments && environments.environments.length > 0) {
+              environmentSelector.value = environments.environments[0].environmentId;
             }
           });
       })
@@ -105,13 +112,13 @@ function configChanged() {
   if (config) {
     return httpGet("v1/configs/" + config + "settings")
       .then(function (settings) {
-        for (index = 0; index < settings.length; ++index) {
-          var setting = settings[index];
+        for (index = 0; index < settings.settings.length; ++index) {
+          var setting = settings.settings[index];
           addOpt(productSelector, setting.settingIdId, setting.name)
         }
 
-        if (settings.length > 0) {
-          settingSelector.value = settings[0].configId;
+        if (settings.settings && settings.settings.length > 0) {
+          settingSelector.value = settings.settings[0].configId;
         }
       })
       .done()

@@ -9,17 +9,24 @@ var settingValuesDiv = document.getElementById('settingValues');
 
 
 function httpGet(url) {
-  return new Promise((resolve, reject) => {
-    http.get('https://test-api.configcat.com/' + url, response => {
-      response.setEncoding('utf8');
-      response.pipe(bl((err, data) => {
-        if (err) {
-          reject(err);
-        }
-        resolve(data.toString());
-      }));
+  return Promise.all([
+    t.get('organization', 'shared', 'basicAuthUserName'),
+    t.get('organization', 'shared', 'basicAuthPassword')
+  ])
+    .spread(function (basicAuthUserName, basicAuthPassword) {
+      return new Promise((resolve, reject) => {
+        fetch('https://test-api.configcat.com/' + url,
+          { headers: { "Authorization": "Basic " + btoa(basicAuthUserName + ':' + basicAuthPassword) } }
+        )
+          .then(data => { return data.json(); })
+          .then(function (data) {
+            resolve(data);
+          })
+          .catch(error => {
+            reject(error);
+          });
+      });
     });
-  });
 }
 
 t.render(function () {

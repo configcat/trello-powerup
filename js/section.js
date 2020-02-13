@@ -46,7 +46,7 @@ t.render(function () {
                 for (rolloutRuleIndex = 0; rolloutRuleIndex < settingValue.rolloutRules.length; ++rolloutRuleIndex) {
                   var rolloutRule = settingValue.rolloutRules[rolloutRuleIndex];
                   var rolloutRuleText = '<br/>&nbsp;&nbsp;IF &lt;' + rolloutRule.comparisonAttribute + '&gt; ' + rolloutRule.comparator
-                    + ' <' + rolloutRule.comparisonValue + '> THEN &lt;' + rolloutRule.value + '&gt;';
+                    + ' &lt;' + rolloutRule.comparisonValue + '&gt; THEN &lt;' + rolloutRule.value + '&gt;';
                   settingValueText = settingValueText + rolloutRuleText;
                 }
               }

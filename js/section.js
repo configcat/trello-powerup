@@ -29,6 +29,7 @@ function httpGet(url) {
 t.render(function () {
   return t.get('card', 'shared', 'settings')
     .then(function (settings) {
+      settings = settings || [];
       var settingValuesText = '';
       for (settingIndex = 0; settingIndex < settings.length; ++settingIndex) {
         var setting = settings[settingIndex];
@@ -69,5 +70,7 @@ t.render(function () {
           });
       }
     })
-    ;
+    .then(function () {
+      return t.sizeTo('#content');
+    });
 });

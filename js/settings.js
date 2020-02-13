@@ -139,7 +139,7 @@ document.getElementById('save').addEventListener('click', function () {
         settings.push({
           environmentId: environmentSelector.value,
           settingId: settingSelector.value,
-          settingName: settingSelector.innerText
+          settingName: settingSelector.options[settingSelector.selectedIndex].text
         });
 
         return t.set('card', 'shared', 'settings', settings)

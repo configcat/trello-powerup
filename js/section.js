@@ -27,7 +27,6 @@ function httpGet(url) {
 }
 
 t.render(function () {
-  debugger;
   return t.get('card', 'shared', 'settings')
     .then(function (settings) {
       var settingValuesText = '';

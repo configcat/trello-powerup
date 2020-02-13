@@ -61,7 +61,7 @@ t.render(function () {
 
               settingValueText = settingValueText + '<br/>&nbsp;&nbspDefault value ➔ ' + settingValue.value;
             }
-            settingValueText = settingValueText + '<br/>' + '<button click="removeSetting(' + settingIndex + ')">Remove</button>'
+            settingValueText = settingValueText + '<br/>' + '<button onclick="removeSetting(' + settingIndex + ')">Remove</button>'
 
             settingValuesText = settingValuesText + settingValueText + '<hr/>';
             settingValuesDiv.innerHTML = settingValuesText;

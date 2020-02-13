@@ -80,7 +80,7 @@ var CONFIGCAT_ICON = './images/logo.png';
 
 var cardButtonCallback = function (t) {
   return t.popup({
-    title: 'Select Feature Flags or Settings',
+    title: 'Select Feature Flag or Setting',
     url: './settings.html',
     height: 184 // we can always resize later, but if we know the size in advance, its good to tell Trello
   });
@@ -97,7 +97,7 @@ TrelloPowerUp.initialize({
       .then(function (settings) {
         if (settings && settings.length > 0) {
           return {
-            title: 'ConfigCat feature flags or settings',
+            title: 'ConfigCat Feature flags or Settings',
             icon: CONFIGCAT_ICON, // Must be a gray icon, colored icons not allowed.
             content: {
               type: 'iframe',
@@ -116,7 +116,7 @@ TrelloPowerUp.initialize({
       // usually you will provide a callback function to be run on button click
       // we recommend that you use a popup on click generally
       icon: CONFIGCAT_ICON, // don't use a colored icon here
-      text: 'Feature flag or setting',
+      text: 'Feature flag or Setting',
       callback: cardButtonCallback
     }];
   },

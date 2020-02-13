@@ -1,6 +1,7 @@
 /* global TrelloPowerUp */
 
 var t = TrelloPowerUp.iframe();
+var Promise = TrelloPowerUp.Promise;
 
 var settingValuesDiv = document.getElementById('settingValues');
 

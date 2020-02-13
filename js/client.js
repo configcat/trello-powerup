@@ -110,26 +110,15 @@ TrelloPowerUp.initialize({
   // If you need to make an asynchronous request or action before you can reply to Trello
   // you can return a Promise (bluebird promises are included at TrelloPowerUp.Promise)
   // The Promise should resolve to the object type that is expected to be returned
-  'attachment-sections': function (t, options) {
-      return [{
-        id: 'ConfigCat', // optional if you aren't using a function for the title
-        icon: CONFIGCAT_ICON,
-        title: 'ConfigCat',
-        content: {
-          type: 'iframe',
-          url: t.signUrl('./section.html'),
-          height: 230
-        }
-      }];
-  },
-  'attachment-thumbnail': function (t, options) {
+  'card-back-section': function(t, options){
     return {
-      url: options.url,
-      title: '👉 ' + options.url + ' 👈',
-      image: {
-        url: CONFIGCAT_ICON,
-        logo: true // false if you are using a thumbnail of the content
-      },
+      title: 'My Card Back Section',
+      icon: GRAY_ICON, // Must be a gray icon, colored icons not allowed.
+      content: {
+        type: 'iframe',
+        url: t.signUrl('./section.html'),
+        height: 230 // Max height is 500
+      }
     };
   },
   'card-buttons': function (t, options) {

@@ -59,7 +59,7 @@ t.render(function () {
                 }
               }
 
-              settingValueText = settingValueText + 'Default value ➔ ' + settingValue.value;
+              settingValueText = settingValueText + '<br/>&nbsp;&nbspDefault value ➔ ' + settingValue.value;
             }
 
             settingValuesText = settingValuesText + settingValueText + '<br/><br/>';

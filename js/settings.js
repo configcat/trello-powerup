@@ -125,8 +125,8 @@ document.getElementById('save').addEventListener('click', function () {
 
     t.set('card', 'shared', 'settings', {
       environmentId: environmentSelector.value,
-      settingId = settingSelector.value,
-      settingName = settingSelector.text
+      settingId: settingSelector.value,
+      settingName: settingSelector.text
     })
       .then(function () {
         t.closePopup();

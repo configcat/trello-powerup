@@ -39,7 +39,7 @@ t.render(function () {
 
             if ((!settingValue.rolloutRules || settingValue.rolloutRules.length === 0)
               && (!settingValue.percentageRules || settingValue.percentageRules.length === 0)) {
-              settingValueText = settingValueText + ' ➔ ' + settingValue.value;
+              settingValueText = settingValueText + ' ➔ &lt;' + settingValue.value + '&gt;';
             }
             else {
               if (settingValue.rolloutRules || settingValue.rolloutRules.length > 0) {
@@ -59,7 +59,7 @@ t.render(function () {
                 }
               }
 
-              settingValueText = settingValueText + '<br/>&nbsp;&nbspDefault value ➔ ' + settingValue.value;
+              settingValueText = settingValueText + '<br/>&nbsp;&nbspDefault value ➔ &lt;' + settingValue.value + '&gt;';
             }
             settingValueText = settingValueText + '<br/>' + '<button onclick="removeSetting(' + settingIndex + ')">Remove</button>'
 

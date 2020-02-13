@@ -34,7 +34,7 @@ t.render(function () {
         var setting = settings[settingIndex];
         httpGet('v1/environments/' + setting.environmentId + '/settings/' + setting.settingId + '/value')
           .then(function (settingValue) {
-            var settingValueText = setting.name || '';
+            var settingValueText = setting.settingName || '';
 
             if ((!settingValue.rolloutRules || settingValue.rolloutRules.length === 0)
               && (!settingValue.percentageRules || settingValue.percentageRules.length === 0)) {

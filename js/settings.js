@@ -133,13 +133,19 @@ function configChanged() {
 document.getElementById('save').addEventListener('click', function () {
   if (productSelector.value && configSelector.value && environmentSelector.value && settingSelector.value) {
 
-    t.set('card', 'shared', 'settings', {
-      environmentId: environmentSelector.value,
-      settingId: settingSelector.value,
-      settingName: settingSelector.text
-    })
-      .then(function () {
-        t.closePopup();
+    t.get(('card', 'shared', 'settings')
+      .then(function (settings) {
+        settings = settings | [];
+        settings.push({
+          environmentId: environmentSelector.value,
+          settingId: settingSelector.value,
+          settingName: settingSelector.text
+        });
+
+        t.set('card', 'shared', 'settings', settings)
+          .then(function () {
+            t.closePopup();
+          })
       })
-  }
+    }
 })

@@ -136,7 +136,10 @@ document.getElementById('save').addEventListener('click', function () {
     t.get('card', 'shared', 'settings')
       .then(function (settings) {
         settings = settings || [];
-        if (!settings.filter(s => s.environmentId === environmentSelector.value && s.settingId === settingSelector.value)) {
+        if (settings.filter(s => s.environmentId === environmentSelector.value && s.settingId === settingSelector.value)) {
+          return new Promise(function () { t.closePopup() }).done();
+        }
+        else {
           settings.push({
             environmentId: environmentSelector.value,
             settingId: settingSelector.value,
@@ -147,9 +150,6 @@ document.getElementById('save').addEventListener('click', function () {
             .then(function () {
               t.closePopup();
             });
-        }
-        else {
-          return new Promise(function () { t.closePopup() }).done();
         }
       })
       .catch(function () {

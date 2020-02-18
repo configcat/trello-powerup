@@ -5,7 +5,7 @@ var Promise = TrelloPowerUp.Promise;
 
 var settingValuesDiv = document.getElementById('settingValues');
 
-function httpGet(url, settingIndex, settingName) {
+function httpGet(url, settingIndex) {
   return Promise.all([
     t.get('organization', 'shared', 'basicAuthUserName'),
     t.get('organization', 'shared', 'basicAuthPassword')
@@ -17,7 +17,7 @@ function httpGet(url, settingIndex, settingName) {
         )
           .then(data => { return data.json(); })
           .then(function (data) {
-            resolve({ settingValue: data, settingIndex: settingIndex, settingName: settingName });
+            resolve({ settingValue: data, settingIndex: settingIndex });
           })
           .catch(error => {
             reject(error);
@@ -33,10 +33,11 @@ t.render(function () {
       var settingValuesText = '';
       for (settingIndex = 0; settingIndex < settings.length; ++settingIndex) {
         var setting = settings[settingIndex];
-        httpGet('v1/environments/' + setting.environmentId + '/settings/' + setting.settingId + '/value', settingIndex, setting.settingName)
+        httpGet('v1/environments/' + setting.environmentId + '/settings/' + setting.settingId + '/value', settingIndex)
           .then(function (data) {
-            var settingValueText = data.settingName || '';
             var settingValue = data.settingValue;
+            var settingValueText = settingValue.setting.name || '';
+            settingValueText = settingValueText + ' (' + (settingValue.environment.name || '') + ')';
 
             if ((!settingValue.rolloutRules || settingValue.rolloutRules.length === 0)
               && (!settingValue.percentageRules || settingValue.percentageRules.length === 0)) {

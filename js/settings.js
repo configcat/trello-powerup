@@ -142,8 +142,7 @@ document.getElementById('save').addEventListener('click', function () {
         else {
           settings.push({
             environmentId: environmentSelector.value,
-            settingId: settingSelector.value,
-            settingName: settingSelector.options[settingSelector.selectedIndex].text
+            settingId: settingSelector.value
           });
 
           return t.set('card', 'shared', 'settings', settings)
@@ -155,8 +154,7 @@ document.getElementById('save').addEventListener('click', function () {
       .catch(function () {
         var settings = [{
           environmentId: environmentSelector.value,
-          settingId: settingSelector.value,
-          settingName: settingSelector.options[settingSelector.selectedIndex].text
+          settingId: settingSelector.value
         }];
 
         return t.set('card', 'shared', 'settings', settings)

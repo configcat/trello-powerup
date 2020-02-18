@@ -41,13 +41,13 @@ t.render(function () {
         .then(function (products) {
           removeOpts(productSelector);
 
-          for (index = 0; index < products.products.length; ++index) {
-            var product = products.products[index];
+          for (index = 0; index < products.length; ++index) {
+            var product = products[index];
             addOpt(productSelector, product.productId, product.name)
           }
 
-          if (products.products && products.products.length > 0) {
-            productSelector.value = products.products[0].productId;
+          if (products.products && products.length > 0) {
+            productSelector.value = products[0].productId;
           }
 
           return productChanged();
@@ -79,25 +79,25 @@ function productChanged() {
   if (product) {
     return httpGet("v1/products/" + product + "/configs")
       .then(function (configs) {
-        for (index = 0; index < configs.configs.length; ++index) {
-          var config = configs.configs[index];
+        for (index = 0; index < configs.length; ++index) {
+          var config = configs[index];
           addOpt(configSelector, config.configId, config.name)
         }
-        if (configs.configs && configs.configs.length > 0) {
-          configSelector.value = configs.configs[0].configId;
+        if (configs.configs && configs.length > 0) {
+          configSelector.value = configs[0].configId;
           return configChanged();
         }
       })
       .then(function () {
         return httpGet("v1/products/" + product + "/environments")
           .then(function (environments) {
-            for (index = 0; index < environments.environments.length; ++index) {
-              var environment = environments.environments[index];
+            for (index = 0; index < environments.length; ++index) {
+              var environment = environments[index];
               addOpt(environmentSelector, environment.environmentId, environment.name)
             }
 
-            if (environments.environments && environments.environments.length > 0) {
-              environmentSelector.value = environments.environments[0].environmentId;
+            if (environments.environments && environments.length > 0) {
+              environmentSelector.value = environments[0].environmentId;
             }
           });
       })
@@ -115,13 +115,13 @@ function configChanged() {
   if (config) {
     return httpGet("v1/configs/" + config + "/settings")
       .then(function (settings) {
-        for (index = 0; index < settings.settings.length; ++index) {
-          var setting = settings.settings[index];
+        for (index = 0; index < settings.length; ++index) {
+          var setting = settings[index];
           addOpt(settingSelector, setting.settingId, setting.name)
         }
 
-        if (settings.settings && settings.settings.length > 0) {
-          settingSelector.value = settings.settings[0].settingId;
+        if (settings.settings && settings.length > 0) {
+          settingSelector.value = settings[0].settingId;
         }
       })
       .done()

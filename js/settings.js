@@ -120,7 +120,7 @@ function configChanged() {
           addOpt(settingSelector, setting.settingId, setting.name)
         }
 
-        if (settings.settings && settings.length > 0) {
+        if (settings && settings.length > 0) {
           settingSelector.value = settings[0].settingId;
         }
       })

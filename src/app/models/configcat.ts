@@ -64,5 +64,7 @@ export interface IPercentageRule {
 export interface ISettingValue {
     setting: ISetting;
     environment: IEnvironment;
+    rolloutRules: IRolloutRule[];
+    percentageRule: IPercentageRule[];
     value: any;
 }

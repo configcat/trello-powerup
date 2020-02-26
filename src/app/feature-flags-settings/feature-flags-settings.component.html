@@ -1,3 +1,5 @@
-<div class="container">
-    <p>feature-flags-settings works!</p>
+<div class="container" *ngIf="settings">
+    <div *ngFor="let setting of settings">
+        <app-setting-item [environmentId]="setting.environmentId" [settingId]="setting.settingId"></app-setting-item>
+    </div>
 </div>

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { TrelloService } from './trello.service';
-import { IProduct, ISetting, IEnvironment, IConfig } from '../models/configcat';
+import { IProduct, ISetting, IEnvironment, IConfig, ISettingValue } from '../models/configcat';
 
 declare var TrelloPowerUp: any;
 
@@ -25,6 +25,10 @@ export class ConfigcatPublicApiService {
 
   getSettings(configId: string): Promise<ISetting[]> {
     return this.fetch('v1/configs/' + configId + '/settings');
+  }
+
+  getSettingValues(environmentId: string, settingId: number): Promise<ISettingValue> {
+    return this.fetch('v1/environments/' + environmentId + '/settings/' + settingId + '/value');
   }
 
   getAuthorizationParameters() {

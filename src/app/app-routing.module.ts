@@ -8,7 +8,7 @@ import { FeatureFlagsSettingsComponent } from './feature-flags-settings/feature-
 
 
 const routes: Routes = [
-  { path: '', component: HomeComponent },
+  { path: '', pathMatch: 'full', component: HomeComponent },
   { path: 'authorize', component: AuthorizationComponent },
   { path: 'addfeatureflag', component: AddFeatureFlagComponent },
   { path: 'featureflags', component: FeatureFlagsSettingsComponent }

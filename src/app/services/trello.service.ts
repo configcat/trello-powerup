@@ -75,10 +75,10 @@ export class TrelloService {
   }
 
   getAuthorizationParameters(trelloIFrame: any): Promise<AuthorizationParameters> {
-    return trelloIFrame.get('organization', 'shared', 'basicAuthUserName')
+    return trelloIFrame.get('organization', 'shared', 'configCatBasicAuthUserName')
       .then(basicAuthUserName => {
         console.log(basicAuthUserName);
-        return trelloIFrame.get('organization', 'shared', 'basicAuthPassword').then(basicAuthPassword => {
+        return trelloIFrame.get('organization', 'shared', 'configCatBasicAuthPassword').then(basicAuthPassword => {
           console.log(basicAuthPassword);
           if (basicAuthUserName && basicAuthPassword) {
             return { basicAuthUserName, basicAuthPassword };
@@ -90,8 +90,9 @@ export class TrelloService {
   }
 
   setAuthorizationParameters(trelloIFrame: any, authorizationParameters: AuthorizationParameters) {
-    return trelloIFrame.set('organization', 'shared', 'basicAuthUserName', authorizationParameters.basicAuthUserName)
-      .then(trelloIFrame.set('organization', 'shared', 'basicAuthPassword', authorizationParameters.basicAuthPassword))
+    return trelloIFrame.set('organization', 'shared', 'configCatBasicAuthUserName', authorizationParameters.basicAuthUserName)
+      .then(trelloIFrame.set('organization', 'shared', 'configCatBasicAuthPassword', authorizationParameters.basicAuthPassword))
+      .catch(error => console.log(error))
       .then(console.log('set'));
   }
 

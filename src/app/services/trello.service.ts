@@ -23,7 +23,7 @@ export class TrelloService {
                 icon: CONFIGCAT_ICON, // Must be a gray icon, colored icons not allowed.
                 content: {
                   type: 'iframe',
-                  url: 'featureflags',
+                  url: './featureflags',
                   height: 230 // Max height is 500
                 }
               };
@@ -41,7 +41,7 @@ export class TrelloService {
           callback: t => {
             return t.popup({
               title: 'Select Feature Flag or Setting',
-              url: 'addfeatureflag',
+              url: './addfeatureflag',
               height: 380 // we can always resize later, but if we know the size in advance, its good to tell Trello
             });
           }
@@ -68,7 +68,7 @@ export class TrelloService {
       'show-authorization': (t, options) => {
         return t.popup({
           title: 'Authorize ConfigCat',
-          url: 'authorize',
+          url: './authorize',
           height: 300,
         });
       },

@@ -8,7 +8,6 @@ declare var window: any;
   providedIn: 'root'
 })
 export class ConfigcatPublicApiService {
-  TrelloPowerUp = window.TrelloPowerUp;
 
   constructor(private trelloService: TrelloService) { }
 
@@ -29,7 +28,7 @@ export class ConfigcatPublicApiService {
   }
 
   private fetch(url): Promise<any> {
-    return this.trelloService.getAuthorizationParameters(this.TrelloPowerUp.iframe())
+    return this.trelloService.getAuthorizationParameters(window.TrelloPowerUp.iframe())
       .then(authorizationParameters => {
         return fetch('https://test-api.configcat.com/' + url,
           {

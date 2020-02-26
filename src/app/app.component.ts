@@ -10,6 +10,7 @@ import { TrelloService } from './services/trello.service';
 export class AppComponent {
   title = 'configcat-trello-powerup';
 
-  constructor() { }
+  constructor() {
+  }
 }
 

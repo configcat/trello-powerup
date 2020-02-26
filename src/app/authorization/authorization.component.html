@@ -1,0 +1,26 @@
+<form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
+    <div class="container">
+        <div class="form">
+            <p>To make full use of the ConfigCat Power-Up, we're going to need you to:
+
+                <a href="https://app.configcat.com/my-account/public-api-credentials" target="_blank">
+                    Generate a Public Api credential
+                </a>
+
+                Pass the <b>Basic auth user name</b> and the <b>Basic auth password</b>.
+
+            </p>
+
+            <mat-form-field class="form-field">
+                <mat-label>Basic auth user name</mat-label>
+                <input matInput formControlName="basicAuthUserName">
+            </mat-form-field>
+            <mat-form-field class="form-field">
+                <input matInput placeholder="Basic auth password" formControlName="basicAuthPassword">
+            </mat-form-field>
+            <div>
+                <button mat-raised-button color="primary" type="submit">Authorize</button>
+            </div>
+        </div>
+    </div>
+</form>

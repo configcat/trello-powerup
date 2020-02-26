@@ -42,7 +42,6 @@ export class ConfigcatPublicApiService {
   private fetch(url): Promise<any> {
     return this.getAuthorizationParameters()
       .then(authorizationParameters => {
-        console.log(authorizationParameters);
         return fetch('https://test-api.configcat.com/' + url,
           {
             headers: {

@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { IEnvironment, ISetting, IProduct, IConfig } from '../models/configcat';
 import { ConfigcatPublicApiService } from '../services/configcat-public-api.service';
-import { of } from 'rxjs';
+
+declare var TrelloPowerUp: any;
 
 @Component({
   selector: 'app-add-feature-flag',
@@ -92,7 +93,20 @@ export class AddFeatureFlagComponent implements OnInit {
   }
 
   onSubmit() {
+    TrelloPowerUp.iframe().get('card', 'shared', 'settings').
+      then(settings => {
+        settings = settings || [];
+        if (settings.some(s => s.environmentId === this.formGroup.value.environmentId && s.settingId === this.formGroup.value.settingId)) {
+          return TrelloPowerUp.iframe().closePopup();
+        } else {
+          settings.push({
+            environmentId: this.formGroup.value.environmentId,
+            settingId: this.formGroup.value.settingId
+          });
 
+          return TrelloPowerUp.iframe().set('card', 'shared', 'settings', settings);
+        }
+      });
   }
 
 }

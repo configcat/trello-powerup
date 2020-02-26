@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { AuthorizationParameters } from '../models/authorization-parameters';
 import { CardSetting, CardSettings } from '../models/card-settings';
 
-const CONFIGCAT_ICON = './images/logo.png';
+const CONFIGCAT_ICON = './assets/logo.png';
 
 declare var TrelloPowerUp: any;
 
@@ -56,9 +56,7 @@ export class TrelloService {
       'authorization-status': (t, options) => {
         return t.get('organization', 'shared', 'configCatBasicAuthUserName')
           .then(basicAuthUserName => {
-            console.log(basicAuthUserName);
             return t.get('organization', 'shared', 'configCatBasicAuthPassword').then(basicAuthPassword => {
-              console.log(basicAuthPassword);
               if (basicAuthUserName && basicAuthPassword) {
                 return { authorized: true };
               }

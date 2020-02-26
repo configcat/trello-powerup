@@ -6,7 +6,6 @@ import { HomeComponent } from './home/home.component';
 import { AddFeatureFlagComponent } from './add-feature-flag/add-feature-flag.component';
 import { FeatureFlagsSettingsComponent } from './feature-flags-settings/feature-flags-settings.component';
 
-
 const routes: Routes = [
   { path: '', pathMatch: 'full', component: HomeComponent },
   { path: 'authorize', component: AuthorizationComponent },

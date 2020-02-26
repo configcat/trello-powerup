@@ -4,7 +4,7 @@
             <p>Select the feature flag which you want to track on the Trello card.</p>
             <mat-form-field class="form-field">
                 <mat-label>Product</mat-label>
-                <mat-select formControlName="productId">
+                <mat-select formControlName="productId" (change)="onProductChanged()">
                     <mat-option *ngFor="let product of products" [value]="product.productId">
                         {{product.name}}
                     </mat-option>

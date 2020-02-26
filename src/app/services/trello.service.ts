@@ -69,57 +69,41 @@ export class TrelloService {
           height: 300,
         });
       },
-      'on-disable': (t, options) => { this.clearAuthorizationParameters(t); }
+      'on-disable': (t) => t.remove('organization', 'shared', 'basicAuthUserName')
+        .then(t.remove('organization', 'shared', 'basicAuthPassword'))
     });
   }
 
-  async getAuthorizationParameters(trelloIFrame: any): Promise<AuthorizationParameters> {
-    try {
-      const basicAuthUserName = await trelloIFrame.get('organization', 'shared', 'basicAuthUserName');
-      const basicAuthPassword = await trelloIFrame.get('organization', 'shared', 'basicAuthPassword');
-
-      if (basicAuthUserName && basicAuthPassword) {
-        return { basicAuthUserName, basicAuthPassword };
-      }
-    } catch {
-    }
-
-    return null;
+  getAuthorizationParameters(trelloIFrame: any): Promise<AuthorizationParameters> {
+    return trelloIFrame.get('organization', 'shared', 'basicAuthUserName')
+      .then(basicAuthUserName => {
+        console.log(basicAuthUserName);
+        return trelloIFrame.get('organization', 'shared', 'basicAuthPassword').then(basicAuthPassword => {
+          console.log(basicAuthPassword);
+          if (basicAuthUserName && basicAuthPassword) {
+            return { basicAuthUserName, basicAuthPassword };
+          }
+          return null;
+        });
+      })
+      .catch(() => null);
   }
 
-  async setAuthorizationParameters(trelloIFrame: any, authorizationParameters: AuthorizationParameters) {
-    try {
-      await trelloIFrame.set('organization', 'shared', 'basicAuthUserName', authorizationParameters.basicAuthUserName);
-      await trelloIFrame.set('organization', 'shared', 'basicAuthPassword', authorizationParameters.basicAuthPassword);
-    } catch {
-    }
+  setAuthorizationParameters(trelloIFrame: any, authorizationParameters: AuthorizationParameters) {
+    return trelloIFrame.set('organization', 'shared', 'basicAuthUserName', authorizationParameters.basicAuthUserName)
+      .then(trelloIFrame.set('organization', 'shared', 'basicAuthPassword', authorizationParameters.basicAuthPassword))
+      .then(console.log('set'));
   }
 
-  async clearAuthorizationParameters(trelloIFrame: any) {
-    try {
-      await trelloIFrame.remove('organization', 'shared', 'basicAuthUserName');
-      await trelloIFrame.remove('organization', 'shared', 'basicAuthPassword');
-    } catch {
-      // TODO
-    }
+  getCardSettings(trelloIFrame: any): Promise<CardSettings> {
+    return trelloIFrame.get('card', 'shared', 'settings');
   }
 
-  async getCardSettings(trelloIFrame: any): Promise<CardSettings> {
-    try {
-      const settings = await trelloIFrame.get('card', 'shared', 'settings');
-      return settings;
-    } catch {
-      // TODO
-    }
-
-    return null;
+  setCardSettings(trelloIFrame: any, cardSettings: CardSettings) {
+    return trelloIFrame.set('card', 'shared', 'settings', cardSettings);
   }
 
-  async setCardSettings(trelloIFrame: any, cardSettings: CardSettings) {
-    try {
-      await trelloIFrame.set('card', 'shared', 'settings', cardSettings);
-    } catch {
-      // TODO
-    }
+  iframe() {
+    return this.TrelloPowerUp.iframe();
   }
 }

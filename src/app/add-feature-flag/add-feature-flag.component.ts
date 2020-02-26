@@ -33,30 +33,62 @@ export class AddFeatureFlagComponent implements OnInit {
     this.configcatPublicApiService.getProducts().then(products => {
       this.products = products;
       if (this.products && this.products.length > 0) {
-        this.formGroup.value.productId = this.products[0].productId;
+        this.formGroup.patchValue({
+          productId: this.products[0].productId
+        });
+
+        return this.onProductChanged();
       }
     });
   }
 
-  async onProductChanged() {
-    if (!this.formGroup.value || !this.formGroup.value.productId) {
+  onProductChanged() {
+    if (!this.formGroup || !this.formGroup.value || !this.formGroup.value.productId) {
       this.configs = [];
       this.environments = [];
     }
 
-    const configs = await this.configcatPublicApiService.getConfigs(this.formGroup.value.productId);
-    this.configs = configs;
-    const environments = await this.configcatPublicApiService.getEnvironments(this.formGroup.value.productId);
-    this.environments = environments;
+    return this.configcatPublicApiService
+      .getConfigs(this.formGroup.value.productId)
+      .then(currentConfigs => {
+        this.configs = currentConfigs;
+        if (this.configs && this.configs.length > 0) {
+          this.formGroup.patchValue({
+            configId: this.configs[0].configId
+          });
+
+          return this.onConfigChanged();
+        }
+      })
+      .then(() => {
+        return this.configcatPublicApiService.getEnvironments(this.formGroup.value.productId)
+          .then(currentEnvironments => {
+            this.environments = currentEnvironments;
+            if (this.environments && this.environments.length > 0) {
+              this.formGroup.patchValue({
+                environmentId: this.environments[0].environmentId
+              });
+            }
+          });
+      });
   }
 
-  async onConfigChanged() {
-    if (!this.formGroup.value || !this.formGroup.value.configId) {
+  onConfigChanged() {
+    if (!this.formGroup || !this.formGroup.value || !this.formGroup.value.configId) {
       this.settings = [];
     }
 
-    const settings = await this.configcatPublicApiService.getSettings(this.formGroup.value.configId);
-    this.settings = settings;
+    return this.configcatPublicApiService
+      .getSettings(this.formGroup.value.configId)
+      .then(currentSettings => {
+        this.settings = currentSettings;
+
+        if (this.settings && this.settings.length > 0) {
+          this.formGroup.patchValue({
+            settingId: this.settings[0].settingId
+          });
+        }
+      });
   }
 
   onSubmit() {

@@ -12,35 +12,40 @@ export class ConfigcatPublicApiService {
 
   constructor(private trelloService: TrelloService) { }
 
-  async getProducts(): Promise<IProduct[]> {
-    return await this.fetch('v1/products');
+  getProducts(): Promise<IProduct[]> {
+    return this.fetch('v1/products');
   }
 
-  async getConfigs(productId: string): Promise<IConfig[]> {
-    return await this.fetch('v1/products/' + productId + '/configs');
+  getConfigs(productId: string): Promise<IConfig[]> {
+    return this.fetch('v1/products/' + productId + '/configs');
   }
 
-  async getEnvironments(productId: string): Promise<IEnvironment[]> {
-    return await this.fetch('v1/products/' + productId + '/environments');
+  getEnvironments(productId: string): Promise<IEnvironment[]> {
+    return this.fetch('v1/products/' + productId + '/environments');
   }
 
-  async getSettings(configId: string): Promise<ISetting[]> {
-    return await this.fetch('v1/configs/' + configId + '/settings');
+  getSettings(configId: string): Promise<ISetting[]> {
+    return this.fetch('v1/configs/' + configId + '/settings');
   }
 
-  private async fetch(url): Promise<any> {
-    const authorizationParameters = await this.trelloService.getAuthorizationParameters(this.TrelloPowerUp.iframe());
-    const result = await fetch('https://test-api.configcat.com/' + url,
-      {
-        headers: {
-          Authorization: 'Basic '
-            + btoa(authorizationParameters?.basicAuthUserName + ':' + authorizationParameters?.basicAuthPassword)
-        }
+  private fetch(url): Promise<any> {
+    return this.trelloService.getAuthorizationParameters(this.TrelloPowerUp.iframe())
+      .then(authorizationParameters => {
+        return fetch('https://test-api.configcat.com/' + url,
+          {
+            headers: {
+              Authorization: 'Basic '
+                + btoa(authorizationParameters?.basicAuthUserName + ':' + authorizationParameters?.basicAuthPassword)
+            }
+          })
+          .then(result => {
+            if (result.ok) {
+              return result.json();
+            }
+
+            return null;
+          });
       });
-    if (result.ok) {
-      return result.json();
-    }
-    
-    return null;
+
   }
 }

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TrelloService } from '../services/trello.service';
 
-declare var window: any;
+declare var TrelloPowerUp: any;
 
 @Component({
   selector: 'app-authorization',
@@ -18,7 +18,6 @@ export class AuthorizationComponent implements OnInit {
     private trelloService: TrelloService) { }
 
   ngOnInit(): void {
-    this.trelloService.initialize();
     this.formGroup = this.formBuilder.group({
       basicAuthUserName: ['', [Validators.required]],
       basicAuthPassword: ['', [Validators.required]]
@@ -26,9 +25,9 @@ export class AuthorizationComponent implements OnInit {
   }
 
   onSubmit() {
-    return window.TrelloPowerUp.iframe().set('organization', 'shared', 'configCatBasicAuthUserName', this.formGroup.value.basicAuthUserName)
-      .then(window.TrelloPowerUp.iframe()
-        .set('organization', 'shared', 'configCatBasicAuthPassword', this.formGroup.value.basicAuthPassword))
-      .then(window.TrelloPowerUp.iframe().closePopup());
+    TrelloPowerUp.iframe().set('organization', 'shared', {
+      configCatBasicAuthUserName: this.formGroup.value.basicAuthUserName,
+      configCatBasicAuthPassword: this.formGroup.value.basicAuthPassword
+    });
   }
 }

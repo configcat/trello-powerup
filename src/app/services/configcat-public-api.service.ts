@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { TrelloService } from './trello.service';
 import { IProduct, ISetting, IEnvironment, IConfig } from '../models/configcat';
 
-declare var window: any;
+declare var TrelloPowerUp: any;
 
 @Injectable({
   providedIn: 'root'
@@ -27,9 +27,22 @@ export class ConfigcatPublicApiService {
     return this.fetch('v1/configs/' + configId + '/settings');
   }
 
+  getAuthorizationParameters() {
+    return Promise.all([
+      TrelloPowerUp.iframe().get('organization', 'shared', 'configCatBasicAuthUserName'),
+      TrelloPowerUp.iframe().get('organization', 'shared', 'configCatBasicAuthPassword')
+    ]).then(value => {
+      if (value[0] && value[1]) {
+        return { basicAuthUserName: value[0], basicAuthPassword: value[1] };
+      }
+      return null;
+    });
+  }
+
   private fetch(url): Promise<any> {
-    return this.trelloService.getAuthorizationParameters(window.TrelloPowerUp.iframe())
+    return this.getAuthorizationParameters()
       .then(authorizationParameters => {
+        console.log(authorizationParameters);
         return fetch('https://test-api.configcat.com/' + url,
           {
             headers: {

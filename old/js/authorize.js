@@ -18,8 +18,7 @@ t.render(function(){
     }
   })
   .then(function(){
-    t.sizeTo('#content')
-    .done();
+    t.sizeTo('#content').done();
   })
 });
 

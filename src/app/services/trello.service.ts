@@ -24,7 +24,7 @@ export class TrelloService {
                 content: {
                   type: 'iframe',
                   url: t.signUrl('./featureflags'),
-                  height: 230 // Max height is 500
+                  height: 500 // Max height is 500
                 }
               };
             } else {

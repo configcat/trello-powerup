@@ -36,6 +36,10 @@ export class AddFeatureFlagComponent implements OnInit {
   }
 
   add() {
+    if (!this.formGroup.valid) {
+      return;
+    }
+
     TrelloPowerUp.iframe().get('card', 'shared', 'settings').
       then(settings => {
         settings = settings || [];

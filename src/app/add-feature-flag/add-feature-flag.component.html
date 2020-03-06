@@ -1,42 +1,22 @@
-<form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
-    <div class="container">
-        <div class="form">
-            <p>Select the feature flag which you want to track on the Trello card.</p>
-            <mat-form-field class="form-field">
-                <mat-label>Product</mat-label>
-                <mat-select formControlName="productId" (change)="onProductChanged()">
-                    <mat-option *ngFor="let product of products" [value]="product.productId">
-                        {{product.name}}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
-            <mat-form-field class="form-field">
-                <mat-label>Config</mat-label>
-                <mat-select formControlName="configId">
-                    <mat-option *ngFor="let config of configs" [value]="config.configId">
-                        {{config.name}}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
-            <mat-form-field class="form-field">
-                <mat-label>Environment</mat-label>
-                <mat-select formControlName="environmentId">
-                    <mat-option *ngFor="let environment of environments" [value]="environment.environmentId">
-                        {{environment.name}}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
-            <mat-form-field class="form-field">
-                <mat-label>Setting</mat-label>
-                <mat-select formControlName="settingId">
-                    <mat-option *ngFor="let setting of settings" [value]="setting.settingId">
-                        {{setting.name}} ({{setting.key}})
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
-            <div>
-                <button mat-raised-button color="primary" type="submit">Add feature flag</button>
-            </div>
-        </div>
+<form class="selects" *ngIf="basicAuthUsername && basicAuthPassword" (ngOnSubmit)="add" [formGroup]="formGroup">
+    <configcat-product-select [basicAuthUsername]="authParameters.basicAuthUsername"
+        [basicAuthPassword]="authParameters.basicAuthPassword" [valueFormControl]="formGroup.controls.productId"
+        name="productId">
+    </configcat-product-select>
+    <configcat-config-select [basicAuthUsername]="authParameters.basicAuthUsername"
+        [basicAuthPassword]="authParameters.basicAuthPassword" [productId]="formGroup.controls.productId.value"
+        [valueFormControl]="formGroup.controls.configId" *ngIf="formGroup.controls.productId.value">
+    </configcat-config-select>
+    <configcat-environment-select [basicAuthUsername]="authParameters.basicAuthUsername"
+        [productId]="formGroup.controls.productId.value" [basicAuthPassword]="authParameters.basicAuthPassword"
+        [valueFormControl]="formGroup.controls.environmentId" *ngIf="formGroup.controls.productId.value">
+    </configcat-environment-select>
+    <configcat-setting-select [basicAuthUsername]="authParameters.basicAuthUsername"
+        [configId]="formGroup.controls.configId.value" [basicAuthPassword]="authParameters.basicAuthPassword"
+        [valueFormControl]="formGroup.controls.settingId" *ngIf="formGroup.controls.configId.value">
+    </configcat-setting-select>
+
+    <div>
+        <button mat-raised-button color="primary" type="submit">Add</button>
     </div>
 </form>

@@ -11,23 +11,15 @@ declare var TrelloPowerUp: any;
 })
 export class AuthorizationComponent implements OnInit {
 
-  formGroup: FormGroup;
-
-  constructor(
-    private formBuilder: FormBuilder,
-    private trelloService: TrelloService) { }
+  constructor() { }
 
   ngOnInit(): void {
-    this.formGroup = this.formBuilder.group({
-      basicAuthUserName: ['', [Validators.required]],
-      basicAuthPassword: ['', [Validators.required]]
-    });
   }
 
-  onSubmit() {
+  login(authParameter) {
     TrelloPowerUp.iframe().set('organization', 'shared', {
-      configCatBasicAuthUserName: this.formGroup.value.basicAuthUserName,
-      configCatBasicAuthPassword: this.formGroup.value.basicAuthPassword
+      configCatBasicAuthUserName: authParameter.basicAuthUserName,
+      configCatBasicAuthPassword: authParameter.basicAuthPassword
     });
   }
 }

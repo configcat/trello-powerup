@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { IEnvironment, ISetting, IProduct, IConfig } from '../models/configcat';
-import { ConfigcatPublicApiService } from '../services/configcat-public-api.service';
 
 declare var TrelloPowerUp: any;
 
@@ -12,16 +11,12 @@ declare var TrelloPowerUp: any;
 })
 export class AddFeatureFlagComponent implements OnInit {
 
-  products: IProduct[];
-  configs: IConfig[];
-  environments: IEnvironment[];
-  settings: ISetting[];
-
   formGroup: FormGroup;
+  basicAuthUsername: string;
+  basicAuthPassword: string;
 
   constructor(
-    private formBuilder: FormBuilder,
-    private configcatPublicApiService: ConfigcatPublicApiService) { }
+    private formBuilder: FormBuilder) { }
 
   ngOnInit(): void {
     this.formGroup = this.formBuilder.group({
@@ -31,68 +26,16 @@ export class AddFeatureFlagComponent implements OnInit {
       settingId: [null, [Validators.required]]
     });
 
-    this.configcatPublicApiService.getProducts().then(products => {
-      this.products = products;
-      if (this.products && this.products.length > 0) {
-        this.formGroup.patchValue({
-          productId: this.products[0].productId
-        });
-
-        return this.onProductChanged();
-      }
+    Promise.all([
+      TrelloPowerUp.iframe().get('organization', 'shared', 'configCatBasicAuthUserName'),
+      TrelloPowerUp.iframe().get('organization', 'shared', 'configCatBasicAuthPassword')
+    ]).then(value => {
+      this.basicAuthUsername = value[0];
+      this.basicAuthPassword = value[1];
     });
   }
 
-  onProductChanged() {
-    if (!this.formGroup || !this.formGroup.value || !this.formGroup.value.productId) {
-      this.configs = [];
-      this.environments = [];
-    }
-
-    return this.configcatPublicApiService
-      .getConfigs(this.formGroup.value.productId)
-      .then(currentConfigs => {
-        this.configs = currentConfigs;
-        if (this.configs && this.configs.length > 0) {
-          this.formGroup.patchValue({
-            configId: this.configs[0].configId
-          });
-
-          return this.onConfigChanged();
-        }
-      })
-      .then(() => {
-        return this.configcatPublicApiService.getEnvironments(this.formGroup.value.productId)
-          .then(currentEnvironments => {
-            this.environments = currentEnvironments;
-            if (this.environments && this.environments.length > 0) {
-              this.formGroup.patchValue({
-                environmentId: this.environments[0].environmentId
-              });
-            }
-          });
-      });
-  }
-
-  onConfigChanged() {
-    if (!this.formGroup || !this.formGroup.value || !this.formGroup.value.configId) {
-      this.settings = [];
-    }
-
-    return this.configcatPublicApiService
-      .getSettings(this.formGroup.value.configId)
-      .then(currentSettings => {
-        this.settings = currentSettings;
-
-        if (this.settings && this.settings.length > 0) {
-          this.formGroup.patchValue({
-            settingId: this.settings[0].settingId
-          });
-        }
-      });
-  }
-
-  onSubmit() {
+  add() {
     TrelloPowerUp.iframe().get('card', 'shared', 'settings').
       then(settings => {
         settings = settings || [];

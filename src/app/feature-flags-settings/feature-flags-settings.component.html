@@ -1,5 +1,6 @@
-<div class="container" *ngIf="settings">
-    <div *ngFor="let setting of settings">
-        <app-setting-item [environmentId]="setting.environmentId" [settingId]="setting.settingId"></app-setting-item>
-    </div>
+<div class="container" *ngIf="settings && basicAuthUsername && basicAuthPassword">
+    <configcat-setting-item *ngFor="let setting of settings" [basicAuthUsername]="basicAuthUsername"
+        [basicAuthPassword]="basicAuthPassword" [productId]="setting.productId" [configId]="setting.configId"
+        [environmentId]="setting.environmentId" [settingId]="setting.settingId" [readonly]="readonly">
+    </configcat-setting-item>
 </div>

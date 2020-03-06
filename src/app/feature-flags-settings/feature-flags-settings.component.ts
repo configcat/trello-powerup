@@ -9,15 +9,23 @@ declare var TrelloPowerUp: any;
 })
 export class FeatureFlagsSettingsComponent implements OnInit {
 
+  basicAuthUsername: string;
+  basicAuthPassword: string;
   settings: any;
+  readonly = false;
 
   constructor() { }
 
   ngOnInit(): void {
-    TrelloPowerUp.iframe().get('card', 'shared', 'settings').
-      then(settings => {
-        this.settings = settings;
-      });
+    Promise.all([
+      TrelloPowerUp.iframe().get('organization', 'shared', 'configCatBasicAuthUserName'),
+      TrelloPowerUp.iframe().get('organization', 'shared', 'configCatBasicAuthPassword'),
+      TrelloPowerUp.iframe().get('card', 'shared', 'settings')
+    ]).then(value => {
+      this.basicAuthUsername = value[0];
+      this.basicAuthPassword = value[1];
+      this.settings = value[2];
+    });
   }
 
 }

@@ -13,13 +13,10 @@ import { HomeComponent } from './home/home.component';
 import { CommonModule } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FeatureFlagsSettingsComponent } from './feature-flags-settings/feature-flags-settings.component';
-import { SettingItemComponent } from './feature-flags-settings/setting-item/setting-item.component';
-import { ValueGangComponent } from './feature-flags-settings/setting-item/value-gang/value-gang.component';
-import { TargetingRulesComponent } from './feature-flags-settings/setting-item/targeting-rules/targeting-rules.component';
-import { PercentageRulesComponent } from './feature-flags-settings/setting-item/percentage-rules/percentage-rules.component';
 import { AddFeatureFlagComponent } from './add-feature-flag/add-feature-flag.component';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatCardModule } from '@angular/material/card';
+import { NgConfigCatPublicApiUIModule } from 'ng-configcat-publicapi-ui';
 
 @NgModule({
   declarations: [
@@ -27,10 +24,6 @@ import { MatCardModule } from '@angular/material/card';
     AuthorizationComponent,
     HomeComponent,
     FeatureFlagsSettingsComponent,
-    SettingItemComponent,
-    ValueGangComponent,
-    TargetingRulesComponent,
-    PercentageRulesComponent,
     AddFeatureFlagComponent
   ],
   imports: [
@@ -46,6 +39,7 @@ import { MatCardModule } from '@angular/material/card';
     MatButtonModule,
     MatRadioModule,
     MatCardModule,
+    NgConfigCatPublicApiUIModule.forRoot(() => ({ basePath: 'https://test-api.configcat.com' }))
   ],
   providers: [],
   bootstrap: [AppComponent]

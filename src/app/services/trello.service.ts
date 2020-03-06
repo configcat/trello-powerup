@@ -23,8 +23,7 @@ export class TrelloService {
                 icon: CONFIGCAT_ICON, // Must be a gray icon, colored icons not allowed.
                 content: {
                   type: 'iframe',
-                  url: t.signUrl('./featureflags'),
-                  height: 500 // Max height is 500
+                  url: t.signUrl('./featureflags')
                 }
               };
             } else {

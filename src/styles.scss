@@ -24,6 +24,7 @@ $custom-typography: mat-typography-config($font-family: 'Montserrat, Roboto, "He
 html,
 body {
     height: 100%;
+    overflow: hidden;
 }
 
 body {
@@ -33,5 +34,42 @@ body {
     a {
         color: #007bff;
         text-decoration: none;
+    }
+}
+
+
+h3 {
+    font-weight: 600;
+}
+
+b {
+    font-weight: 600;
+}
+
+.green-snackbar {
+    background-color: #4caf50;
+    color: white;
+
+    span {
+        font-size: 16px;
+        font-weight: bold;
+    }
+}
+
+.red-snackbar {
+    background-color: #A32B2D;
+    color: white;
+
+    button {
+        color: white;
+    }
+}
+
+.yellow-snackbar {
+    background-color: #f7941c;
+    color: black;
+
+    button {
+        color: black;
     }
 }

@@ -1,4 +1,4 @@
-<form class="selects" *ngIf="basicAuthUsername && basicAuthPassword" (ngOnSubmit)="add()" [formGroup]="formGroup">
+<form class="selects" *ngIf="basicAuthUsername && basicAuthPassword" (ngSubmit)="add()" [formGroup]="formGroup">
     <configcat-product-select [basicAuthUsername]="basicAuthUsername"
         [basicAuthPassword]="basicAuthPassword" [valueFormControl]="formGroup.controls.productId"
         name="productId">

@@ -21,13 +21,10 @@
     "@angular/platform-browser": "~9.0.5",
     "@angular/platform-browser-dynamic": "~9.0.5",
     "@angular/router": "~9.0.5",
-    "ng-configcat-publicapi-ui": "0.0.2",
-    "ng-configcat-publicapi": "^1.0.0",
-    "ng-configcat-settingvalues-ui": "0.0.5",
+    "ng-configcat-publicapi-ui": "0.0.4",
     "rxjs": "~6.5.4",
     "tslib": "^1.10.0",
-    "zone.js": "~0.10.2",
-    "js-sha1": "^0.6.0"
+    "zone.js": "~0.10.2"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.900.5",

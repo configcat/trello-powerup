@@ -17,6 +17,7 @@ export class AuthorizationComponent implements OnInit {
   }
 
   login(authParameter) {
+    debugger;
     TrelloPowerUp.iframe().set('organization', 'shared', {
       configCatBasicAuthUserName: authParameter.basicAuthUserName,
       configCatBasicAuthPassword: authParameter.basicAuthPassword

@@ -1,18 +1,18 @@
 <form class="selects" *ngIf="basicAuthUsername && basicAuthPassword" (ngOnSubmit)="add" [formGroup]="formGroup">
-    <configcat-product-select [basicAuthUsername]="authParameters.basicAuthUsername"
-        [basicAuthPassword]="authParameters.basicAuthPassword" [valueFormControl]="formGroup.controls.productId"
+    <configcat-product-select [basicAuthUsername]="basicAuthUsername"
+        [basicAuthPassword]="basicAuthPassword" [valueFormControl]="formGroup.controls.productId"
         name="productId">
     </configcat-product-select>
-    <configcat-config-select [basicAuthUsername]="authParameters.basicAuthUsername"
-        [basicAuthPassword]="authParameters.basicAuthPassword" [productId]="formGroup.controls.productId.value"
+    <configcat-config-select [basicAuthUsername]="basicAuthUsername"
+        [basicAuthPassword]="basicAuthPassword" [productId]="formGroup.controls.productId.value"
         [valueFormControl]="formGroup.controls.configId" *ngIf="formGroup.controls.productId.value">
     </configcat-config-select>
-    <configcat-environment-select [basicAuthUsername]="authParameters.basicAuthUsername"
-        [productId]="formGroup.controls.productId.value" [basicAuthPassword]="authParameters.basicAuthPassword"
+    <configcat-environment-select [basicAuthUsername]="basicAuthUsername"
+        [productId]="formGroup.controls.productId.value" [basicAuthPassword]="basicAuthPassword"
         [valueFormControl]="formGroup.controls.environmentId" *ngIf="formGroup.controls.productId.value">
     </configcat-environment-select>
-    <configcat-setting-select [basicAuthUsername]="authParameters.basicAuthUsername"
-        [configId]="formGroup.controls.configId.value" [basicAuthPassword]="authParameters.basicAuthPassword"
+    <configcat-setting-select [basicAuthUsername]="basicAuthUsername"
+        [configId]="formGroup.controls.configId.value" [basicAuthPassword]="basicAuthPassword"
         [valueFormControl]="formGroup.controls.settingId" *ngIf="formGroup.controls.configId.value">
     </configcat-setting-select>
 

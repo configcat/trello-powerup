@@ -18,6 +18,10 @@ export class TrelloService {
         return (trelloPowerUp ?? TrelloPowerUp.iframe()).closePopup();
     }
 
+    sizeTo(selector: string, trelloPowerUp = null) {
+        return (trelloPowerUp ?? TrelloPowerUp.iframe()).sizeTo(selector);
+    }
+
     getAuthorizationParameters(trelloPowerUp = null): Promise<AuthorizationParameters> {
         return (trelloPowerUp ?? TrelloPowerUp.iframe()).get('organization', 'shared', 'authorization');
     }

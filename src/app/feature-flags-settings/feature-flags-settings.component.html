@@ -1,8 +1,9 @@
-<div class="container" *ngIf="setting && authorizationParameters">
+<div class="container" *ngIf="setting && authorizationParameters" id="setting-item">
     <configcat-setting-item [basicAuthUsername]="authorizationParameters.basicAuthUsername"
         [basicAuthPassword]="authorizationParameters.basicAuthPassword" [productId]="setting.productId"
         [configId]="setting.configId" [environmentId]="setting.environmentId" [settingId]="setting.settingId"
         [readonly]="readonly" [canEditSetting]=false (editSettingRequested)="onEditSettingRequested($event)"
-        (deleteSettingRequested)="onDeleteSettingRequested($event)" (saveSucceeded)="saveSucceeded()">
+        (deleteSettingRequested)="onDeleteSettingRequested($event)" (saveSucceeded)="saveSucceeded()"
+        (loadSucceeded)="loadSucceeded()">
     </configcat-setting-item>
 </div>

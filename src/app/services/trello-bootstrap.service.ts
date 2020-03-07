@@ -54,7 +54,7 @@ export class TrelloBootstrapService {
       // usually you will provide a callback function to be run on button click
       // we recommend that you use a popup on click generally
       icon: CONFIGCAT_ICON,
-      text: 'Feature flag or Setting',
+      text: 'ConfigCat',
       callback: t => {
         return t.popup({
           title: 'Select Feature Flag or Setting',
@@ -70,7 +70,7 @@ export class TrelloBootstrapService {
       .then(setting => {
         if (setting) {
           return {
-            title: 'ConfigCat Feature flags or Settings',
+            title: 'ConfigCat',
             icon: CONFIGCAT_ICON, // Must be a gray icon, colored icons not allowed.
             content: {
               type: 'iframe',

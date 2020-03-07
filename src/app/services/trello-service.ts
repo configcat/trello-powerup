@@ -8,6 +8,7 @@ declare var TrelloPowerUp: any;
     providedIn: 'root'
 })
 export class TrelloService {
+
     constructor() { }
 
     closePopup(trelloPowerUp = null) {
@@ -59,4 +60,6 @@ export class TrelloService {
                 }
             });
     }
+
+
 }

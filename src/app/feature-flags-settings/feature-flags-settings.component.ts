@@ -17,6 +17,7 @@ export class FeatureFlagsSettingsComponent implements OnInit {
   authorizationParameters: AuthorizationParameters;
   setting: CardSetting;
   readonly = false;
+  showVariationId = false;
 
   constructor(
     private dialog: MatDialog,

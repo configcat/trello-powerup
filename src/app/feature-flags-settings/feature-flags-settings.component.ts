@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnChanges } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { DeleteSettingDialogComponent } from '../delete-setting-dialog/delete-setting-dialog.component';
 import { PublicApiService } from 'ng-configcat-publicapi-ui';
@@ -12,7 +12,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   templateUrl: './feature-flags-settings.component.html',
   styleUrls: ['./feature-flags-settings.component.scss']
 })
-export class FeatureFlagsSettingsComponent implements OnInit {
+export class FeatureFlagsSettingsComponent implements OnInit, OnChanges {
 
   authorizationParameters: AuthorizationParameters;
   settings: CardSetting[];
@@ -26,6 +26,14 @@ export class FeatureFlagsSettingsComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.reloadSettings();
+  }
+
+  ngOnChanges() {
+    this.reloadSettings();
+  }
+
+  reloadSettings() {
     Promise.all([
       this.trelloService.getAuthorizationParameters(),
       this.trelloService.getSettings()

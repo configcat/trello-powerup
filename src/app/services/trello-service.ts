@@ -15,33 +15,16 @@ export class TrelloService {
     }
 
     getAuthorizationParameters(trelloPowerUp = null) {
-        return Promise.all([
-            (trelloPowerUp ?? TrelloPowerUp.iframe()).get('organization', 'shared', 'configCatBasicAuthUsername'),
-            (trelloPowerUp ?? TrelloPowerUp.iframe()).get('organization', 'shared', 'configCatBasicAuthPassword')
-        ]).then(value => {
-            if (!value[0] || !value[1]) {
-                return null;
-            }
-            return {
-                basicAuthUsername: value[0],
-                basicAuthPassword: value[1]
-            } as AuthorizationParameters;
-        });
+        return (trelloPowerUp ?? TrelloPowerUp.iframe()).get('organization', 'shared', 'authorization');
     }
 
     setAuthorizationParameters(authorizationParameters: AuthorizationParameters, trelloPowerUp = null) {
-        return (trelloPowerUp ?? TrelloPowerUp.iframe()).set('organization', 'shared', {
-            configCatBasicAuthUsername: authorizationParameters.basicAuthUsername,
-            configCatBasicAuthPassword: authorizationParameters.basicAuthPassword
-        });
+        return (trelloPowerUp ?? TrelloPowerUp.iframe()).set('organization', 'shared', 'authorization', authorizationParameters);
     }
 
     removeAuthorizationParameters(trelloPowerUp = null) {
         return (trelloPowerUp ?? TrelloPowerUp.iframe())
-            .remove('organization', 'shared', 'configCatBasicAuthUsername')
-            .then(() => {
-                return (trelloPowerUp ?? TrelloPowerUp.iframe()).remove('organization', 'shared', 'configCatBasicAuthPassword');
-            });
+            .remove('organization', 'shared', 'authorization');
     }
 
     getSettings(trelloPowerUp = null): Promise<CardSetting[]> {

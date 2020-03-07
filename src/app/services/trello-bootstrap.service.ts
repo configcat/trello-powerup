@@ -45,12 +45,6 @@ export class TrelloBootstrapService {
           }
         }];
       },
-      'format-url': (t, options) => {
-        return {
-          icon: CONFIGCAT_ICON, // don't use a colored icon here
-          text: '👉 ' + options.url + ' 👈'
-        };
-      },
       'authorization-status': (t, options) => {
         return this.trelloService.getAuthorizationParameters(t)
           .then(authorizationParameters => {
@@ -68,7 +62,9 @@ export class TrelloBootstrapService {
           height: 300,
         });
       },
-      'on-disable': (t) => this.trelloService.removeAuthorizationParameters(t)
+      'on-disable': (t) => this.trelloService.removeAuthorizationParameters(t).then(() => {
+
+      })
     });
   }
 }

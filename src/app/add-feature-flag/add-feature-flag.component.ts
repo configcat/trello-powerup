@@ -35,19 +35,9 @@ export class AddFeatureFlagComponent implements OnInit {
       return;
     }
 
-    this.trelloService.getSettings()
-      .then(settings => {
-        if (settings.some(s => s.environmentId === this.formGroup.value.environmentId && s.settingId === this.formGroup.value.settingId)) {
-          return this.trelloService.closePopup();
-        } else {
-          settings.push({
-            environmentId: this.formGroup.value.environmentId,
-            settingId: this.formGroup.value.settingId
-          });
-
-          return this.trelloService.setSettings(settings);
-        }
-      });
+    this.trelloService.addSetting({
+      environmentId: this.formGroup.value.environmentId,
+      settingId: this.formGroup.value.settingId
+    });
   }
-
 }

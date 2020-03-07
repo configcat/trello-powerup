@@ -27,7 +27,16 @@ export class TrelloService {
     }
 
     setAuthorizationParameters(authorizationParameters: AuthorizationParameters, trelloPowerUp = null) {
-        return (trelloPowerUp ?? TrelloPowerUp.iframe()).set('organization', 'shared', 'authorization', authorizationParameters);
+        return (trelloPowerUp ?? TrelloPowerUp.iframe())
+            .set('organization', 'shared', 'authorization', authorizationParameters)
+            .then(() => {
+                return (trelloPowerUp ?? TrelloPowerUp.iframe())
+                    .alert({
+                        message: 'Authorized to ConfigCat 🎉',
+                        duration: 5 ,
+                        display: 'success'
+                    });
+            });
     }
 
     removeAuthorizationParameters(trelloPowerUp = null) {

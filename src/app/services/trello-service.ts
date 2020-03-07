@@ -61,5 +61,7 @@ export class TrelloService {
             });
     }
 
-
+    render(func, trelloPowerUp = null) {
+        return (trelloPowerUp ?? TrelloPowerUp.iframe()).render(func);
+    }
 }

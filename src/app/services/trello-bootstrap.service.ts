@@ -17,8 +17,25 @@ export class TrelloBootstrapService {
       'card-buttons': this.getCardButtons,
       'authorization-status': this.getAuthorizationStatus,
       'show-authorization': this.showAuthorization,
-      'on-disable': this.disable
+      'on-disable': this.disable,
+      'card-badges': this.getBadges
     });
+  }
+
+  private getBadges = (t, opts) => {
+    return this.trelloService.getSettings(t)
+      .then(settings => {
+        if (settings && settings.length > 0) {
+          return {
+            text: 'Dynamic ' + (Math.random() * 100).toFixed(0).toString(),
+            icon: './images/icon.svg',
+            color: 'green',
+            refresh: 10 // in seconds
+          };
+        } else {
+          return [];
+        }
+      });
   }
 
   private disable = (t) => {

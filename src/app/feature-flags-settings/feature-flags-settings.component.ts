@@ -1,4 +1,4 @@
-import { Component, OnInit, OnChanges } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { DeleteSettingDialogComponent } from '../delete-setting-dialog/delete-setting-dialog.component';
 import { PublicApiService } from 'ng-configcat-publicapi-ui';
@@ -12,7 +12,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   templateUrl: './feature-flags-settings.component.html',
   styleUrls: ['./feature-flags-settings.component.scss']
 })
-export class FeatureFlagsSettingsComponent implements OnInit, OnChanges {
+export class FeatureFlagsSettingsComponent implements OnInit {
 
   authorizationParameters: AuthorizationParameters;
   settings: CardSetting[];
@@ -26,15 +26,11 @@ export class FeatureFlagsSettingsComponent implements OnInit, OnChanges {
   ) { }
 
   ngOnInit(): void {
-    this.reloadSettings();
-  }
-
-  ngOnChanges() {
-    this.reloadSettings();
+    this.trelloService.render(() => this.reloadSettings());
   }
 
   reloadSettings() {
-    Promise.all([
+    return Promise.all([
       this.trelloService.getAuthorizationParameters(),
       this.trelloService.getSettings()
     ]).then(value => {
@@ -70,20 +66,14 @@ export class FeatureFlagsSettingsComponent implements OnInit, OnChanges {
             this.authorizationParameters.basicAuthPassword)
             .deleteSetting(setting.setting.settingId).subscribe(() => {
 
-              this.trelloService.removeSetting({ settingId: setting.setting.settingId, environmentId: setting.environment.environmentId })
-                .then(settings => {
-                  this.settings = settings;
-                });
+              this.trelloService.removeSetting({ settingId: setting.setting.settingId, environmentId: setting.environment.environmentId });
 
             }, () => {
               this.snackBar.open('Ooops. Deleting setting failed. Please try again or contact us.',
                 'Dismiss', { duration: 60000, panelClass: 'red-snackbar' });
             });
         } else if (result.button === 'removeFromCard') {
-          this.trelloService.removeSetting({ settingId: setting.setting.settingId, environmentId: setting.environment.environmentId })
-            .then(settings => {
-              this.settings = settings;
-            });
+          this.trelloService.removeSetting({ settingId: setting.setting.settingId, environmentId: setting.environment.environmentId });
         }
       });
   }

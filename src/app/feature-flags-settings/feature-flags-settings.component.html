@@ -3,6 +3,6 @@
         [basicAuthPassword]="authorizationParameters.basicAuthPassword" [productId]="setting.productId"
         [configId]="setting.configId" [environmentId]="setting.environmentId" [settingId]="setting.settingId"
         [readonly]="readonly" [canEditSetting]=false (editSettingRequested)="onEditSettingRequested($event)"
-        (deleteSettingRequested)="onDeleteSettingRequested($event)">
+        (deleteSettingRequested)="onDeleteSettingRequested($event)" (saveSucceeded)="saveSucceeded()">
     </configcat-setting-item>
 </div>

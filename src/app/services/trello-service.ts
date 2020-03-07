@@ -35,8 +35,15 @@ export class TrelloService {
         return (trelloPowerUp ?? TrelloPowerUp.iframe()).get('card', 'shared', 'setting');
     }
 
-    addSetting(setting: CardSetting, trelloPowerUp = null) {
+    setSetting(setting: CardSetting, trelloPowerUp = null) {
         return (trelloPowerUp ?? TrelloPowerUp.iframe()).set('card', 'shared', 'setting', setting);
+    }
+
+    updateSetting(trelloPowerUp = null) {
+        return this.getSetting((trelloPowerUp ?? TrelloPowerUp.iframe())).then(setting => {
+            setting.lastUpdatedAt = new Date();
+            return this.setSetting(setting, (trelloPowerUp ?? TrelloPowerUp.iframe()));
+        });
     }
 
     removeSetting(trelloPowerUp = null) {
@@ -66,7 +73,7 @@ export class TrelloService {
                 .then(settingValue => {
                     let text = '';
                     if ((!settingValue.rolloutRules || settingValue.rolloutRules.length === 0)
-                        && !settingValue.rolloutPercentageItems || settingValue.rolloutPercentageItems.length === 0) {
+                        && (!settingValue.rolloutPercentageItems || settingValue.rolloutPercentageItems.length === 0)) {
 
                         if (settingValue.setting.settingType === 'boolean') {
                             text = settingValue.value ? 'Released' : 'Not released';
@@ -80,7 +87,7 @@ export class TrelloService {
 
                         if (settingValue.rolloutPercentageItems && settingValue.rolloutPercentageItems.length > 0) {
                             if (text !== '') {
-                                text += ' ';
+                                text += ' + ';
                             }
 
                             if (settingValue.setting.settingType === 'boolean') {

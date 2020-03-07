@@ -3,4 +3,5 @@ export interface CardSetting {
     settingId: number;
     configId: string;
     productId: string;
+    lastUpdatedAt: Date;
 }

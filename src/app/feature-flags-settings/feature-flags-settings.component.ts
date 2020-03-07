@@ -77,4 +77,8 @@ export class FeatureFlagsSettingsComponent implements OnInit {
         }
       });
   }
+
+  saveSucceeded() {
+    this.trelloService.updateSetting();
+  }
 }

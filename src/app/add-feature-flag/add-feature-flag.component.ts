@@ -35,11 +35,12 @@ export class AddFeatureFlagComponent implements OnInit {
       return;
     }
 
-    this.trelloService.addSetting({
+    this.trelloService.setSetting({
       environmentId: this.formGroup.value.environmentId,
       settingId: this.formGroup.value.settingId,
       configId: this.formGroup.value.configId,
-      productId: this.formGroup.value.productId
+      productId: this.formGroup.value.productId,
+      lastUpdatedAt: new Date()
     }).then(() => {
       return this.trelloService.closePopup();
     });

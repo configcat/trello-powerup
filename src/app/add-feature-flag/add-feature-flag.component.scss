@@ -1,12 +1,11 @@
-.container {
-    display: flex;
-    margin: 8px;
-}
-
 .form {
-    width: 100%;
-}
+    margin: 8px;
 
-.form-field {
-    width: 100%;
+    .container {
+
+
+        >* {
+            width: 100%;
+        }
+    }
 }

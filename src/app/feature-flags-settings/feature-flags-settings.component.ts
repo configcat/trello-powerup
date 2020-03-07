@@ -15,7 +15,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 export class FeatureFlagsSettingsComponent implements OnInit {
 
   authorizationParameters: AuthorizationParameters;
-  settings: CardSetting[];
+  setting: CardSetting;
   readonly = false;
 
   constructor(
@@ -32,10 +32,10 @@ export class FeatureFlagsSettingsComponent implements OnInit {
   reloadSettings() {
     return Promise.all([
       this.trelloService.getAuthorizationParameters(),
-      this.trelloService.getSettings()
+      this.trelloService.getSetting()
     ]).then(value => {
       this.authorizationParameters = value[0];
-      this.settings = value[1];
+      this.setting = value[1];
     });
   }
 
@@ -66,14 +66,14 @@ export class FeatureFlagsSettingsComponent implements OnInit {
             this.authorizationParameters.basicAuthPassword)
             .deleteSetting(setting.setting.settingId).subscribe(() => {
 
-              this.trelloService.removeSetting({ settingId: setting.setting.settingId, environmentId: setting.environment.environmentId });
+              this.trelloService.removeSetting();
 
             }, () => {
               this.snackBar.open('Ooops. Deleting setting failed. Please try again or contact us.',
                 'Dismiss', { duration: 60000, panelClass: 'red-snackbar' });
             });
         } else if (result.button === 'removeFromCard') {
-          this.trelloService.removeSetting({ settingId: setting.setting.settingId, environmentId: setting.environment.environmentId });
+          this.trelloService.removeSetting();
         }
       });
   }

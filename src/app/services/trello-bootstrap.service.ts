@@ -23,19 +23,7 @@ export class TrelloBootstrapService {
   }
 
   private getBadges = (t, opts) => {
-    return this.trelloService.getSettings(t)
-      .then(settings => {
-        if (settings && settings.length > 0) {
-          return {
-            text: 'Dynamic ' + (Math.random() * 100).toFixed(0).toString(),
-            icon: './images/icon.svg',
-            color: 'green',
-            refresh: 10 // in seconds
-          };
-        } else {
-          return [];
-        }
-      });
+    return this.trelloService.getBadgeData(t);
   }
 
   private disable = (t) => {
@@ -78,9 +66,9 @@ export class TrelloBootstrapService {
   }
 
   private getCardBackSection = (t, options) => {
-    return this.trelloService.getSettings(t)
-      .then(settings => {
-        if (settings && settings.length > 0) {
+    return this.trelloService.getSetting(t)
+      .then(setting => {
+        if (setting) {
           return {
             title: 'ConfigCat Feature flags or Settings',
             icon: CONFIGCAT_ICON, // Must be a gray icon, colored icons not allowed.

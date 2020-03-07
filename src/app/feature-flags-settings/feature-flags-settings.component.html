@@ -1,6 +1,5 @@
-<div class="container" *ngIf="settings && authorizationParameters">
-    <configcat-setting-item *ngFor="let setting of settings"
-        [basicAuthUsername]="authorizationParameters.basicAuthUsername"
+<div class="container" *ngIf="setting && authorizationParameters">
+    <configcat-setting-item [basicAuthUsername]="authorizationParameters.basicAuthUsername"
         [basicAuthPassword]="authorizationParameters.basicAuthPassword" [productId]="setting.productId"
         [configId]="setting.configId" [environmentId]="setting.environmentId" [settingId]="setting.settingId"
         [readonly]="readonly" [canEditSetting]=false (editSettingRequested)="onEditSettingRequested($event)"

@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { TrelloService } from './trello-service';
 
 const CONFIGCAT_ICON = './assets/logo.png';
 
@@ -8,12 +9,12 @@ declare var TrelloPowerUp: any;
   providedIn: 'root'
 })
 export class TrelloBootstrapService {
-  constructor() { }
+  constructor(private trelloService: TrelloService) { }
 
   initialize() {
     TrelloPowerUp.initialize({
       'card-back-section': (t, options) => {
-        return t.get('card', 'shared', 'settings')
+        return this.trelloService.getSettings(t)
           .then(settings => {
             if (settings && settings.length > 0) {
               return {
@@ -51,14 +52,12 @@ export class TrelloBootstrapService {
         };
       },
       'authorization-status': (t, options) => {
-        return t.get('organization', 'shared', 'configCatBasicAuthUserName')
-          .then(basicAuthUserName => {
-            return t.get('organization', 'shared', 'configCatBasicAuthPassword').then(basicAuthPassword => {
-              if (basicAuthUserName && basicAuthPassword) {
-                return { authorized: true };
-              }
-              return { authorized: false };
-            });
+        return this.trelloService.getAuthorizationParameters(t)
+          .then(authorizationParameters => {
+            if (authorizationParameters && authorizationParameters.basicAuthUsername && authorizationParameters.basicAuthPassword) {
+              return { authorized: true };
+            }
+            return { authorized: false };
           })
           .catch(() => ({ authorized: false }));
       },
@@ -69,8 +68,7 @@ export class TrelloBootstrapService {
           height: 300,
         });
       },
-      'on-disable': (t) => t.remove('organization', 'shared', 'configCatBasicAuthUserName')
-        .then(t.remove('organization', 'shared', 'configCatBasicAuthPassword'))
+      'on-disable': (t) => this.trelloService.removeAuthorizationParameters(t)
     });
   }
 }

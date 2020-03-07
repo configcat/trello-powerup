@@ -79,12 +79,17 @@ export class FeatureFlagsSettingsComponent implements OnInit {
   }
 
   loadSucceeded() {
-    setTimeout(() => {
-      this.trelloService.sizeTo('#setting-item');
-    }, 300);
+    this.resize();
   }
 
   saveSucceeded() {
     this.trelloService.updateSetting();
+    this.resize();
+  }
+
+  resize() {
+    setTimeout(() => {
+      this.trelloService.sizeTo('#setting-item');
+    }, 300);
   }
 }

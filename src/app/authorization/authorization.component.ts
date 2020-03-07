@@ -1,8 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { TrelloService } from '../services/trello.service';
-
-declare var TrelloPowerUp: any;
+import { TrelloService } from '../services/trello-service';
 
 @Component({
   selector: 'app-authorization',
@@ -11,15 +8,16 @@ declare var TrelloPowerUp: any;
 })
 export class AuthorizationComponent implements OnInit {
 
-  constructor() { }
+  constructor(private trelloService: TrelloService) { }
 
   ngOnInit(): void {
   }
 
-  login(authParameter) {
-    TrelloPowerUp.iframe().set('organization', 'shared', {
-      configCatBasicAuthUserName: authParameter.basicAuthUsername,
-      configCatBasicAuthPassword: authParameter.basicAuthPassword
-    });
+  login(authorizationParameters) {
+    this.trelloService
+      .setAuthorizationParameters(authorizationParameters)
+      .then(() => {
+        this.trelloService.closePopup();
+      });
   }
 }

@@ -1,4 +1,4 @@
 export interface AuthorizationParameters {
-    basicAuthUserName: string;
+    basicAuthUsername: string;
     basicAuthPassword: string;
 }

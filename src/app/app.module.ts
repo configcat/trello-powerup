@@ -17,6 +17,8 @@ import { AddFeatureFlagComponent } from './add-feature-flag/add-feature-flag.com
 import { MatRadioModule } from '@angular/material/radio';
 import { MatCardModule } from '@angular/material/card';
 import { NgConfigCatPublicApiUIModule } from 'ng-configcat-publicapi-ui';
+import { DeleteSettingDialogComponent } from './delete-setting-dialog/delete-setting-dialog.component';
+import { MatDialogModule } from '@angular/material/dialog';
 
 @NgModule({
   declarations: [
@@ -24,7 +26,8 @@ import { NgConfigCatPublicApiUIModule } from 'ng-configcat-publicapi-ui';
     AuthorizationComponent,
     HomeComponent,
     FeatureFlagsSettingsComponent,
-    AddFeatureFlagComponent
+    AddFeatureFlagComponent,
+    DeleteSettingDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -39,7 +42,8 @@ import { NgConfigCatPublicApiUIModule } from 'ng-configcat-publicapi-ui';
     MatButtonModule,
     MatRadioModule,
     MatCardModule,
-    NgConfigCatPublicApiUIModule.forRoot(() => ({ basePath: 'https://test-api.configcat.com' }))
+    NgConfigCatPublicApiUIModule.forRoot(() => ({ basePath: 'https://test-api.configcat.com' })),
+    MatDialogModule
   ],
   providers: [],
   bootstrap: [AppComponent]

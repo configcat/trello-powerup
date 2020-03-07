@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { TrelloService } from '../services/trello.service';
+import { TrelloBootstrapService } from '../services/trello-bootstrap.service';
 
 @Component({
   selector: 'app-home',
@@ -8,11 +8,11 @@ import { TrelloService } from '../services/trello.service';
 })
 export class HomeComponent implements OnInit {
 
-  constructor(private trelloService: TrelloService) {
+  constructor(private trelloBootstrapService: TrelloBootstrapService) {
   }
 
   ngOnInit(): void {
-    this.trelloService.initialize();
+    this.trelloBootstrapService.initialize();
   }
 
 }

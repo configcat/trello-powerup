@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { IEnvironment, ISetting, IProduct, IConfig } from '../models/configcat';
-
-declare var TrelloPowerUp: any;
+import { TrelloService } from '../services/trello-service';
+import { AuthorizationParameters } from '../models/authorization-parameters';
 
 @Component({
   selector: 'app-add-feature-flag',
@@ -12,11 +11,11 @@ declare var TrelloPowerUp: any;
 export class AddFeatureFlagComponent implements OnInit {
 
   formGroup: FormGroup;
-  basicAuthUsername: string;
-  basicAuthPassword: string;
+  authorizationParameters: AuthorizationParameters;
 
   constructor(
-    private formBuilder: FormBuilder) { }
+    private formBuilder: FormBuilder,
+    private trelloService: TrelloService) { }
 
   ngOnInit(): void {
     this.formGroup = this.formBuilder.group({
@@ -26,12 +25,8 @@ export class AddFeatureFlagComponent implements OnInit {
       settingId: [null, [Validators.required]]
     });
 
-    Promise.all([
-      TrelloPowerUp.iframe().get('organization', 'shared', 'configCatBasicAuthUserName'),
-      TrelloPowerUp.iframe().get('organization', 'shared', 'configCatBasicAuthPassword')
-    ]).then(value => {
-      this.basicAuthUsername = value[0];
-      this.basicAuthPassword = value[1];
+    this.trelloService.getAuthorizationParameters().then(authorizationParameters => {
+      this.authorizationParameters = authorizationParameters;
     });
   }
 
@@ -40,18 +35,17 @@ export class AddFeatureFlagComponent implements OnInit {
       return;
     }
 
-    TrelloPowerUp.iframe().get('card', 'shared', 'settings').
-      then(settings => {
-        settings = settings || [];
+    this.trelloService.getSettings()
+      .then(settings => {
         if (settings.some(s => s.environmentId === this.formGroup.value.environmentId && s.settingId === this.formGroup.value.settingId)) {
-          return TrelloPowerUp.iframe().closePopup();
+          return this.trelloService.closePopup();
         } else {
           settings.push({
             environmentId: this.formGroup.value.environmentId,
             settingId: this.formGroup.value.settingId
           });
 
-          return TrelloPowerUp.iframe().set('card', 'shared', 'settings', settings);
+          return this.trelloService.setSettings(settings);
         }
       });
   }

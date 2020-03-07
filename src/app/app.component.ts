@@ -1,6 +1,4 @@
 import { Component } from '@angular/core';
-import { TrelloService } from './services/trello.service';
-
 
 @Component({
   selector: 'app-root',

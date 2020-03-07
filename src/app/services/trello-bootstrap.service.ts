@@ -9,7 +9,7 @@ declare var TrelloPowerUp: any;
 @Injectable({
   providedIn: 'root'
 })
-export class TrelloService {
+export class TrelloBootstrapService {
   constructor() { }
 
   initialize() {

@@ -81,7 +81,7 @@ export class TrelloService {
 
             return this.publicApiService
                 .createSettingValuesService(authorizationParameters.basicAuthUsername, authorizationParameters.basicAuthPassword)
-                .getSettingValue(setting.environmentId, '' + setting.settingId)
+                .getSettingValue(setting.environmentId, setting.settingId)
                 .toPromise()
                 .then(settingValue => {
                     let text = '';

@@ -23,12 +23,12 @@ export class TrelloService {
     }
 
     getAuthorizationParameters(trelloPowerUp = null): Promise<AuthorizationParameters> {
-        return (trelloPowerUp ?? TrelloPowerUp.iframe()).get('organization', 'shared', 'authorization');
+        return (trelloPowerUp ?? TrelloPowerUp.iframe()).get('board', 'shared', 'authorization');
     }
 
     setAuthorizationParameters(authorizationParameters: AuthorizationParameters, trelloPowerUp = null) {
         return (trelloPowerUp ?? TrelloPowerUp.iframe())
-            .set('organization', 'shared', 'authorization', authorizationParameters)
+            .set('board', 'shared', 'authorization', authorizationParameters)
             .then(() => {
                 return (trelloPowerUp ?? TrelloPowerUp.iframe())
                     .alert({
@@ -41,7 +41,7 @@ export class TrelloService {
 
     removeAuthorizationParameters(trelloPowerUp = null) {
         return (trelloPowerUp ?? TrelloPowerUp.iframe())
-            .remove('organization', 'shared', 'authorization');
+            .remove('board', 'shared', 'authorization');
     }
 
     getSetting(trelloPowerUp = null): Promise<CardSetting> {

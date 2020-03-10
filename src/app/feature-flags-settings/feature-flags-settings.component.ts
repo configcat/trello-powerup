@@ -88,6 +88,10 @@ export class FeatureFlagsSettingsComponent implements OnInit {
     this.resize();
   }
 
+  onFormValuesChanged() {
+    this.resize();
+  }
+
   resize() {
     setTimeout(() => {
       this.trelloService.sizeTo('#setting-item');

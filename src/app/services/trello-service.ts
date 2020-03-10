@@ -33,7 +33,7 @@ export class TrelloService {
                 return (trelloPowerUp ?? TrelloPowerUp.iframe())
                     .alert({
                         message: 'Authorized to ConfigCat 🎉',
-                        duration: 5 ,
+                        duration: 5,
                         display: 'success'
                     });
             });
@@ -111,11 +111,11 @@ export class TrelloService {
                         }
                     }
 
-                    return {
+                    return [{
                         text,
                         icon: CONFIGCAT_ICON,
                         color: 'green'
-                    };
+                    }];
                 });
         });
     }

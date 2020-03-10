@@ -4,6 +4,7 @@
         [configId]="setting.configId" [environmentId]="setting.environmentId" [settingId]="setting.settingId"
         [readonly]="readonly" [canEditSetting]=false (editSettingRequested)="onEditSettingRequested($event)"
         (deleteSettingRequested)="onDeleteSettingRequested($event)" (saveSucceeded)="saveSucceeded()"
-        (loadSucceeded)="loadSucceeded()" [showVariationId]="showVariationId">
+        (loadSucceeded)="loadSucceeded()" [showVariationId]="showVariationId"
+        (formValuesChanged)="onFormValuesChanged()">
     </configcat-setting-item>
 </div>

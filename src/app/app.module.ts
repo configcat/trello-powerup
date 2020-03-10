@@ -19,6 +19,7 @@ import { MatCardModule } from '@angular/material/card';
 import { NgConfigCatPublicApiUIModule } from 'ng-configcat-publicapi-ui';
 import { DeleteSettingDialogComponent } from './delete-setting-dialog/delete-setting-dialog.component';
 import { MatDialogModule } from '@angular/material/dialog';
+import { environment } from './../environments/environment';
 
 @NgModule({
   declarations: [
@@ -42,7 +43,7 @@ import { MatDialogModule } from '@angular/material/dialog';
     MatButtonModule,
     MatRadioModule,
     MatCardModule,
-    NgConfigCatPublicApiUIModule.forRoot(() => ({ basePath: 'https://test-api.configcat.com' })),
+    NgConfigCatPublicApiUIModule.forRoot(() => ({ basePath: environment.publicApiBaseUrl })),
     MatDialogModule
   ],
   providers: [],

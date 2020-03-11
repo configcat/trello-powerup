@@ -17,10 +17,6 @@ export class DeleteSettingDialogComponent implements OnInit {
     this.dialogRef.close({ button: 'removeFromCard' });
   }
 
-  deletePermanently() {
-    this.dialogRef.close({ button: 'deletePermanently' });
-  }
-
   cancel() {
     this.dialogRef.close({ button: 'cancel' });
   }

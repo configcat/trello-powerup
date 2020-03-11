@@ -1,15 +1,9 @@
-<h3 mat-dialog-title>Remove setting</h3>
+<h3 mat-dialog-title>Remove Feature Flag or Setting from Trello</h3>
 <ul>
     <li>To remove the setting from the Trello card click <b>Remove from card</b></li>
-    <li>
-        To delete the setting from ConfigCat permanently click <b>Delete permanently</b>
-        <br />
-        This action cannot be undone.
-    </li>
 </ul>
 <br />
 <div mat-dialog-actions>
     <button type="button" mat-raised-button color="primary" (click)="removeFromCard()">Remove from card</button>
-    <button type="button" mat-raised-button color="warn" (click)="deletePermanently()">Delete permanently</button>
     <button type="button" mat-raised-button (click)="cancel()">Cancel</button>
 </div>

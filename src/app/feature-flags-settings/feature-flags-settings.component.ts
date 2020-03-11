@@ -61,19 +61,7 @@ export class FeatureFlagsSettingsComponent implements OnInit {
         if (!result) {
           return;
         }
-        if (result.button === 'deletePermanently') {
-          this.publicApiService.createSettingsService(
-            this.authorizationParameters.basicAuthUsername,
-            this.authorizationParameters.basicAuthPassword)
-            .deleteSetting(setting.setting.settingId).subscribe(() => {
-
-              this.trelloService.removeSetting();
-
-            }, () => {
-              this.snackBar.open('Ooops. Deleting setting failed. Please try again or contact us.',
-                'Dismiss', { duration: 60000, panelClass: 'red-snackbar' });
-            });
-        } else if (result.button === 'removeFromCard') {
+        if (result.button === 'removeFromCard') {
           this.trelloService.removeSetting();
         }
       });

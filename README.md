@@ -3,7 +3,7 @@
 Turn features On / Off right from a linked Card on your Trello board. Also you can add Targeting or Percentage Rules just as easily.
 
 ## Installation
-<img src="https://raw.githubusercontent.com/configcat/trello-powerup/master/src/assets/enable_trello.gif" alt="Installation of the ConfigCat Feature Flags Trello Power-Up" width="480"/>
+<img src="https://raw.githubusercontent.com/configcat/trello-powerup/master/src/assets/enable_trello.gif" alt="Installation of the ConfigCat Feature Flags Trello Power-Up" width="640"/>
 
 1. Add ConfigCat Power-Up to your board.
 2. Select `Settings -> Authorize Account`.
@@ -12,7 +12,7 @@ Turn features On / Off right from a linked Card on your Trello board. Also you c
 5. You are all set.
 
 ## Usage
-<img src="https://raw.githubusercontent.com/configcat/trello-powerup/master/src/assets/use_trello.gif" alt="Usage of the ConfigCat Feature Flags Trello Power-Up" width="480"/>
+<img src="https://raw.githubusercontent.com/configcat/trello-powerup/master/src/assets/use_trello.gif" alt="Usage of the ConfigCat Feature Flags Trello Power-Up" width="640"/>
 
 1. Open any Card on your Trello board.
 2. Push `Link Feature Flag`

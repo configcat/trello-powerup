@@ -5,7 +5,7 @@ import { PublicApiService } from 'ng-configcat-publicapi-ui';
 
 declare var TrelloPowerUp: any;
 
-const CONFIGCAT_ICON = './assets/logo.png';
+const CONFIGCAT_ICON = './assets/cat_red.svg';
 
 @Injectable({
     providedIn: 'root'

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { TrelloService } from './trello-service';
 
-const CONFIGCAT_ICON = './assets/logo.png';
+const CONFIGCAT_ICON = './assets/cat_red.svg';
 
 declare var TrelloPowerUp: any;
 
@@ -54,7 +54,7 @@ export class TrelloBootstrapService {
       // usually you will provide a callback function to be run on button click
       // we recommend that you use a popup on click generally
       icon: CONFIGCAT_ICON,
-      text: 'ConfigCat',
+      text: 'Link Feature Flag',
       callback: t => {
         return t.popup({
           title: 'Link Feature Flag',

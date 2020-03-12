@@ -57,7 +57,7 @@ export class TrelloBootstrapService {
       text: 'ConfigCat',
       callback: t => {
         return t.popup({
-          title: 'Select Feature Flag or Setting',
+          title: 'Link Feature Flag',
           url: './addfeatureflag',
           height: 380
         });

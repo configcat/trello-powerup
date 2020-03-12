@@ -1,4 +1,4 @@
-# Configcat Trello Power-UP
+# ConfigCat Feature Flags Trello Power-Up
 
 Turn features On / Off right from a linked Card on your Trello board. Also you can add Targeting or Percentage Rules just as easily.
 

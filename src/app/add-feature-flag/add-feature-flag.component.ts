@@ -1,17 +1,19 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { TrelloService } from '../services/trello-service';
 import { AuthorizationParameters } from '../models/authorization-parameters';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-add-feature-flag',
   templateUrl: './add-feature-flag.component.html',
   styleUrls: ['./add-feature-flag.component.scss']
 })
-export class AddFeatureFlagComponent implements OnInit {
+export class AddFeatureFlagComponent implements OnInit, OnDestroy {
 
   formGroup: FormGroup;
   authorizationParameters: AuthorizationParameters;
+  subscription: Subscription;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -25,9 +27,21 @@ export class AddFeatureFlagComponent implements OnInit {
       settingId: [null, [Validators.required]]
     });
 
+    this.subscription = this.formGroup.statusChanges.subscribe(() => {
+      this.resize();
+    });
+
     this.trelloService.getAuthorizationParameters().then(authorizationParameters => {
       this.authorizationParameters = authorizationParameters;
+      this.resize();
     });
+  }
+
+  ngOnDestroy() {
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+      this.subscription = null;
+    }
   }
 
   add() {
@@ -44,5 +58,11 @@ export class AddFeatureFlagComponent implements OnInit {
     }).then(() => {
       return this.trelloService.closePopup();
     });
+  }
+
+  resize() {
+    setTimeout(() => {
+      this.trelloService.sizeTo('#outer');
+    }, 300);
   }
 }

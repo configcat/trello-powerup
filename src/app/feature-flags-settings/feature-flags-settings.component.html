@@ -1,4 +1,4 @@
-<div class="container" *ngIf="setting && authorizationParameters" id="setting-item">
+<div class="container" *ngIf="showComponent && setting && authorizationParameters" id="setting-item">
     <configcat-setting-item [basicAuthUsername]="authorizationParameters.basicAuthUsername"
         [basicAuthPassword]="authorizationParameters.basicAuthPassword" [productId]="setting.productId"
         [configId]="setting.configId" [environmentId]="setting.environmentId" [settingId]="setting.settingId"

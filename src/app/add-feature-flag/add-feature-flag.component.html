@@ -1,27 +1,28 @@
-<form class="selects" *ngIf="authorizationParameters" (ngSubmit)="add()" [formGroup]="formGroup" class="form"
-    class="form">
-    <div class="container">
-        <configcat-product-select [basicAuthUsername]="authorizationParameters.basicAuthUsername"
-            [basicAuthPassword]="authorizationParameters.basicAuthPassword"
-            [valueFormControl]="formGroup.controls.productId" name="productId">
-        </configcat-product-select>
-        <configcat-config-select [basicAuthUsername]="authorizationParameters.basicAuthUsername"
-            [basicAuthPassword]="authorizationParameters.basicAuthPassword"
-            [productId]="formGroup.controls.productId.value" [valueFormControl]="formGroup.controls.configId"
-            *ngIf="formGroup.controls.productId.value">
-        </configcat-config-select>
-        <configcat-environment-select [basicAuthUsername]="authorizationParameters.basicAuthUsername"
-            [productId]="formGroup.controls.productId.value"
-            [basicAuthPassword]="authorizationParameters.basicAuthPassword"
-            [valueFormControl]="formGroup.controls.environmentId" *ngIf="formGroup.controls.productId.value">
-        </configcat-environment-select>
-        <configcat-setting-select [basicAuthUsername]="authorizationParameters.basicAuthUsername"
-            [configId]="formGroup.controls.configId.value"
-            [basicAuthPassword]="authorizationParameters.basicAuthPassword"
-            [valueFormControl]="formGroup.controls.settingId" *ngIf="formGroup.controls.configId.value">
-        </configcat-setting-select>
-    </div>
-    <div>
-        <button mat-raised-button color="primary" type="submit">Add</button>
-    </div>
-</form>
+<div id="outer">
+    <form *ngIf="authorizationParameters" (ngSubmit)="add()" [formGroup]="formGroup" class="form">
+        <div class="container">
+            <configcat-product-select [basicAuthUsername]="authorizationParameters.basicAuthUsername"
+                [basicAuthPassword]="authorizationParameters.basicAuthPassword"
+                [valueFormControl]="formGroup.controls.productId" name="productId">
+            </configcat-product-select>
+            <configcat-config-select [basicAuthUsername]="authorizationParameters.basicAuthUsername"
+                [basicAuthPassword]="authorizationParameters.basicAuthPassword"
+                [productId]="formGroup.controls.productId.value" [valueFormControl]="formGroup.controls.configId"
+                *ngIf="formGroup.controls.productId.value">
+            </configcat-config-select>
+            <configcat-environment-select [basicAuthUsername]="authorizationParameters.basicAuthUsername"
+                [productId]="formGroup.controls.productId.value"
+                [basicAuthPassword]="authorizationParameters.basicAuthPassword"
+                [valueFormControl]="formGroup.controls.environmentId" *ngIf="formGroup.controls.productId.value">
+            </configcat-environment-select>
+            <configcat-setting-select [basicAuthUsername]="authorizationParameters.basicAuthUsername"
+                [configId]="formGroup.controls.configId.value"
+                [basicAuthPassword]="authorizationParameters.basicAuthPassword"
+                [valueFormControl]="formGroup.controls.settingId" *ngIf="formGroup.controls.configId.value">
+            </configcat-setting-select>
+        </div>
+        <div>
+            <button mat-raised-button color="primary" type="submit">Add</button>
+        </div>
+    </form>
+</div>

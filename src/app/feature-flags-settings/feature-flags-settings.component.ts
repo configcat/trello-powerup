@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { DeleteSettingDialogComponent } from '../delete-setting-dialog/delete-setting-dialog.component';
 import { PublicApiService } from 'ng-configcat-publicapi-ui';
@@ -18,12 +18,14 @@ export class FeatureFlagsSettingsComponent implements OnInit {
   setting: CardSetting;
   readonly = false;
   showVariationId = false;
+  showComponent = false;
 
   constructor(
     private dialog: MatDialog,
     private publicApiService: PublicApiService,
     private trelloService: TrelloService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private cdRef: ChangeDetectorRef
   ) { }
 
   ngOnInit(): void {
@@ -37,7 +39,16 @@ export class FeatureFlagsSettingsComponent implements OnInit {
     ]).then(value => {
       this.authorizationParameters = value[0];
       this.setting = value[1];
+      this.reloadComponent();
     });
+  }
+
+
+  reloadComponent() {
+    this.showComponent = false;
+    this.cdRef.detectChanges();
+    this.showComponent = true;
+    this.cdRef.detectChanges();
   }
 
   onEditSettingRequested(setting) {

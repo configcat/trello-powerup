@@ -11,6 +11,7 @@ export class AuthorizationComponent implements OnInit {
   constructor(private trelloService: TrelloService) { }
 
   ngOnInit(): void {
+    this.resize();
   }
 
   login(authorizationParameters) {
@@ -19,5 +20,15 @@ export class AuthorizationComponent implements OnInit {
       .then(() => {
         this.trelloService.closePopup();
       });
+  }
+
+  error() {
+    this.resize();
+  }
+
+  resize() {
+    setTimeout(() => {
+      this.trelloService.sizeTo('#auth');
+    }, 300);
   }
 }

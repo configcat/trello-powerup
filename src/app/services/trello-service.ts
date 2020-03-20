@@ -23,12 +23,14 @@ export class TrelloService {
     }
 
     getAuthorizationParameters(trelloPowerUp = null): Promise<AuthorizationParameters> {
-        return (trelloPowerUp ?? TrelloPowerUp.iframe()).loadSecret('authorization');
+        return (trelloPowerUp ?? TrelloPowerUp.iframe()).loadSecret('authorization').then(authorizationParameters => {
+            return JSON.parse(authorizationParameters);
+        });
     }
 
     setAuthorizationParameters(authorizationParameters: AuthorizationParameters, trelloPowerUp = null) {
         return (trelloPowerUp ?? TrelloPowerUp.iframe())
-            .storeSecret('authorization', authorizationParameters)
+            .storeSecret('authorization', JSON.stringify(authorizationParameters))
             .then(() => {
                 return (trelloPowerUp ?? TrelloPowerUp.iframe())
                     .alert({

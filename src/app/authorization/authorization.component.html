@@ -1,1 +1,3 @@
-<configcat-authorization (authorized)="login($event)"></configcat-authorization>
+<div id="auth">
+    <configcat-authorization (error)="error()" (authorized)="login($event)"></configcat-authorization>
+</div>

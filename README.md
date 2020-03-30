@@ -9,7 +9,6 @@ Turn features On / Off right from a linked Card on your Trello board. Also you c
 2. Select `Settings -> Authorize Account`.
 3. Get your ConfigCat Public API credentials: https://app.configcat.com/my-account/public-api-credentials
 4. Click authorize.
-5. You are all set.
 
 ## Usage
 <img src="https://raw.githubusercontent.com/configcat/trello-powerup/master/src/assets/use_trello.gif" alt="Usage of the ConfigCat Feature Flags Trello Power-Up" width="640"/>

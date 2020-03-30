@@ -97,7 +97,7 @@ export class TrelloService {
                         }
                     } else {
                         if (settingValue.rolloutRules && settingValue.rolloutRules.length > 0) {
-                            text = settingValue.rolloutRules.length + ' rules';
+                            text = settingValue.rolloutRules.length + ' rule' + (settingValue.rolloutRules.length > 1 ? 's' : '');
                         }
 
                         if (settingValue.rolloutPercentageItems && settingValue.rolloutPercentageItems.length > 0) {

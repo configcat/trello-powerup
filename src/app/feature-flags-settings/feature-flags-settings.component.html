@@ -1,10 +1,14 @@
-<div class="container" *ngIf="showComponent && setting && authorizationParameters" id="setting-item">
-    <configcat-setting-item [basicAuthUsername]="authorizationParameters.basicAuthUsername"
-        [basicAuthPassword]="authorizationParameters.basicAuthPassword" [productId]="setting.productId"
-        [configId]="setting.configId" [environmentId]="setting.environmentId" [settingId]="setting.settingId"
-        [readonly]="readonly" [canEditSetting]=false (editSettingRequested)="onEditSettingRequested($event)"
-        (deleteSettingRequested)="onDeleteSettingRequested($event)" (saveSucceeded)="saveSucceeded()"
-        (loadSucceeded)="loadSucceeded()" [showVariationId]="showVariationId"
-        (formValuesChanged)="onFormValuesChanged()" deleteSettingText="Remove from card">
-    </configcat-setting-item>
+<div class="container" *ngIf="authorizationParameters" id="setting-item">
+    <div *ngFor="let integrationLinkDetail of integrationLinkDetails">
+        <configcat-setting-item [basicAuthUsername]="authorizationParameters.basicAuthUsername"
+            [basicAuthPassword]="authorizationParameters.basicAuthPassword"
+            [productId]="integrationLinkDetail.product.productId" [configId]="integrationLinkDetail.config.configId"
+            [environmentId]="integrationLinkDetail.environment.environmentId"
+            [settingId]="integrationLinkDetail.setting.settingId" [readonly]="readonly" [canEditSetting]=false
+            (editSettingRequested)="onEditSettingRequested($event)"
+            (deleteSettingRequested)="onDeleteSettingRequested($event)" (saveSucceeded)="saveSucceeded()"
+            (loadSucceeded)="loadSucceeded()" [showVariationId]="showVariationId"
+            (formValuesChanged)="onFormValuesChanged()" deleteSettingText="Remove from card">
+        </configcat-setting-item>
+    </div>
 </div>

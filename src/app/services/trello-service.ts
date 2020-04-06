@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { AuthorizationParameters } from '../models/authorization-parameters';
-import { CardSetting } from '../models/card-settings';
 import { PublicApiService } from 'ng-configcat-publicapi-ui';
+import { IntegrationLinkType } from 'ng-configcat-publicapi';
+import { CardSettingData } from '../models/card-setting-data';
 
 declare var TrelloPowerUp: any;
 
@@ -46,78 +47,81 @@ export class TrelloService {
             .clearSecret('authorization');
     }
 
-    getSetting(trelloPowerUp = null): Promise<CardSetting> {
-        return (trelloPowerUp ?? TrelloPowerUp.iframe()).get('card', 'shared', 'setting');
+    getCardSettingData(trelloPowerUp = null): Promise<CardSettingData> {
+        return (trelloPowerUp ?? TrelloPowerUp.iframe()).get('card', 'shared', 'cardSettingData');
     }
 
-    setSetting(setting: CardSetting, trelloPowerUp = null) {
-        return (trelloPowerUp ?? TrelloPowerUp.iframe()).set('card', 'shared', 'setting', setting);
+    setCardSettingData(cardData: CardSettingData, trelloPowerUp = null): Promise<CardSettingData> {
+        return (trelloPowerUp ?? TrelloPowerUp.iframe()).set('card', 'shared', 'cardSettingData', cardData);
     }
 
-    updateSetting(trelloPowerUp = null) {
-        return this.getSetting((trelloPowerUp ?? TrelloPowerUp.iframe())).then(setting => {
+    removeCardSettingData(cardData: CardSettingData, trelloPowerUp = null): Promise<CardSettingData> {
+        return (trelloPowerUp ?? TrelloPowerUp.iframe()).remove('card', 'shared', 'cardSettingData');
+    }
+
+    updateCardSettingDataLastUpdatedAt(trelloPowerUp = null) {
+        return this.getCardSettingData((trelloPowerUp ?? TrelloPowerUp.iframe())).then(setting => {
+            if (!setting) {
+                setting = { lastUpdatedAt: new Date() };
+            }
+
             setting.lastUpdatedAt = new Date();
-            return this.setSetting(setting, (trelloPowerUp ?? TrelloPowerUp.iframe()));
+            return this.setCardSettingData(setting, (trelloPowerUp ?? TrelloPowerUp.iframe()));
         });
     }
 
-    removeSetting(trelloPowerUp = null) {
-        return (trelloPowerUp ?? TrelloPowerUp.iframe()).remove('card', 'shared', 'setting');
+    removeSetting(environmentId, settingId, trelloPowerUp = null) {
+        return Promise.all([
+            this.getAuthorizationParameters(trelloPowerUp),
+            this.getCardData(trelloPowerUp)
+        ]).then(value => {
+            const authorizationParameters = value[0];
+            const card = value[1];
+
+            return this.publicApiService
+                .createIntegrationLinksService(authorizationParameters.basicAuthUsername, authorizationParameters.basicAuthPassword)
+                .deleteIntegrationLink(environmentId, settingId, IntegrationLinkType.Trello, card.id)
+                .toPromise();
+        })
+            .then(() => {
+                return this.updateCardSettingDataLastUpdatedAt(trelloPowerUp);
+            });
     }
 
     render(func, trelloPowerUp = null) {
         return (trelloPowerUp ?? TrelloPowerUp.iframe()).render(func);
     }
 
+    getCardData(trelloPowerUp = null) {
+        return (trelloPowerUp ?? TrelloPowerUp.iframe()).card('id', 'name', 'url');
+    }
+
     getBadgeData(trelloPowerUp) {
         return Promise.all([
             this.getAuthorizationParameters(trelloPowerUp),
-            this.getSetting(trelloPowerUp)
+            this.getCardSettingData(trelloPowerUp),
+            this.getCardData(trelloPowerUp)
         ]).then(value => {
             const authorizationParameters = value[0];
             const setting = value[1];
+            const card = value[2];
 
-            if (!setting || !authorizationParameters) {
+            if (!setting || !card || !authorizationParameters) {
                 return;
             }
 
             return this.publicApiService
-                .createSettingValuesService(authorizationParameters.basicAuthUsername, authorizationParameters.basicAuthPassword)
-                .getSettingValue(setting.environmentId, setting.settingId)
+                .createIntegrationLinksService(authorizationParameters.basicAuthUsername, authorizationParameters.basicAuthPassword)
+                .getIntegrationLinkDetails(IntegrationLinkType.Trello, card.id)
                 .toPromise()
-                .then(settingValue => {
-                    let text = '';
-                    if ((!settingValue.rolloutRules || settingValue.rolloutRules.length === 0)
-                        && (!settingValue.rolloutPercentageItems || settingValue.rolloutPercentageItems.length === 0)) {
-
-                        if (settingValue.setting.settingType === 'boolean') {
-                            text = settingValue.value ? 'Released' : 'Not released';
-                        } else {
-                            text = '' + settingValue.value;
-                        }
-                    } else {
-                        if (settingValue.rolloutRules && settingValue.rolloutRules.length > 0) {
-                            text = settingValue.rolloutRules.length + ' rule' + (settingValue.rolloutRules.length > 1 ? 's' : '');
-                        }
-
-                        if (settingValue.rolloutPercentageItems && settingValue.rolloutPercentageItems.length > 0) {
-                            if (text !== '') {
-                                text += ' + ';
-                            }
-
-                            if (settingValue.setting.settingType === 'boolean') {
-                                text += settingValue.rolloutPercentageItems[0].percentage + '%';
-                            } else {
-                                text += '%';
-                            }
-                        }
-                    }
-
-                    return [{
-                        text,
-                        icon: CONFIGCAT_ICON,
-                        color: 'green'
-                    }];
+                .then(linkDetails => {
+                    return linkDetails.details.map(detail => {
+                        return {
+                            text: linkDetails.details.length > 1 ? detail.setting.key + ': ' + detail.status : detail.status,
+                            icon: CONFIGCAT_ICON,
+                            color: 'green'
+                        };
+                    });
                 });
         });
     }

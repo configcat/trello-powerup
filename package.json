@@ -21,6 +21,7 @@
     "@angular/platform-browser": "^9.1.0",
     "@angular/platform-browser-dynamic": "^9.1.0",
     "@angular/router": "^9.1.0",
+    "ng-configcat-publicapi": "^1.0.8",
     "ng-configcat-publicapi-ui": "1.0.8",
     "rxjs": "^6.5.5",
     "tslib": "^1.11.1",

@@ -66,7 +66,7 @@ export class TrelloBootstrapService {
   }
 
   private getCardBackSection = (t, options) => {
-    return this.trelloService.getSetting(t)
+    return this.trelloService.getCardSettingData(t)
       .then(setting => {
         if (setting) {
           return {

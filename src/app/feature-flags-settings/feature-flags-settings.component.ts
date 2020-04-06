@@ -4,8 +4,8 @@ import { DeleteSettingDialogComponent } from '../delete-setting-dialog/delete-se
 import { PublicApiService } from 'ng-configcat-publicapi-ui';
 import { AuthorizationParameters } from '../models/authorization-parameters';
 import { TrelloService } from '../services/trello-service';
-import { CardSetting } from '../models/card-settings';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { IntegrationLinkDetail, IntegrationLinkType } from 'ng-configcat-publicapi';
 
 @Component({
   selector: 'app-feature-flags-settings',
@@ -15,17 +15,15 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 export class FeatureFlagsSettingsComponent implements OnInit {
 
   authorizationParameters: AuthorizationParameters;
-  setting: CardSetting;
+  integrationLinkDetails: IntegrationLinkDetail[];
   readonly = false;
   showVariationId = false;
-  showComponent = false;
 
   constructor(
     private dialog: MatDialog,
     private publicApiService: PublicApiService,
     private trelloService: TrelloService,
-    private snackBar: MatSnackBar,
-    private cdRef: ChangeDetectorRef
+    private snackBar: MatSnackBar
   ) { }
 
   ngOnInit(): void {
@@ -35,20 +33,19 @@ export class FeatureFlagsSettingsComponent implements OnInit {
   reloadSettings() {
     return Promise.all([
       this.trelloService.getAuthorizationParameters(),
-      this.trelloService.getSetting()
+      this.trelloService.getCardSettingData(),
+      this.trelloService.getCardData()
     ]).then(value => {
       this.authorizationParameters = value[0];
-      this.setting = value[1];
-      this.reloadComponent();
+      const card = value[2];
+      return this.publicApiService
+        .createIntegrationLinksService(this.authorizationParameters.basicAuthUsername, this.authorizationParameters.basicAuthPassword)
+        .getIntegrationLinkDetails(IntegrationLinkType.Trello, card.id)
+        .toPromise()
+        .then((integrationLinkDetails) => {
+          this.integrationLinkDetails = integrationLinkDetails.details;
+        });
     });
-  }
-
-
-  reloadComponent() {
-    this.showComponent = false;
-    this.cdRef.detectChanges();
-    this.showComponent = true;
-    this.cdRef.detectChanges();
   }
 
   onEditSettingRequested(setting) {
@@ -64,7 +61,7 @@ export class FeatureFlagsSettingsComponent implements OnInit {
     */
   }
 
-  onDeleteSettingRequested(setting) {
+  onDeleteSettingRequested(data) {
     const dialogRef = this.dialog.open(DeleteSettingDialogComponent);
 
     dialogRef.afterClosed()
@@ -73,7 +70,7 @@ export class FeatureFlagsSettingsComponent implements OnInit {
           return;
         }
         if (result.button === 'removeFromCard') {
-          this.trelloService.removeSetting();
+          this.trelloService.removeSetting(data.environment.environmentId, data.setting.settingId);
         }
       });
   }
@@ -83,7 +80,7 @@ export class FeatureFlagsSettingsComponent implements OnInit {
   }
 
   saveSucceeded() {
-    this.trelloService.updateSetting();
+    this.trelloService.setCardSettingData({ lastUpdatedAt: new Date() });
     this.resize();
   }
 

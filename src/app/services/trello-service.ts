@@ -117,7 +117,7 @@ export class TrelloService {
                 .then(linkDetails => {
                     return linkDetails.details.map(detail => {
                         return {
-                            text: linkDetails.details.length > 1 ? detail.setting.key + ': ' + detail.status : detail.status,
+                            text: linkDetails.details.length > 1 ? detail.setting.name + ': ' + detail.status : detail.status,
                             icon: CONFIGCAT_ICON,
                             color: 'green'
                         };

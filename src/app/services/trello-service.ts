@@ -83,8 +83,12 @@ export class TrelloService {
                 .deleteIntegrationLink(environmentId, settingId, IntegrationLinkType.Trello, card.id)
                 .toPromise();
         })
-            .then(() => {
-                return this.updateCardSettingDataLastUpdatedAt(trelloPowerUp);
+            .then((deleteModel) => {
+                if (!deleteModel.hasRemainingIntegrationLink) {
+                    return this.removeCardSettingData(trelloPowerUp);
+                } else {
+                    return this.updateCardSettingDataLastUpdatedAt(trelloPowerUp);
+                }
             });
     }
 

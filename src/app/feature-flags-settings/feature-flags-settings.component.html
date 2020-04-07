@@ -4,11 +4,11 @@
             [basicAuthPassword]="authorizationParameters.basicAuthPassword"
             [productId]="integrationLinkDetail.product.productId" [configId]="integrationLinkDetail.config.configId"
             [environmentId]="integrationLinkDetail.environment.environmentId"
-            [settingId]="integrationLinkDetail.setting.settingId" [readonly]="readonly" [canEditSetting]=false
+            [settingId]="integrationLinkDetail.setting.settingId" [canEditSetting]=false
             (editSettingRequested)="onEditSettingRequested($event)"
             (deleteSettingRequested)="onDeleteSettingRequested($event)" (saveSucceeded)="saveSucceeded()"
             (loadSucceeded)="loadSucceeded()" [showVariationId]="showVariationId"
-            (formValuesChanged)="onFormValuesChanged()" deleteSettingText="Remove from card">
+            (formValuesChanged)="onFormValuesChanged()" deleteSettingText="Remove from card" [showEnvironmentName]="true">
         </configcat-setting-item>
     </div>
 </div>

@@ -16,7 +16,6 @@ export class FeatureFlagsSettingsComponent implements OnInit {
 
   authorizationParameters: AuthorizationParameters;
   integrationLinkDetails: IntegrationLinkDetail[];
-  readonly = false;
   showVariationId = false;
 
   constructor(

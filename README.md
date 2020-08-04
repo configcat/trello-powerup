@@ -22,6 +22,13 @@ Manage features and change your software configuration using [ConfigCat feature 
 3. Select a Product, Config, Environment and a Feature Flag to be linked to your card.
 4. When linked, you can turn your features On / Off right from this Card.
 
+## Run project locally
+```
+npm start
+```
+
+## Contributions are welcome
+
 ## Need help?
 
 https://configcat.com/support

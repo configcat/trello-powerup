@@ -1,4 +1,7 @@
 <div id="outer">
+    <div *ngIf="!authorizationParameters">
+        <configcat-authorization (error)="error()" (authorized)="login($event)"></configcat-authorization>
+    </div>
     <form *ngIf="authorizationParameters" (ngSubmit)="add()" [formGroup]="formGroup" class="form">
         <div class="container">
             <configcat-product-select [basicAuthUsername]="authorizationParameters.basicAuthUsername"

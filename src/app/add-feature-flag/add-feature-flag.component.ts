@@ -34,10 +34,7 @@ export class AddFeatureFlagComponent implements OnInit, OnDestroy {
       this.resize();
     });
 
-    this.trelloService.getAuthorizationParameters().then(authorizationParameters => {
-      this.authorizationParameters = authorizationParameters;
-      this.resize();
-    });
+    this.init();
   }
 
   ngOnDestroy() {
@@ -45,6 +42,23 @@ export class AddFeatureFlagComponent implements OnInit, OnDestroy {
       this.subscription.unsubscribe();
       this.subscription = null;
     }
+  }
+
+  async init() {
+    this.authorizationParameters = await this.trelloService.getAuthorizationParameters();
+    this.resize();
+  }
+
+  login(authorizationParameters) {
+    this.trelloService
+      .setAuthorizationParameters(authorizationParameters)
+      .then(() => {
+        this.init();
+      });
+  }
+
+  error() {
+    this.resize();
   }
 
   add() {

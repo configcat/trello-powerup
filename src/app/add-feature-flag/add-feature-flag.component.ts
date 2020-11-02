@@ -3,8 +3,8 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { TrelloService } from '../services/trello-service';
 import { AuthorizationParameters } from '../models/authorization-parameters';
 import { Subscription } from 'rxjs';
-import { IntegrationLinkType } from 'ng-configcat-publicapi';
 import { PublicApiService } from 'ng-configcat-publicapi-ui';
+import { IntegrationLinkType } from 'ng-configcat-publicapi';
 
 @Component({
   selector: 'app-add-feature-flag',

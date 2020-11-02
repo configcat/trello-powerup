@@ -3,7 +3,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { TrelloService } from '../services/trello-service';
 import { AuthorizationParameters } from '../models/authorization-parameters';
 import { Subscription } from 'rxjs';
-import { IntegrationLinkDetail, IntegrationLinkType } from 'ng-configcat-publicapi';
+import { IntegrationLinkType } from 'ng-configcat-publicapi';
 import { PublicApiService } from 'ng-configcat-publicapi-ui';
 
 @Component({
@@ -15,7 +15,6 @@ export class AddFeatureFlagComponent implements OnInit, OnDestroy {
 
   formGroup: FormGroup;
   authorizationParameters: AuthorizationParameters;
-  integrationLinkDetails: IntegrationLinkDetail[];
   subscription: Subscription;
 
   constructor(

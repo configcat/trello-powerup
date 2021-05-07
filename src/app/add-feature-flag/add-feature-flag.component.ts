@@ -82,7 +82,6 @@ export class AddFeatureFlagComponent implements OnInit, OnDestroy {
       })
       .catch(error => {
         console.log(error);
-        // TODO
       });
   }
 

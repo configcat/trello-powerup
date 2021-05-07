@@ -62,6 +62,19 @@ export class TrelloBootstrapService {
           height: 380
         });
       }
+    },
+    {
+      // usually you will provide a callback function to be run on button click
+      // we recommend that you use a popup on click generally
+      icon: CONFIGCAT_ICON,
+      text: 'Create and Link Feature Flag',
+      callback: t => {
+        return t.popup({
+          title: 'Create and Link Feature Flag',
+          url: './createfeatureflag',
+          height: 380,
+        });
+      }
     }];
   }
 

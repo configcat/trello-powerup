@@ -20,6 +20,7 @@ import { NgConfigCatPublicApiUIModule } from 'ng-configcat-publicapi-ui';
 import { DeleteSettingDialogComponent } from './delete-setting-dialog/delete-setting-dialog.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { environment } from './../environments/environment';
+import { CreateFeatureFlagComponent } from './create-feature-flag/create-feature-flag.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import { environment } from './../environments/environment';
     HomeComponent,
     FeatureFlagsSettingsComponent,
     AddFeatureFlagComponent,
-    DeleteSettingDialogComponent
+    DeleteSettingDialogComponent,
+    CreateFeatureFlagComponent
   ],
   imports: [
     BrowserModule,

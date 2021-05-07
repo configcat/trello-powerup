@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { AddFeatureFlagComponent } from './add-feature-flag.component';
 
@@ -6,7 +6,7 @@ describe('AddFeatureFlagComponent', () => {
   let component: AddFeatureFlagComponent;
   let fixture: ComponentFixture<AddFeatureFlagComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ AddFeatureFlagComponent ]
     })

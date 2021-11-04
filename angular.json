@@ -52,6 +52,9 @@
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true,
+              "allowedCommonJsDependencies": [
+                "semver"
+              ],
               "budgets": [
                 {
                   "type": "initial",

@@ -21,6 +21,7 @@ import { DeleteSettingDialogComponent } from './delete-setting-dialog/delete-set
 import { MatDialogModule } from '@angular/material/dialog';
 import { environment } from './../environments/environment';
 import { CreateFeatureFlagComponent } from './create-feature-flag/create-feature-flag.component';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -38,6 +39,7 @@ import { CreateFeatureFlagComponent } from './create-feature-flag/create-feature
     BrowserAnimationsModule,
     FormsModule,
     ReactiveFormsModule,
+    HttpClientModule,
     CommonModule,
     MatFormFieldModule,
     MatInputModule,

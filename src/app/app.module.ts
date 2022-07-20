@@ -47,7 +47,7 @@ import { HttpClientModule } from '@angular/common/http';
     MatButtonModule,
     MatRadioModule,
     MatCardModule,
-    NgConfigCatPublicApiUIModule.forRoot(() => ({ basePath: environment.publicApiBaseUrl })),
+    NgConfigCatPublicApiUIModule.forRoot(() => ({ basePath: environment.publicApiBaseUrl, dashboardBasePath: environment.dashboardBasePath })),
     MatDialogModule
   ],
   providers: [],

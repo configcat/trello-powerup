@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { IntegrationLinkType, SettingType } from 'ng-configcat-publicapi';
 import { PublicApiService } from 'ng-configcat-publicapi-ui';
 import { Subscription } from 'rxjs';
@@ -13,13 +13,13 @@ import { TrelloService } from '../services/trello-service';
 })
 export class CreateFeatureFlagComponent implements OnInit, OnDestroy {
 
-  formGroup: FormGroup;
+  formGroup: UntypedFormGroup;
   authorizationParameters: AuthorizationParameters;
   subscription: Subscription;
   SettingTypeEnum = SettingType;
 
   constructor(
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private trelloService: TrelloService,
     private publicApiService: PublicApiService) { }
 

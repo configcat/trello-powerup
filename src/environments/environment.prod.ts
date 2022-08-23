@@ -1,5 +1,5 @@
 export const environment = {
-    production: true,
-    publicApiBaseUrl: 'sajt',
-    dashboardBasePath: 'undefined'
+    production: true,  
+    publicApiBaseUrl: '${CC_PublicApiBaseUrl}',
+    dashboardBasePath: '${CC_DashboardBaseUrl}',
 };

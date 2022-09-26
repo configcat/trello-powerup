@@ -26,22 +26,31 @@
                         <mat-option [value]="SettingTypeEnum.Double">Decimal Number (double)</mat-option>
                     </mat-select>
                 </mat-form-field>
-                <mat-form-field class="form-field" appearance="outline">
-                    <mat-label>Name for hoomans *</mat-label>
+                <mat-form-field class="form-field name" appearance="outline">
+                    <mat-label>Name for hoomans</mat-label>
                     <input matInput placeholder="My awesome feature" formControlName="name">
                     <mat-hint>A friendly name that best describes your setting.</mat-hint>
+                    <mat-error *ngIf="formGroup.controls.name.invalid">
+                        {{ErrorHandler.getErrorMessage(formGroup.controls.name)}}
+                    </mat-error>
                 </mat-form-field>
-                <mat-form-field class="form-field" appearance="outline">
-                    <mat-label>Key for programs *</mat-label>
+                <mat-form-field class="form-field key" appearance="outline">
+                    <mat-label>Key for programs</mat-label>
                     <input matInput placeholder="isMyAwesomeFeatureEnabled" formControlName="key">
                     <mat-hint>
                         Your applications will access your setting via this key.
                     </mat-hint>
+                    <mat-error *ngIf="formGroup.controls.key.invalid">
+                        {{ErrorHandler.getErrorMessage(formGroup.controls.key)}}
+                    </mat-error>
                 </mat-form-field>
-                <mat-form-field class="form-field" appearance="outline">
+                <mat-form-field class="form-field hint" appearance="outline">
                     <mat-label>Hint or description (Optional)</mat-label>
                     <textarea matInput placeholder="Hint or description (Optional)" formControlName="hint"></textarea>
                     <mat-hint>A description to help you remember the purpose of your setting.</mat-hint>
+                    <mat-error *ngIf="formGroup.controls.hint.invalid">
+                        {{ErrorHandler.getErrorMessage(formGroup.controls.hint)}}
+                    </mat-error>
                 </mat-form-field>
 
                 <div class="header small">3. Select which environment should we link to this card</div>

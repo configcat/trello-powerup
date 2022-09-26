@@ -4,6 +4,7 @@ import { IntegrationLinkType, SettingType } from 'ng-configcat-publicapi';
 import { PublicApiService } from 'ng-configcat-publicapi-ui';
 import { Subscription } from 'rxjs';
 import { AuthorizationParameters } from '../models/authorization-parameters';
+import { ErrorHandler } from '../services/error-handler';
 import { TrelloService } from '../services/trello-service';
 
 @Component({
@@ -17,6 +18,7 @@ export class CreateFeatureFlagComponent implements OnInit, OnDestroy {
   authorizationParameters: AuthorizationParameters;
   subscription: Subscription;
   SettingTypeEnum = SettingType;
+  ErrorHandler = ErrorHandler;
 
   constructor(
     private formBuilder: UntypedFormBuilder,
@@ -99,6 +101,7 @@ export class CreateFeatureFlagComponent implements OnInit, OnDestroy {
         return this.trelloService.closePopup();
       })
       .catch(error => {
+        ErrorHandler.handleErrors(this.formGroup, error);
         console.log(error);
       });
   }

@@ -77,6 +77,11 @@
             "browserTarget": "configcat-trello-powerup:build"
           },
           "configurations": {
+            "development": {
+              "allowedHosts": [
+                "all"
+              ]
+            },
             "production": {
               "browserTarget": "configcat-trello-powerup:build:production"
             }

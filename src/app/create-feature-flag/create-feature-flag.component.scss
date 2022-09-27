@@ -15,6 +15,7 @@
         .mat-form-field.key {
             margin-bottom: 24px;
         }
+
         .mat-form-field.name {
             margin-bottom: 24px;
         }
@@ -28,6 +29,11 @@
                 margin-top: 18px;
                 margin-bottom: 16px;
             }
+        }
+
+        .error {
+            color: #ff5252;
+            margin-bottom: 12px;
         }
     }
 }

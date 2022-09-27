@@ -60,6 +60,12 @@ export class ErrorHandler {
                         formGroup.setErrors({ serverSide: 'Something went wrong.' });
                     }
                     break;
+                case 402:
+                    formGroup.setErrors({ serverSide: 'You have reached the limits of your plan.' });
+                    break;
+                case 403:
+                    formGroup.setErrors({ serverSide: 'You have no permission to execute this action.' });
+                    break;
             }
         } else {
             formGroup.setErrors({ serverSide: 'Something went wrong on our side. This is not your fault. Please try again.' });

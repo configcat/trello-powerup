@@ -60,6 +60,9 @@
                     [valueFormControl]="formGroup.controls.environmentId" *ngIf="formGroup.controls.productId.value">
                 </configcat-environment-select>
             </div>
+            <div class="error" *ngIf="formGroup.errors && formGroup.errors.serverSide">
+                <span>{{formGroup.errors.serverSide}}</span>
+            </div>
             <div class="buttons">
                 <button mat-raised-button color="primary" type="submit">Create and add to Card</button>
             </div>

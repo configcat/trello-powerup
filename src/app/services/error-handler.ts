@@ -1,4 +1,3 @@
-import { HttpErrorResponse } from "@angular/common/http";
 import { AbstractControl, FormGroup } from "@angular/forms";
 
 export class ErrorHandler {
@@ -25,50 +24,48 @@ export class ErrorHandler {
         }
 
         if (control.hasError('serverSide')) {
-            return control.errors?.serverSide;
+            return control.getError('serverSide');
         }
 
         return;
     }
 
     public static handleErrors(formGroup: FormGroup, error: any) {
-        if (error instanceof HttpErrorResponse) {
-            const response = error as HttpErrorResponse;
-            switch (response.status) {
-                case 400:
-                    let unknownFieldName = false;
-                    for (const fieldName in error.error) {
-                        if (error.error.hasOwnProperty(fieldName) && error.error[fieldName] &&
-                            (error.error[fieldName]?.length > 0 || error.error[fieldName]?.Errors?.length > 0)) {
-                            let jsonFieldName = fieldName;
-                            if (jsonFieldName.length > 0) {
-                                jsonFieldName = jsonFieldName[0].toLowerCase() + jsonFieldName.slice(1);
-                            }
+        switch (error?.status ?? 0) {
+            case 400:
+                let unknownFieldName = false;
+                for (const fieldName in error.error) {
+                    if (error.error.hasOwnProperty(fieldName) && error.error[fieldName] &&
+                        (error.error[fieldName]?.length > 0 || error.error[fieldName]?.Errors?.length > 0)) {
+                        let jsonFieldName = fieldName;
+                        if (jsonFieldName.length > 0) {
+                            jsonFieldName = jsonFieldName[0].toLowerCase() + jsonFieldName.slice(1);
+                        }
 
-                            const errorMessage = error.error[fieldName]?.Errors?.length > 0 ?
-                                (error.error[fieldName]?.Errors.map((e: any) => e.ErrorMessage)).join(', ')
-                                : error.error[fieldName];
+                        const errorMessage = error.error[fieldName]?.Errors?.length > 0 ?
+                            (error.error[fieldName]?.Errors.map((e: any) => e.ErrorMessage)).join(', ')
+                            : error.error[fieldName];
 
-                            if (formGroup.controls.hasOwnProperty(jsonFieldName)) {
-                                formGroup.controls[jsonFieldName].setErrors({ serverSide: errorMessage });
-                            } else {
-                                unknownFieldName = true;
-                            }
+                        if (formGroup.controls.hasOwnProperty(jsonFieldName)) {
+                            formGroup.controls[jsonFieldName].setErrors({ serverSide: errorMessage });
+                        } else {
+                            unknownFieldName = true;
                         }
                     }
-                    if (unknownFieldName) {
-                        formGroup.setErrors({ serverSide: 'Something went wrong.' });
-                    }
-                    break;
-                case 402:
-                    formGroup.setErrors({ serverSide: 'You have reached the limits of your plan.' });
-                    break;
-                case 403:
-                    formGroup.setErrors({ serverSide: 'You have no permission to execute this action.' });
-                    break;
-            }
-        } else {
-            formGroup.setErrors({ serverSide: 'Something went wrong on our side. This is not your fault. Please try again.' });
+                }
+                if (unknownFieldName) {
+                    formGroup.setErrors({ serverSide: 'Something went wrong.' });
+                }
+                break;
+            case 402:
+                formGroup.setErrors({ serverSide: 'You have reached the limits of your plan.' });
+                break;
+            case 403:
+                formGroup.setErrors({ serverSide: 'You have no permission to execute this action.' });
+                break;
+            default:
+                formGroup.setErrors({ serverSide: 'Something went wrong on our side. This is not your fault. Please try again.' });
+                break;
         }
     }
 }

@@ -23,24 +23,30 @@ export class FeatureFlagsSettingsComponent implements OnInit {
     private publicApiService: PublicApiService,
     private trelloService: TrelloService,
     private snackBar: MatSnackBar
-  ) { }
+  ) { 
+    console.log('FeatureFlagsSettingsComponent - constructor');
+  }
 
   ngOnInit(): void {
+    console.log('FeatureFlagsSettingsComponent - init');
     this.trelloService.render(() => this.reloadSettings());
   }
 
   reloadSettings() {
+    console.log('FeatureFlagsSettingsComponent - reloadSettings');
     return Promise.all([
       this.trelloService.getAuthorizationParameters(),
       this.trelloService.getCardData()
     ]).then(value => {
       this.authorizationParameters = value[0];
       const card = value[1];
+      console.log('FeatureFlagsSettingsComponent - promise.all');
       return this.publicApiService
         .createIntegrationLinksService(this.authorizationParameters.basicAuthUsername, this.authorizationParameters.basicAuthPassword)
         .getIntegrationLinkDetails(IntegrationLinkType.Trello, card.id)
         .toPromise()
         .then((integrationLinkDetails) => {
+          console.log('FeatureFlagsSettingsComponent - getIntegrationLinks');
           this.integrationLinkDetails = integrationLinkDetails.details;
         });
     })

@@ -15,6 +15,10 @@ export class TrelloService {
 
     constructor(private publicApiService: PublicApiService) { }
 
+    iframe() {
+        return TrelloPowerUp.iframe();
+    }
+
     closePopup(trelloPowerUp = null) {
         return (trelloPowerUp ?? TrelloPowerUp.iframe()).closePopup();
     }

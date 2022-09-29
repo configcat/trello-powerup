@@ -16,26 +16,27 @@ export class FeatureFlagsSettingsComponent implements OnInit {
 
   authorizationParameters: AuthorizationParameters;
   integrationLinkDetails: IntegrationLinkDetail[];
-  showVariationId = false;
+
+  trelloPowerUpIframe: any;
 
   constructor(
     private dialog: MatDialog,
     private publicApiService: PublicApiService,
     private trelloService: TrelloService
-  ) { 
-    console.log('FeatureFlagsSettingsComponent - constructor');
+  ) {
   }
 
   ngOnInit(): void {
-    console.log('FeatureFlagsSettingsComponent - init');
-    this.trelloService.render(() => this.reloadSettings());
+    this.trelloPowerUpIframe = this.trelloService.iframe();
+    this.trelloService.render(() => this.reloadSettings(), this.trelloPowerUpIframe);
   }
 
   reloadSettings() {
     console.log('FeatureFlagsSettingsComponent - reloadSettings');
     return Promise.all([
-      this.trelloService.getAuthorizationParameters(),
-      this.trelloService.getCardData()
+      this.trelloService.getAuthorizationParameters(this.trelloPowerUpIframe),
+      this.trelloService.getCardData(this.trelloPowerUpIframe),
+      this.trelloService.getCardSettingData(this.trelloPowerUpIframe)
     ]).then(value => {
       this.authorizationParameters = value[0];
       const card = value[1];
@@ -87,7 +88,7 @@ export class FeatureFlagsSettingsComponent implements OnInit {
   }
 
   saveSucceeded() {
-    this.trelloService.setCardSettingData({ lastUpdatedAt: new Date() });
+    this.trelloService.setCardSettingData({ lastUpdatedAt: new Date() }, this.trelloPowerUpIframe);
     this.resize();
   }
 
@@ -97,7 +98,7 @@ export class FeatureFlagsSettingsComponent implements OnInit {
 
   resize() {
     setTimeout(() => {
-      this.trelloService.sizeTo('#setting-item');
+      this.trelloService.sizeTo('#setting-item', this.trelloPowerUpIframe);
     }, 300);
   }
 }

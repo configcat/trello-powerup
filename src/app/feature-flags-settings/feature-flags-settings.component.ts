@@ -32,11 +32,10 @@ export class FeatureFlagsSettingsComponent implements OnInit {
   reloadSettings() {
     return Promise.all([
       this.trelloService.getAuthorizationParameters(),
-      this.trelloService.getCardSettingData(),
       this.trelloService.getCardData()
     ]).then(value => {
       this.authorizationParameters = value[0];
-      const card = value[2];
+      const card = value[1];
       return this.publicApiService
         .createIntegrationLinksService(this.authorizationParameters.basicAuthUsername, this.authorizationParameters.basicAuthPassword)
         .getIntegrationLinkDetails(IntegrationLinkType.Trello, card.id)
@@ -44,7 +43,10 @@ export class FeatureFlagsSettingsComponent implements OnInit {
         .then((integrationLinkDetails) => {
           this.integrationLinkDetails = integrationLinkDetails.details;
         });
-    });
+    })
+      .catch(error => {
+        console.log(error);
+      });
   }
 
   onEditSettingRequested(setting) {

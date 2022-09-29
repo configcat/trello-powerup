@@ -22,6 +22,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { environment } from './../environments/environment';
 import { CreateFeatureFlagComponent } from './create-feature-flag/create-feature-flag.component';
 import { HttpClientModule } from '@angular/common/http';
+import { LoaderComponent } from './loader/loader.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,8 @@ import { HttpClientModule } from '@angular/common/http';
     FeatureFlagsSettingsComponent,
     AddFeatureFlagComponent,
     DeleteSettingDialogComponent,
-    CreateFeatureFlagComponent
+    CreateFeatureFlagComponent,
+    LoaderComponent
   ],
   imports: [
     BrowserModule,

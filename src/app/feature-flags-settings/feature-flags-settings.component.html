@@ -1,5 +1,6 @@
 <div id="setting-item">
-    <div class="container" *ngIf="authorizationParameters && integrationLinkDetails">
+    <app-loader *ngIf="loading"> </app-loader>
+    <div class="container" *ngIf="!loading && authorizationParameters && integrationLinkDetails">
         <div *ngFor="let integrationLinkDetail of integrationLinkDetails">
             <configcat-setting-item [basicAuthUsername]="authorizationParameters.basicAuthUsername"
                 [basicAuthPassword]="authorizationParameters.basicAuthPassword"

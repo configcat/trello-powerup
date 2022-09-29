@@ -9,7 +9,6 @@ export class AppComponent {
   title = 'configcat-trello-powerup';
 
   constructor() {
-    console.log('app.compontent.ts - constructor');
   }
 }
 

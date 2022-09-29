@@ -1,0 +1,53 @@
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: baseline;
+    margin-top: 32px;
+    margin-bottom: 32px;
+
+    .cat {
+        height: 50px;
+        width: 60px;
+        margin-left: 7px;
+        background-image: url("../../assets/cat_red.svg");
+        background-repeat: no-repeat;
+    }
+
+    $width: 15px;
+    $height: 15px;
+    $bounce_height: 30px;
+
+    .bounceball {
+        position: relative;
+        display: inline-block;
+        height: 37px;
+        width: $width;
+
+        &:before {
+            position: absolute;
+            content: '';
+            display: block;
+            bottom: 0;
+            width: $width;
+            height: $height;
+            border-radius: 50%;
+            background-color: #fbae17;
+            transform-origin: 50%;
+            animation: bounce 500ms alternate infinite ease;
+        }
+    }
+
+    @keyframes bounce {
+        0% {
+            transform: scale(1.5, 0.7);
+        }
+
+        35% {
+            transform: scaleX(1);
+        }
+
+        100% {
+            transform: translateY(-25px);
+        }
+    }
+}

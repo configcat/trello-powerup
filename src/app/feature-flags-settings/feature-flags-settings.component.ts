@@ -14,6 +14,7 @@ import { IntegrationLinkDetail, IntegrationLinkType } from 'ng-configcat-publica
 })
 export class FeatureFlagsSettingsComponent implements OnInit {
 
+  loading = true;
   authorizationParameters: AuthorizationParameters;
   integrationLinkDetails: IntegrationLinkDetail[];
 
@@ -49,6 +50,7 @@ export class FeatureFlagsSettingsComponent implements OnInit {
           console.log('FeatureFlagsSettingsComponent - getIntegrationLinks');
           this.integrationLinkDetails = integrationLinkDetails.details;
           console.log(this.integrationLinkDetails);
+          this.loading = false;
         });
     })
       .catch(error => {

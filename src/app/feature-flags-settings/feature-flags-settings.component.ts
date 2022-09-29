@@ -51,6 +51,7 @@ export class FeatureFlagsSettingsComponent implements OnInit {
           this.integrationLinkDetails = integrationLinkDetails.details;
           console.log(this.integrationLinkDetails);
           this.loading = false;
+          this.resize();
         });
     })
       .catch(error => {

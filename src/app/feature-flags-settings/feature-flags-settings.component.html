@@ -1,14 +1,16 @@
-<div class="container" *ngIf="authorizationParameters && integrationLinkDetails" id="setting-item">
-    <div *ngFor="let integrationLinkDetail of integrationLinkDetails">
-        <configcat-setting-item [basicAuthUsername]="authorizationParameters.basicAuthUsername"
-            [basicAuthPassword]="authorizationParameters.basicAuthPassword"
-            [productId]="integrationLinkDetail.product.productId" [configId]="integrationLinkDetail.config.configId"
-            [environmentId]="integrationLinkDetail.environment.environmentId"
-            [settingId]="integrationLinkDetail.setting.settingId" [canEditSetting]=false
-            (editSettingRequested)="onEditSettingRequested($event)"
-            (deleteSettingRequested)="onDeleteSettingRequested($event)" (saveSucceeded)="saveSucceeded()"
-            (loadSucceeded)="loadSucceeded()" (formValuesChanged)="onFormValuesChanged()"
-            deleteSettingText="Remove from card" [showEnvironmentName]="true">
-        </configcat-setting-item>
+<div id="setting-item">
+    <div class="container" *ngIf="authorizationParameters && integrationLinkDetails">
+        <div *ngFor="let integrationLinkDetail of integrationLinkDetails">
+            <configcat-setting-item [basicAuthUsername]="authorizationParameters.basicAuthUsername"
+                [basicAuthPassword]="authorizationParameters.basicAuthPassword"
+                [productId]="integrationLinkDetail.product.productId" [configId]="integrationLinkDetail.config.configId"
+                [environmentId]="integrationLinkDetail.environment.environmentId"
+                [settingId]="integrationLinkDetail.setting.settingId" [canEditSetting]=false
+                (editSettingRequested)="onEditSettingRequested($event)"
+                (deleteSettingRequested)="onDeleteSettingRequested($event)" (saveSucceeded)="saveSucceeded()"
+                (loadSucceeded)="loadSucceeded()" (formValuesChanged)="onFormValuesChanged()"
+                deleteSettingText="Remove from card" [showEnvironmentName]="true">
+            </configcat-setting-item>
+        </div>
     </div>
 </div>

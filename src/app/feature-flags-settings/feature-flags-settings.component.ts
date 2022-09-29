@@ -21,8 +21,7 @@ export class FeatureFlagsSettingsComponent implements OnInit {
   constructor(
     private dialog: MatDialog,
     private publicApiService: PublicApiService,
-    private trelloService: TrelloService,
-    private snackBar: MatSnackBar
+    private trelloService: TrelloService
   ) { 
     console.log('FeatureFlagsSettingsComponent - constructor');
   }
@@ -40,7 +39,7 @@ export class FeatureFlagsSettingsComponent implements OnInit {
     ]).then(value => {
       this.authorizationParameters = value[0];
       const card = value[1];
-      console.log('FeatureFlagsSettingsComponent - promise.all');
+      console.log('FeatureFlagsSettingsComponent - promise.all\n' + JSON.stringify(this.authorizationParameters));
       return this.publicApiService
         .createIntegrationLinksService(this.authorizationParameters.basicAuthUsername, this.authorizationParameters.basicAuthPassword)
         .getIntegrationLinkDetails(IntegrationLinkType.Trello, card.id)
@@ -48,6 +47,7 @@ export class FeatureFlagsSettingsComponent implements OnInit {
         .then((integrationLinkDetails) => {
           console.log('FeatureFlagsSettingsComponent - getIntegrationLinks');
           this.integrationLinkDetails = integrationLinkDetails.details;
+          console.log(this.integrationLinkDetails);
         });
     })
       .catch(error => {

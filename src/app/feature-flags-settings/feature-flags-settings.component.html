@@ -1,4 +1,4 @@
-<div class="container" *ngIf="authorizationParameters" id="setting-item">
+<div class="container" *ngIf="authorizationParameters && integrationLinkDetails" id="setting-item">
     <div *ngFor="let integrationLinkDetail of integrationLinkDetails">
         <configcat-setting-item [basicAuthUsername]="authorizationParameters.basicAuthUsername"
             [basicAuthPassword]="authorizationParameters.basicAuthPassword"
@@ -7,8 +7,8 @@
             [settingId]="integrationLinkDetail.setting.settingId" [canEditSetting]=false
             (editSettingRequested)="onEditSettingRequested($event)"
             (deleteSettingRequested)="onDeleteSettingRequested($event)" (saveSucceeded)="saveSucceeded()"
-            (loadSucceeded)="loadSucceeded()" 
-            (formValuesChanged)="onFormValuesChanged()" deleteSettingText="Remove from card" [showEnvironmentName]="true">
+            (loadSucceeded)="loadSucceeded()" (formValuesChanged)="onFormValuesChanged()"
+            deleteSettingText="Remove from card" [showEnvironmentName]="true">
         </configcat-setting-item>
     </div>
 </div>

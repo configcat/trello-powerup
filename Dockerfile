@@ -1,9 +1,9 @@
-FROM nginx:alpine AS base
+FROM nginx:stable-alpine AS base
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 RUN rm -rf /usr/share/nginx/html/*
 COPY start.sh /
 
-FROM node:14.17.0-alpine AS builder
+FROM node:gallium-alpine AS builder
 COPY package*.json /configcat-trello-powerup/
 WORKDIR /configcat-trello-powerup
 RUN npm install

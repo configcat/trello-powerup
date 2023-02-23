@@ -1,10 +1,10 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { DeleteSettingDialogComponent } from '../delete-setting-dialog/delete-setting-dialog.component';
 import { PublicApiService } from 'ng-configcat-publicapi-ui';
 import { AuthorizationParameters } from '../models/authorization-parameters';
 import { TrelloService } from '../services/trello-service';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
 import { IntegrationLinkDetail, IntegrationLinkType } from 'ng-configcat-publicapi';
 
 @Component({

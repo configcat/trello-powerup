@@ -1,10 +1,8 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
-import { DeleteSettingDialogComponent } from '../delete-setting-dialog/delete-setting-dialog.component';
-import { PublicApiService } from 'ng-configcat-publicapi-ui';
+import { DeleteSettingDialogComponent, PublicApiService } from 'ng-configcat-publicapi-ui';
 import { AuthorizationParameters } from '../models/authorization-parameters';
 import { TrelloService } from '../services/trello-service';
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
 import { IntegrationLinkDetail, IntegrationLinkType } from 'ng-configcat-publicapi';
 
 @Component({
@@ -69,14 +67,19 @@ export class FeatureFlagsSettingsComponent implements OnInit {
   }
 
   onDeleteSettingRequested(data) {
-    const dialogRef = this.dialog.open(DeleteSettingDialogComponent);
+    const dialogRef = this.dialog.open(DeleteSettingDialogComponent, {
+      data: {
+        system: "Trello",
+        ticketType: "card"
+      }
+    });
 
     dialogRef.afterClosed()
       .subscribe(result => {
         if (!result) {
           return;
         }
-        if (result.button === 'removeFromCard') {
+        if (result.button === 'remove') {
           this.trelloService.removeSetting(data.environment.environmentId, data.setting.settingId);
         }
       });

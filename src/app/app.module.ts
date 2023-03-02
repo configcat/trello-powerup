@@ -17,7 +17,6 @@ import { AddFeatureFlagComponent } from './add-feature-flag/add-feature-flag.com
 import { MatRadioModule } from '@angular/material/radio';
 import { MatCardModule } from '@angular/material/card';
 import { NgConfigCatPublicApiUIModule } from 'ng-configcat-publicapi-ui';
-import { DeleteSettingDialogComponent } from './delete-setting-dialog/delete-setting-dialog.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { environment } from './../environments/environment';
 import { CreateFeatureFlagComponent } from './create-feature-flag/create-feature-flag.component';
@@ -31,7 +30,6 @@ import { LoaderComponent } from './loader/loader.component';
     HomeComponent,
     FeatureFlagsSettingsComponent,
     AddFeatureFlagComponent,
-    DeleteSettingDialogComponent,
     CreateFeatureFlagComponent,
     LoaderComponent
   ],

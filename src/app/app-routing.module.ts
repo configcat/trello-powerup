@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { AuthorizationComponent } from './authorization/authorization.component';
-import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 import { AddFeatureFlagComponent } from './add-feature-flag/add-feature-flag.component';
 import { FeatureFlagsSettingsComponent } from './feature-flags-settings/feature-flags-settings.component';

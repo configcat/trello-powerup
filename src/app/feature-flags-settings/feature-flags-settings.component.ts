@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { DeleteSettingDialogComponent, PublicApiService } from 'ng-configcat-publicapi-ui';
 import { AuthorizationParameters } from '../models/authorization-parameters';
@@ -53,7 +53,7 @@ export class FeatureFlagsSettingsComponent implements OnInit {
       });
   }
 
-  onEditSettingRequested(setting) {
+  onEditSettingRequested() {
     /*
     Available properties:
     setting.setting.settingId

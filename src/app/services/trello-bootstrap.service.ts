@@ -22,7 +22,7 @@ export class TrelloBootstrapService {
     });
   }
 
-  private getBadges = (t, opts) => {
+  private getBadges = (t) => {
     return this.trelloService.getBadgeData(t);
   }
 
@@ -30,7 +30,7 @@ export class TrelloBootstrapService {
     return this.trelloService.removeAuthorizationParameters(t);
   }
 
-  private showAuthorization = (t, options) => {
+  private showAuthorization = (t) => {
     return t.popup({
       title: 'Authorize ConfigCat',
       url: './authorize',
@@ -38,7 +38,7 @@ export class TrelloBootstrapService {
     });
   }
 
-  private getAuthorizationStatus = (t, options) => {
+  private getAuthorizationStatus = (t) => {
     return this.trelloService.getAuthorizationParameters(t)
       .then(authorizationParameters => {
         if (authorizationParameters && authorizationParameters.basicAuthUsername && authorizationParameters.basicAuthPassword) {
@@ -49,7 +49,7 @@ export class TrelloBootstrapService {
       .catch(() => ({ authorized: false }));
   }
 
-  private getCardButtons = (x, options) => {
+  private getCardButtons = () => {
     return [{
       // usually you will provide a callback function to be run on button click
       // we recommend that you use a popup on click generally
@@ -78,7 +78,7 @@ export class TrelloBootstrapService {
     }];
   }
 
-  private getCardBackSection = (t, options) => {
+  private getCardBackSection = (t) => {
     return this.trelloService.getCardSettingData(t)
       .then(setting => {
         if (setting) {

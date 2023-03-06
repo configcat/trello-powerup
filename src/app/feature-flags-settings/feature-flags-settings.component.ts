@@ -53,19 +53,6 @@ export class FeatureFlagsSettingsComponent implements OnInit {
       });
   }
 
-  onEditSettingRequested() {
-    /*
-    Available properties:
-    setting.setting.settingId
-    setting.setting.name
-    setting.setting.key
-    setting.config.configId
-    setting.config.name
-    setting.environment.environmentId
-    setting.environment.name
-    */
-  }
-
   onDeleteSettingRequested(data) {
     const dialogRef = this.dialog.open(DeleteSettingDialogComponent, {
       data: {

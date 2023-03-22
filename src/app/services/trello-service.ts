@@ -59,7 +59,7 @@ export class TrelloService {
         return (trelloPowerUp ?? TrelloPowerUp.iframe()).set('card', 'shared', 'cardSettingData', cardData);
     }
 
-    removeCardSettingData(cardData: CardSettingData, trelloPowerUp = null): Promise<CardSettingData> {
+    removeCardSettingData(trelloPowerUp = null): Promise<CardSettingData> {
         return (trelloPowerUp ?? TrelloPowerUp.iframe()).remove('card', 'shared', 'cardSettingData');
     }
 

@@ -11,17 +11,19 @@
             <configcat-config-select [basicAuthUsername]="authorizationParameters.basicAuthUsername"
                 [basicAuthPassword]="authorizationParameters.basicAuthPassword"
                 [productId]="formGroup.controls.productId.value" [valueFormControl]="formGroup.controls.configId"
-                *ngIf="formGroup.controls.productId.value">
+                *ngIf="formGroup.controls.productId.value" (dropdownOpened)="selectDropdownPanelChanged($event)">
             </configcat-config-select>
             <configcat-environment-select [basicAuthUsername]="authorizationParameters.basicAuthUsername"
                 [productId]="formGroup.controls.productId.value"
                 [basicAuthPassword]="authorizationParameters.basicAuthPassword"
-                [valueFormControl]="formGroup.controls.environmentId" *ngIf="formGroup.controls.productId.value">
+                [valueFormControl]="formGroup.controls.environmentId" *ngIf="formGroup.controls.productId.value"
+                (dropdownOpened)="selectDropdownPanelChanged($event)" [customDropdown]="true">
             </configcat-environment-select>
             <configcat-setting-select [basicAuthUsername]="authorizationParameters.basicAuthUsername"
                 [configId]="formGroup.controls.configId.value"
                 [basicAuthPassword]="authorizationParameters.basicAuthPassword"
-                [valueFormControl]="formGroup.controls.settingId" *ngIf="formGroup.controls.configId.value">
+                [valueFormControl]="formGroup.controls.settingId" *ngIf="formGroup.controls.configId.value"
+                (dropdownOpened)="selectDropdownPanelChanged($event)" [customDropdown]="true">
             </configcat-setting-select>
         </div>
         <div>

@@ -85,9 +85,22 @@ export class AddFeatureFlagComponent implements OnInit, OnDestroy {
       });
   }
 
-  resize() {
+  selectDropdownPanelChanged(event: any) {
+    if (event == false) {
+      this.resize();
+    } else {
+      this.resize('.cdk-overlay-container');
+    }
+
+  }
+
+  resize(selector?: string) {
     setTimeout(() => {
-      this.trelloService.sizeTo('#outer');
+      if (selector) {
+        this.trelloService.sizeTo(selector);
+      } else {
+        this.trelloService.sizeTo('#outer');
+      }
     }, 300);
   }
 }

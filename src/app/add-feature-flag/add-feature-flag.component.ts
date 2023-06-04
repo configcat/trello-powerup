@@ -1,4 +1,5 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Inject } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
 import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { TrelloService } from '../services/trello-service';
 import { AuthorizationParameters } from '../models/authorization-parameters';
@@ -20,7 +21,9 @@ export class AddFeatureFlagComponent implements OnInit, OnDestroy {
   constructor(
     private formBuilder: UntypedFormBuilder,
     private trelloService: TrelloService,
-    private publicApiService: PublicApiService) { }
+    private publicApiService: PublicApiService,
+    @Inject(DOCUMENT) private document: Document
+  ) { }
 
   ngOnInit(): void {
     this.formGroup = this.formBuilder.group({
@@ -96,11 +99,14 @@ export class AddFeatureFlagComponent implements OnInit, OnDestroy {
 
   resize(selector?: string) {
     setTimeout(() => {
-      if (selector) {
-        this.trelloService.sizeTo(selector);
+      if (selector == '.cdk-overlay-container') {
+        //element height calculation based on trello sizeTo method + 15 px
+        const el = this.document.querySelector(selector);
+        var requestedHeight = Math.ceil(Math.max(el.scrollHeight, el.getBoundingClientRect().height));
+        this.trelloService.sizeTo(requestedHeight + 15);
       } else {
         this.trelloService.sizeTo('#outer');
       }
-    }, 300);
+    }, 200);
   }
 }

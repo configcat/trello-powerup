@@ -89,7 +89,7 @@ export class AddFeatureFlagComponent implements OnInit, OnDestroy {
   }
 
   selectDropdownPanelChanged(event: any) {
-    if (event == false) {
+    if (event === false) {
       this.resize();
     } else {
       this.resize('.cdk-overlay-container');
@@ -99,7 +99,7 @@ export class AddFeatureFlagComponent implements OnInit, OnDestroy {
 
   resize(selector?: string) {
     setTimeout(() => {
-      if (selector == '.cdk-overlay-container') {
+      if (selector === '.cdk-overlay-container') {
         //element height calculation based on trello sizeTo method + 15 px
         const el = this.document.querySelector(selector);
         var requestedHeight = Math.ceil(Math.max(el.scrollHeight, el.getBoundingClientRect().height));

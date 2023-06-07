@@ -102,7 +102,7 @@ export class AddFeatureFlagComponent implements OnInit, OnDestroy {
       if (selector === '.cdk-overlay-container') {
         //element height calculation based on trello sizeTo method + 15 px
         const el = this.document.querySelector(selector);
-        var requestedHeight = Math.ceil(Math.max(el.scrollHeight, el.getBoundingClientRect().height));
+        let requestedHeight = Math.ceil(Math.max(el.scrollHeight, el.getBoundingClientRect().height));
         this.trelloService.sizeTo(requestedHeight + 15);
       } else {
         this.trelloService.sizeTo('#outer');

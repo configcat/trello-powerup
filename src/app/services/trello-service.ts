@@ -23,7 +23,7 @@ export class TrelloService {
         return (trelloPowerUp ?? TrelloPowerUp.iframe()).closePopup();
     }
 
-    sizeTo(selector: string, trelloPowerUp = null) {
+    sizeTo(selector: any, trelloPowerUp = null) {
         return (trelloPowerUp ?? TrelloPowerUp.iframe()).sizeTo(selector);
     }
 

@@ -1,5 +1,6 @@
 FROM nginx:stable-alpine AS base
 COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY security-headers.conf /etc/nginx/security-headers.conf
 RUN rm -rf /usr/share/nginx/html/*
 COPY start.sh /
 

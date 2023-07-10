@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
-declare var Snap: any;
-declare var mina: any;
+declare let Snap: any;
+declare let mina: any;
 
 @Component({
   selector: 'app-loader',
@@ -13,7 +13,9 @@ export class LoaderComponent implements OnInit {
   showLoader = false;
   @Input() skipTimeOut?: boolean;
 
-  constructor() { }
+  constructor() {
+    //empty constructor
+  }
 
   ngOnInit() {
     if (this.skipTimeOut) {

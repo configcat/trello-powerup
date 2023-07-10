@@ -4,7 +4,7 @@ import { PublicApiService } from 'ng-configcat-publicapi-ui';
 import { IntegrationLinkType } from 'ng-configcat-publicapi';
 import { CardSettingData } from '../models/card-setting-data';
 
-declare var TrelloPowerUp: any;
+declare let TrelloPowerUp: any;
 
 const CONFIGCAT_ICON = './assets/cat_red.svg';
 

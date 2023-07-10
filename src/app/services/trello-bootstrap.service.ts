@@ -3,7 +3,7 @@ import { TrelloService } from './trello-service';
 
 const CONFIGCAT_ICON = './assets/cat_red.svg';
 
-declare var TrelloPowerUp: any;
+declare let TrelloPowerUp: any;
 
 @Injectable({
   providedIn: 'root'
@@ -41,7 +41,7 @@ export class TrelloBootstrapService {
   private getAuthorizationStatus = (t) => {
     return this.trelloService.getAuthorizationParameters(t)
       .then(authorizationParameters => {
-        if (authorizationParameters && authorizationParameters.basicAuthUsername && authorizationParameters.basicAuthPassword) {
+        if (authorizationParameters?.basicAuthUsername && authorizationParameters?.basicAuthPassword) {
           return { authorized: true };
         }
         return { authorized: false };

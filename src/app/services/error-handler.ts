@@ -26,8 +26,6 @@ export class ErrorHandler {
         if (control.hasError('serverSide')) {
             return control.getError('serverSide');
         }
-
-        return;
     }
 
     public static handleErrors(formGroup: FormGroup, error: any) {
@@ -43,7 +41,7 @@ export class ErrorHandler {
                         }
 
                         const errorMessage = error.error[fieldName]?.Errors?.length > 0 ?
-                            (error.error[fieldName]?.Errors.map((e: any) => e.ErrorMessage)).join(', ')
+                            (error.error[fieldName]?.Errors.map((e: any) => e?.ErrorMessage)).join(', ')
                             : error.error[fieldName];
 
                         if (formGroup.controls.hasOwnProperty(jsonFieldName)) {

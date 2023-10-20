@@ -133,4 +133,14 @@ export class TrelloService {
                 });
         });
     }
+
+    showHttpUnauthorizedAlert(trelloPowerUp = null) {
+        return (trelloPowerUp ?? TrelloPowerUp.iframe())
+            .alert({
+                message: 'Authorization failed! Please try to login again.',
+                duration: 5,
+                display: 'error'
+            });
+    }
+
 }

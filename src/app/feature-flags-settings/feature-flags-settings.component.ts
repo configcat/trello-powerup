@@ -52,7 +52,7 @@ export class FeatureFlagsSettingsComponent implements OnInit {
         });
     })
       .catch(error => {
-        if (error.status == 401) {
+        if (error?.status === 401) {
           this.authorizationParameters = null;
           this.trelloService.removeAuthorizationParameters();
           this.trelloService.showHttpUnauthorizedAlert();

@@ -6,7 +6,8 @@
     <div class="container" *ngIf="!loading && authorizationParameters && showError">
         <div class="error">
             <p><b>Something went wrong!</b></p>
-            <p>Please try again later or for more inforamtion check the console logs.</p>
+            <p>You can try again later, check the console log for more information or <a
+                    href="https://configcat.com/support/" target="_blank">contact us.</a></p>
         </div>
     </div>
     <div class="container" *ngIf="!loading && authorizationParameters && integrationLinkDetails">

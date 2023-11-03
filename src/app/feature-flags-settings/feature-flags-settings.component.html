@@ -1,5 +1,15 @@
 <div id="setting-item">
     <app-loader *ngIf="loading"> </app-loader>
+    <div class="container" *ngIf="!loading && !authorizationParameters">
+        <configcat-authorization (error)="error()" (authorized)="login($event)"></configcat-authorization>
+    </div>
+    <div class="container" *ngIf="!loading && authorizationParameters && showError">
+        <div class="error">
+            <p><b>Something went wrong!</b></p>
+            <p>You can try again later, check the console log for more information or <a
+                    href="https://configcat.com/support/" rel="noopener noreferrer" target="_blank">contact us.</a></p>
+        </div>
+    </div>
     <div class="container" *ngIf="!loading && authorizationParameters && integrationLinkDetails">
         <div *ngFor="let integrationLinkDetail of integrationLinkDetails">
             <configcat-setting-item [basicAuthUsername]="authorizationParameters.basicAuthUsername"

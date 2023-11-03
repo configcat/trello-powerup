@@ -13,6 +13,7 @@ import { IntegrationLinkDetail, IntegrationLinkType } from 'ng-configcat-publica
 export class FeatureFlagsSettingsComponent implements OnInit {
 
   loading = true;
+  showError = false;
   authorizationParameters: AuthorizationParameters;
   integrationLinkDetails: IntegrationLinkDetail[];
 
@@ -31,6 +32,8 @@ export class FeatureFlagsSettingsComponent implements OnInit {
   }
 
   reloadSettings() {
+    this.loading = true;
+    this.showError = false;
     return Promise.all([
       this.trelloService.getAuthorizationParameters(this.trelloPowerUpIframe),
       this.trelloService.getCardData(this.trelloPowerUpIframe),
@@ -49,6 +52,15 @@ export class FeatureFlagsSettingsComponent implements OnInit {
         });
     })
       .catch(error => {
+        if (error?.status === 401) {
+          this.authorizationParameters = null;
+          this.trelloService.removeAuthorizationParameters();
+          this.trelloService.showHttpUnauthorizedAlert();
+        } else {
+          this.showError = true;
+        }
+        this.loading = false;
+        this.resize();
         console.log(error);
       });
   }
@@ -90,4 +102,17 @@ export class FeatureFlagsSettingsComponent implements OnInit {
       this.trelloService.sizeTo('#setting-item', this.trelloPowerUpIframe);
     }, 300);
   }
+
+  login(authorizationParameters) {
+    this.trelloService
+      .setAuthorizationParameters(authorizationParameters)
+      .then(() => {
+        this.reloadSettings();
+      });
+  }
+
+  error() {
+    this.resize();
+  }
+
 }

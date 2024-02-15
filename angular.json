@@ -80,7 +80,7 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "configcat-trello-powerup:build"
+            "buildTarget": "configcat-trello-powerup:build"
           },
           "configurations": {
             "development": {
@@ -89,14 +89,14 @@
               ]
             },
             "production": {
-              "browserTarget": "configcat-trello-powerup:build:production"
+              "buildTarget": "configcat-trello-powerup:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "configcat-trello-powerup:build"
+            "buildTarget": "configcat-trello-powerup:build"
           }
         },
         "e2e": {

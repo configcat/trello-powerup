@@ -4,7 +4,7 @@ COPY security-headers.conf /etc/nginx/security-headers.conf
 RUN rm -rf /usr/share/nginx/html/*
 COPY start.sh /
 
-FROM node:gallium-alpine AS builder
+FROM node:iron-alpine AS builder
 COPY package*.json /configcat-trello-powerup/
 WORKDIR /configcat-trello-powerup
 RUN npm install

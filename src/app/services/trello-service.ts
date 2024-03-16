@@ -37,6 +37,7 @@ export class TrelloService {
         return (trelloPowerUp ?? TrelloPowerUp.iframe())
             .storeSecret('authorization', JSON.stringify(authorizationParameters))
             .then(() => {
+                this.setCardSettingData({ lastUpdatedAt: new Date() }, trelloPowerUp);
                 return (trelloPowerUp ?? TrelloPowerUp.iframe())
                     .alert({
                         message: 'Authorized to ConfigCat 🎉',

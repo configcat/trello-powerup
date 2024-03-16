@@ -12,7 +12,8 @@
     </div>
     <div class="container" *ngIf="!loading && authorizationParameters && integrationLinkDetails">
         <div *ngFor="let integrationLinkDetail of integrationLinkDetails">
-            <configcat-setting-item [basicAuthUsername]="authorizationParameters.basicAuthUsername"
+            <configcat-setting-item *ngIf="integrationLinkDetail.config.evaluationVersion === EvaluationVersion.V1"
+                [basicAuthUsername]="authorizationParameters.basicAuthUsername"
                 [basicAuthPassword]="authorizationParameters.basicAuthPassword"
                 [productId]="integrationLinkDetail.product.productId" [configId]="integrationLinkDetail.config.configId"
                 [environmentId]="integrationLinkDetail.environment.environmentId"
@@ -21,6 +22,17 @@
                 (loadSucceeded)="loadSucceeded()" (formValuesChanged)="onFormValuesChanged()"
                 deleteSettingText="Remove from card" [showEnvironmentName]="true">
             </configcat-setting-item>
+            <configcat-feature-flag-item *ngIf="integrationLinkDetail.config.evaluationVersion === EvaluationVersion.V2"
+                [basicAuthUsername]="authorizationParameters.basicAuthUsername"
+                [basicAuthPassword]="authorizationParameters.basicAuthPassword"
+                [productId]="integrationLinkDetail.product.productId" [configId]="integrationLinkDetail.config.configId"
+                [environmentId]="integrationLinkDetail.environment.environmentId"
+                [settingId]="integrationLinkDetail.setting.settingId"
+                (deleteSettingRequested)="onDeleteSettingRequested($event)" (saveSucceeded)="saveSucceeded()"
+                (loadSucceeded)="loadSucceeded()" (formValuesChanged)="onFormValuesChanged()"
+                deleteSettingText="Remove from card" [showEnvironmentName]="true"
+                (expandedStateChanged)="expandedStateChanged()">
+            </configcat-feature-flag-item>
         </div>
     </div>
 </div>

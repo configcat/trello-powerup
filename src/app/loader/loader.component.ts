@@ -21,7 +21,7 @@ export class LoaderComponent implements OnInit {
     if (this.skipTimeOut) {
       this.showLoader = true;
     } else {
-      setTimeout(() => this.showLoader = true, 500);
+      setTimeout(() => this.showLoader = true, 300);
     }
   }
 }

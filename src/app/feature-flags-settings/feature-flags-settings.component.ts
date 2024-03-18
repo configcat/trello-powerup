@@ -95,7 +95,6 @@ export class FeatureFlagsSettingsComponent implements OnInit {
 
   saveSucceeded() {
     this.trelloService.setCardSettingData({ lastUpdatedAt: new Date() }, this.trelloPowerUpIframe);
-    this.resize();
   }
 
   onFormValuesChanged() {

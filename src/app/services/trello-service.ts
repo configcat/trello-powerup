@@ -37,14 +37,18 @@ export class TrelloService {
         return (trelloPowerUp ?? TrelloPowerUp.iframe())
             .storeSecret('authorization', JSON.stringify(authorizationParameters))
             .then(() => {
-                this.setCardSettingData({ lastUpdatedAt: new Date() }, trelloPowerUp);
+                return this.setCardSettingData({ lastUpdatedAt: new Date() }, trelloPowerUp);
+            })
+            .catch(() => { })
+            .finally(() => {
                 return (trelloPowerUp ?? TrelloPowerUp.iframe())
-                    .alert({
-                        message: 'Authorized to ConfigCat 🎉',
-                        duration: 5,
-                        display: 'success'
-                    });
-            });
+                .alert({
+                    message: 'Authorized to ConfigCat 🎉',
+                    duration: 5,
+                    display: 'success'
+                });
+            })
+
     }
 
     removeAuthorizationParameters(trelloPowerUp = null) {

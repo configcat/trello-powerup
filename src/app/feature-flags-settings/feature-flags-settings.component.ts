@@ -3,7 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { DeleteSettingDialogComponent, PublicApiService } from 'ng-configcat-publicapi-ui';
 import { AuthorizationParameters } from '../models/authorization-parameters';
 import { TrelloService } from '../services/trello-service';
-import { IntegrationLinkDetail, IntegrationLinkType } from 'ng-configcat-publicapi';
+import { EvaluationVersion, IntegrationLinkDetail, IntegrationLinkType } from 'ng-configcat-publicapi';
 
 @Component({
   selector: 'app-feature-flags-settings',
@@ -16,6 +16,7 @@ export class FeatureFlagsSettingsComponent implements OnInit {
   showError = false;
   authorizationParameters: AuthorizationParameters;
   integrationLinkDetails: IntegrationLinkDetail[];
+  EvaluationVersion = EvaluationVersion;
 
   trelloPowerUpIframe: any;
 
@@ -88,9 +89,12 @@ export class FeatureFlagsSettingsComponent implements OnInit {
     this.resize();
   }
 
+  expandedStateChanged() {
+    this.resize();
+  }
+
   saveSucceeded() {
     this.trelloService.setCardSettingData({ lastUpdatedAt: new Date() }, this.trelloPowerUpIframe);
-    this.resize();
   }
 
   onFormValuesChanged() {

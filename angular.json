@@ -29,6 +29,11 @@
             "styles": [
               "src/styles.scss"
             ],
+            "allowedCommonJsDependencies": [
+              "semver",
+              "ace-builds",
+              "papaparse"
+            ],
             "scripts": [],
             "vendorChunk": true,
             "extractLicenses": false,
@@ -58,9 +63,6 @@
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true,
-              "allowedCommonJsDependencies": [
-                "semver"
-              ],
               "budgets": [
                 {
                   "type": "initial",

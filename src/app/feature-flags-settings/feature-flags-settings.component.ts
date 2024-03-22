@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { DeleteSettingDialogComponent, PublicApiService } from 'ng-configcat-publicapi-ui';
 import { AuthorizationParameters } from '../models/authorization-parameters';
@@ -19,6 +19,8 @@ export class FeatureFlagsSettingsComponent implements OnInit {
   EvaluationVersion = EvaluationVersion;
 
   trelloPowerUpIframe: any;
+
+  @ViewChild('settingItem') elementView: ElementRef;
 
   constructor(
     private dialog: MatDialog,
@@ -103,7 +105,9 @@ export class FeatureFlagsSettingsComponent implements OnInit {
 
   resize() {
     setTimeout(() => {
-      this.trelloService.sizeTo('#setting-item', this.trelloPowerUpIframe);
+      const contentHeight = this.elementView?.nativeElement?.offsetHeight;
+      const height = contentHeight && contentHeight < 700 ? contentHeight : 700;
+      this.trelloService.sizeToHeight(height, this.trelloPowerUpIframe);
     }, 300);
   }
 

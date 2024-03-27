@@ -1,4 +1,4 @@
-<div id="setting-item">
+<div id="setting-item" class="setting-item" #settingItem>
     <app-loader *ngIf="loading"> </app-loader>
     <div class="container" *ngIf="!loading && !authorizationParameters">
         <configcat-authorization (error)="error()" (authorized)="login($event)"></configcat-authorization>

@@ -27,6 +27,10 @@ export class TrelloService {
         return (trelloPowerUp ?? TrelloPowerUp.iframe()).sizeTo(selector);
     }
 
+    sizeToHeight(height: number, trelloPowerUp = null) {
+        return (trelloPowerUp ?? TrelloPowerUp.iframe()).sizeTo(height);
+    }
+
     getAuthorizationParameters(trelloPowerUp = null): Promise<AuthorizationParameters> {
         return (trelloPowerUp ?? TrelloPowerUp.iframe()).loadSecret('authorization').then(authorizationParameters => {
             return JSON.parse(authorizationParameters);

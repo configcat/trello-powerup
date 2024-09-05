@@ -1,0 +1,7 @@
+/*
+  Strict-Transport-Security: "max-age=31536000; includeSubDomains" always;
+  X-Content-Type-Options: "nosniff" always;
+  Referrer-Policy: "strict-origin-when-cross-origin" always;
+  X-Frame-Options: "ALLOW-FROM https://*.trello.com";
+  Permissions-Policy: "accelerometer=(),autoplay=(),camera=(),display-capture=(),document-domain=(),encrypted-media=(),fullscreen=(self),geolocation=(),gyroscope=(),magnetometer=(),microphone=(),midi=(),payment=(),picture-in-picture=(),publickey-credentials-get=(),screen-wake-lock=(),sync-xhr=(self),usb=(),web-share=(),xr-spatial-tracking=()" always;
+  add_header Content-Security-Policy: default-src 'none'; frame-src 'self' https://*.configcat.com; script-src 'self' https://*.configcat.com https://p.trellocdn.com https://*.butlerfortrello.com; style-src 'self' 'unsafe-inline'; font-src 'self' data: https://fonts.gstatic.com https://fonts.googleapis.com; img-src 'self' data: https://*.configcat.com; connect-src 'self' https://*.configcat.com https://*.trello.com https://*.atlassian.net https://*.atlassian.com; object-src 'none'; child-src 'self' blob:; frame-ancestors https://*.configcat.com https://*.trello.com https://trello.com; upgrade-insecure-requests; block-all-mixed-content;

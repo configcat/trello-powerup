@@ -1,0 +1,45 @@
+trigger:
+  batch: true
+  branches:
+    include:
+      - master
+pr: none
+name: $(date:yyyyMMdd)$(rev:.r)
+
+pool:
+  name: Contabo
+
+steps:
+  - task: Docker@2
+    displayName: build
+    inputs:
+      containerRegistry: Docker Hub
+      repository: "configcat/trello-powerup"
+      command: build
+      buildContext: "$(System.DefaultWorkingDirectory)"
+      tags: "$(Build.BuildId)"
+
+  - task: Docker@2
+    displayName: push
+    inputs:
+      containerRegistry: Docker Hub
+      command: push
+      repository: "configcat/trello-powerup"
+      buildContext: "$(System.DefaultWorkingDirectory)"
+      tags: "$(Build.BuildId)"
+
+  - script: |
+      sudo mkdir -pv $(build.artifactstagingdirectory)/output
+      sudo chmod a+rwx $(build.artifactstagingdirectory)/output
+      sudo rm -rf $(build.artifactstagingdirectory)/output/*
+      IMAGEID=$(sudo docker images configcat/trello-powerup:$(Build.BuildId) --format "{{.ID}}")
+      CONTAINERID=$(sudo docker create $IMAGEID)
+      sudo docker cp $CONTAINERID:/usr/share/nginx/html/. $(build.artifactstagingdirectory)/output/
+      sudo docker rm $CONTAINERID
+      sudo chmod a+rwx $(build.artifactstagingdirectory)/output
+    displayName: "Copy files from docker image"
+
+  - task: PublishPipelineArtifact@1
+    inputs:
+      targetPath: $(build.artifactstagingdirectory)/output/
+      artifact: TrelloPowerUp

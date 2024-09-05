@@ -13,4 +13,5 @@ RUN npm run build
 
 FROM base AS final
 COPY --from=builder /configcat-trello-powerup/dist/configcat-trello-powerup /usr/share/nginx/html
+COPY _headers /usr/share/nginx/html/
 CMD ["sh", "start.sh"]

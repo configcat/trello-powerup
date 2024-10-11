@@ -20,37 +20,30 @@ import { NgConfigCatPublicApiUIModule } from 'ng-configcat-publicapi-ui';
 import { MatDialogModule } from '@angular/material/dialog';
 import { environment } from './../environments/environment';
 import { CreateFeatureFlagComponent } from './create-feature-flag/create-feature-flag.component';
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { LoaderComponent } from './loader/loader.component';
 
-@NgModule({
-  declarations: [
-    AppComponent,
-    AuthorizationComponent,
-    HomeComponent,
-    FeatureFlagsSettingsComponent,
-    AddFeatureFlagComponent,
-    CreateFeatureFlagComponent,
-    LoaderComponent
-  ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    BrowserAnimationsModule,
-    FormsModule,
-    ReactiveFormsModule,
-    HttpClientModule,
-    CommonModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule,
-    MatButtonModule,
-    MatRadioModule,
-    MatCardModule,
-    NgConfigCatPublicApiUIModule.forRoot(() => ({ basePath: environment.publicApiBaseUrl, dashboardBasePath: environment.dashboardBasePath })),
-    MatDialogModule
-  ],
-  providers: [],
-  bootstrap: [AppComponent]
-})
+@NgModule({ declarations: [
+        AppComponent,
+        AuthorizationComponent,
+        HomeComponent,
+        FeatureFlagsSettingsComponent,
+        AddFeatureFlagComponent,
+        CreateFeatureFlagComponent,
+        LoaderComponent
+    ],
+    bootstrap: [AppComponent], imports: [BrowserModule,
+        AppRoutingModule,
+        BrowserAnimationsModule,
+        FormsModule,
+        ReactiveFormsModule,
+        CommonModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatSelectModule,
+        MatButtonModule,
+        MatRadioModule,
+        MatCardModule,
+        NgConfigCatPublicApiUIModule.forRoot(() => ({ basePath: environment.publicApiBaseUrl, dashboardBasePath: environment.dashboardBasePath })),
+        MatDialogModule], providers: [provideHttpClient(withInterceptorsFromDi())] })
 export class AppModule { }

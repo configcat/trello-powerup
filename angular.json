@@ -18,7 +18,8 @@
           "builder": "@angular-devkit/build-angular:application",
           "options": {
             "outputPath": {
-              "base": "dist/configcat-trello-powerup"
+              "base": "dist/configcat-trello-powerup",
+               "browser": ""
             },
             "index": "src/index.html",
             "polyfills": [

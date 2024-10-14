@@ -19,7 +19,7 @@
           "options": {
             "outputPath": {
               "base": "dist/configcat-trello-powerup",
-               "browser": ""
+              "browser": ""
             },
             "index": "src/index.html",
             "polyfills": [

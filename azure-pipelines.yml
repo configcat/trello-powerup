@@ -7,7 +7,7 @@ pr: none
 name: $(date:yyyyMMdd)$(rev:.r)
 
 pool:
-  name: Contabo
+  name: 'ConfigCat Agents'
 
 steps:
   - task: Docker@2

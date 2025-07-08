@@ -1,5 +1,5 @@
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
-import { DOCUMENT } from '@angular/common';
+import { Component, OnInit, OnDestroy, inject, DOCUMENT } from '@angular/core';
+
 import { UntypedFormGroup, UntypedFormBuilder, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TrelloService } from '../services/trello-service';
 import { AuthorizationParameters } from '../models/authorization-parameters';

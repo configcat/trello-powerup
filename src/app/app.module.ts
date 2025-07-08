@@ -23,15 +23,7 @@ import { CreateFeatureFlagComponent } from './create-feature-flag/create-feature
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { LoaderComponent } from './loader/loader.component';
 
-@NgModule({ declarations: [
-        AppComponent,
-        AuthorizationComponent,
-        HomeComponent,
-        FeatureFlagsSettingsComponent,
-        AddFeatureFlagComponent,
-        CreateFeatureFlagComponent,
-        LoaderComponent
-    ],
+@NgModule({ declarations: [AppComponent],
     bootstrap: [AppComponent], imports: [BrowserModule,
         AppRoutingModule,
         BrowserAnimationsModule,
@@ -45,5 +37,10 @@ import { LoaderComponent } from './loader/loader.component';
         MatRadioModule,
         MatCardModule,
         NgConfigCatPublicApiUIModule.forRoot(() => ({ basePath: environment.publicApiBaseUrl, dashboardBasePath: environment.dashboardBasePath })),
-        MatDialogModule], providers: [provideHttpClient(withInterceptorsFromDi())] })
+        MatDialogModule, AuthorizationComponent,
+        HomeComponent,
+        FeatureFlagsSettingsComponent,
+        AddFeatureFlagComponent,
+        CreateFeatureFlagComponent,
+        LoaderComponent], providers: [provideHttpClient(withInterceptorsFromDi())] })
 export class AppModule { }

@@ -1,29 +1,29 @@
-import { Component, OnInit, OnDestroy, Inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
-import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TrelloService } from '../services/trello-service';
 import { AuthorizationParameters } from '../models/authorization-parameters';
 import { Subscription } from 'rxjs';
-import { PublicApiService } from 'ng-configcat-publicapi-ui';
+import { PublicApiService, NgConfigCatPublicApiUIModule } from 'ng-configcat-publicapi-ui';
 import { IntegrationLinkType } from 'ng-configcat-publicapi';
+import { MatButton } from '@angular/material/button';
 
 @Component({
-  selector: 'app-add-feature-flag',
-  templateUrl: './add-feature-flag.component.html',
-  styleUrls: ['./add-feature-flag.component.scss']
+    selector: 'app-add-feature-flag',
+    templateUrl: './add-feature-flag.component.html',
+    styleUrls: ['./add-feature-flag.component.scss'],
+    imports: [NgConfigCatPublicApiUIModule, FormsModule, ReactiveFormsModule, MatButton]
 })
 export class AddFeatureFlagComponent implements OnInit, OnDestroy {
+  private formBuilder = inject(UntypedFormBuilder);
+  private trelloService = inject(TrelloService);
+  private publicApiService = inject(PublicApiService);
+  private document = inject<Document>(DOCUMENT);
+
 
   formGroup: UntypedFormGroup;
   authorizationParameters: AuthorizationParameters;
   subscription: Subscription;
-
-  constructor(
-    private formBuilder: UntypedFormBuilder,
-    private trelloService: TrelloService,
-    private publicApiService: PublicApiService,
-    @Inject(DOCUMENT) private document: Document
-  ) { }
 
   ngOnInit(): void {
     this.formGroup = this.formBuilder.group({

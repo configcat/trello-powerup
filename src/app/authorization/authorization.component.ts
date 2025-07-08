@@ -1,14 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { TrelloService } from '../services/trello-service';
+import { NgConfigCatPublicApiUIModule } from 'ng-configcat-publicapi-ui';
 
 @Component({
-  selector: 'app-authorization',
-  templateUrl: './authorization.component.html',
-  styleUrls: ['./authorization.component.scss']
+    selector: 'app-authorization',
+    templateUrl: './authorization.component.html',
+    styleUrls: ['./authorization.component.scss'],
+    imports: [NgConfigCatPublicApiUIModule]
 })
 export class AuthorizationComponent implements OnInit {
+  private trelloService = inject(TrelloService);
 
-  constructor(private trelloService: TrelloService) { }
 
   ngOnInit(): void {
     this.resize();

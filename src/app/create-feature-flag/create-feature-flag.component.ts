@@ -1,29 +1,34 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { UntypedFormGroup, UntypedFormBuilder, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IntegrationLinkType, SettingType } from 'ng-configcat-publicapi';
-import { PublicApiService } from 'ng-configcat-publicapi-ui';
+import { PublicApiService, NgConfigCatPublicApiUIModule } from 'ng-configcat-publicapi-ui';
 import { Subscription } from 'rxjs';
 import { AuthorizationParameters } from '../models/authorization-parameters';
 import { ErrorHandler } from '../services/error-handler';
 import { TrelloService } from '../services/trello-service';
 
+import { MatFormField, MatLabel, MatHint, MatError } from '@angular/material/form-field';
+import { MatSelect, MatOption } from '@angular/material/select';
+import { MatInput } from '@angular/material/input';
+import { MatButton } from '@angular/material/button';
+
 @Component({
-  selector: 'app-create-feature-flag',
-  templateUrl: './create-feature-flag.component.html',
-  styleUrls: ['./create-feature-flag.component.scss']
+    selector: 'app-create-feature-flag',
+    templateUrl: './create-feature-flag.component.html',
+    styleUrls: ['./create-feature-flag.component.scss'],
+    imports: [NgConfigCatPublicApiUIModule, FormsModule, ReactiveFormsModule, MatFormField, MatLabel, MatSelect, MatOption, MatInput, MatHint, MatError, MatButton]
 })
 export class CreateFeatureFlagComponent implements OnInit, OnDestroy {
+  private formBuilder = inject(UntypedFormBuilder);
+  private trelloService = inject(TrelloService);
+  private publicApiService = inject(PublicApiService);
+
 
   formGroup: UntypedFormGroup;
   authorizationParameters: AuthorizationParameters;
   subscription: Subscription;
   SettingTypeEnum = SettingType;
   ErrorHandler = ErrorHandler;
-
-  constructor(
-    private formBuilder: UntypedFormBuilder,
-    private trelloService: TrelloService,
-    private publicApiService: PublicApiService) { }
 
   ngOnInit(): void {
     this.formGroup = this.formBuilder.group({

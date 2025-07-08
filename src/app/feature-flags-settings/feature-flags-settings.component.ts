@@ -1,16 +1,23 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, inject, viewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { DeleteSettingDialogComponent, PublicApiService } from 'ng-configcat-publicapi-ui';
+import { DeleteSettingDialogComponent, PublicApiService, NgConfigCatPublicApiUIModule } from 'ng-configcat-publicapi-ui';
 import { AuthorizationParameters } from '../models/authorization-parameters';
 import { TrelloService } from '../services/trello-service';
 import { EvaluationVersion, IntegrationLinkDetail, IntegrationLinkType } from 'ng-configcat-publicapi';
 
+import { LoaderComponent } from '../loader/loader.component';
+
 @Component({
-  selector: 'app-feature-flags-settings',
-  templateUrl: './feature-flags-settings.component.html',
-  styleUrls: ['./feature-flags-settings.component.scss']
+    selector: 'app-feature-flags-settings',
+    templateUrl: './feature-flags-settings.component.html',
+    styleUrls: ['./feature-flags-settings.component.scss'],
+    imports: [LoaderComponent, NgConfigCatPublicApiUIModule]
 })
 export class FeatureFlagsSettingsComponent implements OnInit {
+  private dialog = inject(MatDialog);
+  private publicApiService = inject(PublicApiService);
+  private trelloService = inject(TrelloService);
+
 
   loading = true;
   showError = false;
@@ -20,14 +27,7 @@ export class FeatureFlagsSettingsComponent implements OnInit {
 
   trelloPowerUpIframe: any;
 
-  @ViewChild('settingItem') elementView: ElementRef;
-
-  constructor(
-    private dialog: MatDialog,
-    private publicApiService: PublicApiService,
-    private trelloService: TrelloService
-  ) {
-  }
+  readonly elementView = viewChild<ElementRef>('settingItem');
 
   ngOnInit(): void {
     this.trelloPowerUpIframe = this.trelloService.iframe();
@@ -105,7 +105,7 @@ export class FeatureFlagsSettingsComponent implements OnInit {
 
   resize() {
     setTimeout(() => {
-      const contentHeight = this.elementView?.nativeElement?.offsetHeight;
+      const contentHeight = this.elementView()?.nativeElement?.offsetHeight;
       const height = contentHeight && contentHeight < 700 ? contentHeight : 700;
       this.trelloService.sizeToHeight(height, this.trelloPowerUpIframe);
     }, 300);

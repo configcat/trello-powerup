@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { AuthorizationParameters } from '../models/authorization-parameters';
 import { PublicApiService } from 'ng-configcat-publicapi-ui';
 import { IntegrationLinkType } from 'ng-configcat-publicapi';
@@ -12,8 +12,8 @@ const CONFIGCAT_ICON = './assets/cat_red.svg';
     providedIn: 'root'
 })
 export class TrelloService {
+    private publicApiService = inject(PublicApiService);
 
-    constructor(private publicApiService: PublicApiService) { }
 
     iframe() {
         return TrelloPowerUp.iframe();

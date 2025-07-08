@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { TrelloService } from './trello-service';
 
 const CONFIGCAT_ICON = './assets/cat_red.svg';
@@ -9,7 +9,8 @@ declare let TrelloPowerUp: any;
   providedIn: 'root'
 })
 export class TrelloBootstrapService {
-  constructor(private trelloService: TrelloService) { }
+  private trelloService = inject(TrelloService);
+
 
   initialize() {
     TrelloPowerUp.initialize({

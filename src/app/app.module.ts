@@ -7,23 +7,22 @@ import { MatCardModule } from "@angular/material/card";
 import { MatDialogModule } from "@angular/material/dialog";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
+import { MatRadioModule } from "@angular/material/radio";
 import { MatSelectModule } from "@angular/material/select";
-import { BrowserModule } from '@angular/platform-browser';
-
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
-import { AuthorizationComponent } from './authorization/authorization.component';
+import { BrowserModule } from "@angular/platform-browser";
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { NgConfigCatPublicApiUIModule } from "ng-configcat-publicapi-ui";
+import { environment } from "./../environments/environment";
+import { AddFeatureFlagComponent } from "./add-feature-flag/add-feature-flag.component";
+import { AppRoutingModule } from "./app-routing.module";
+import { AppComponent } from "./app.component";
+import { AuthorizationComponent } from "./authorization/authorization.component";
 import { CreateFeatureFlagComponent } from "./create-feature-flag/create-feature-flag.component";
 import { FeatureFlagsSettingsComponent } from "./feature-flags-settings/feature-flags-settings.component";
 import { HomeComponent } from "./home/home.component";
-import { AddFeatureFlagComponent } from "./add-feature-flag/add-feature-flag.component";
-import { MatRadioModule } from "@angular/material/radio";
-import { NgConfigCatPublicApiUIModule } from "ng-configcat-publicapi-ui";
-import { environment } from "./../environments/environment";
 import { LoaderComponent } from "./loader/loader.component";
 
-@NgModule({ declarations: [AppComponent],
+@NgModule({
   bootstrap: [AppComponent], imports: [BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
@@ -37,10 +36,13 @@ import { LoaderComponent } from "./loader/loader.component";
     MatRadioModule,
     MatCardModule,
     NgConfigCatPublicApiUIModule.forRoot(() => ({ basePath: environment.publicApiBaseUrl, dashboardBasePath: environment.dashboardBasePath })),
-    MatDialogModule, AuthorizationComponent,
+    MatDialogModule,
+    AuthorizationComponent,
     HomeComponent,
     FeatureFlagsSettingsComponent,
     AddFeatureFlagComponent,
     CreateFeatureFlagComponent,
-    LoaderComponent], providers: [provideHttpClient(withInterceptorsFromDi())] })
+    LoaderComponent],
+
+  providers: [provideHttpClient(withInterceptorsFromDi())] })
 export class AppModule { }

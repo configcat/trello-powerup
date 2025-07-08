@@ -21,8 +21,8 @@
     "@angular/router": "^20.0.6",
     "ng-configcat-publicapi": "^5.0.0",
     "ng-configcat-publicapi-ui": "file:../ng-configcat-publicapi-ui/dist/ng-configcat-publicapi-ui",
-    "rxjs": "^7.5.6",
-    "tslib": "^2.3.0",
+    "rxjs": "~7.8.1",
+    "tslib": "^2.4.0",
     "zone.js": "~0.15.1"
   },
   "devDependencies": {
@@ -30,7 +30,7 @@
     "@angular/cli": "^20.0.5",
     "@angular/compiler-cli": "^20.0.6",
     "@angular/language-service": "^20.0.6",
-    "@types/node": "^18.6.5",
+    "@types/node": "^20.11.25",
     "ts-node": "~10.9.1",
     "tslint": "~6.1.3",
     "typescript": "~5.8.3"

@@ -1,45 +1,44 @@
-import { Injectable, inject } from '@angular/core';
-import { TrelloService } from './trello-service';
+import { inject, Injectable } from "@angular/core";
+import { TrelloService } from "./trello-service";
 
-const CONFIGCAT_ICON = './assets/cat_red.svg';
+const CONFIGCAT_ICON = "./assets/cat_red.svg";
 
 declare let TrelloPowerUp: any;
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class TrelloBootstrapService {
-  private trelloService = inject(TrelloService);
-
+  private readonly trelloService = inject(TrelloService);
 
   initialize() {
     TrelloPowerUp.initialize({
-      'card-back-section': this.getCardBackSection,
-      'card-buttons': this.getCardButtons,
-      'authorization-status': this.getAuthorizationStatus,
-      'show-authorization': this.showAuthorization,
-      'on-disable': this.disable,
-      'card-badges': this.getBadges
+      "card-back-section": this.getCardBackSection,
+      "card-buttons": this.getCardButtons,
+      "authorization-status": this.getAuthorizationStatus,
+      "show-authorization": this.showAuthorization,
+      "on-disable": this.disable,
+      "card-badges": this.getBadges,
     });
   }
 
-  private getBadges = (t) => {
+  private readonly getBadges = (t) => {
     return this.trelloService.getBadgeData(t);
-  }
+  };
 
-  private disable = (t) => {
+  private readonly disable = (t) => {
     return this.trelloService.removeAuthorizationParameters(t);
-  }
+  };
 
-  private showAuthorization = (t) => {
+  private readonly showAuthorization = (t) => {
     return t.popup({
-      title: 'Authorize ConfigCat',
-      url: './authorize',
+      title: "Authorize ConfigCat",
+      url: "./authorize",
       height: 300,
     });
-  }
+  };
 
-  private getAuthorizationStatus = (t) => {
+  private readonly getAuthorizationStatus = (t) => {
     return this.trelloService.getAuthorizationParameters(t)
       .then(authorizationParameters => {
         if (authorizationParameters?.basicAuthUsername && authorizationParameters?.basicAuthPassword) {
@@ -48,52 +47,52 @@ export class TrelloBootstrapService {
         return { authorized: false };
       })
       .catch(() => ({ authorized: false }));
-  }
+  };
 
-  private getCardButtons = () => {
+  private readonly getCardButtons = () => {
     return [{
       // usually you will provide a callback function to be run on button click
       // we recommend that you use a popup on click generally
       icon: CONFIGCAT_ICON,
-      text: 'Link Feature Flag',
+      text: "Link Feature Flag",
       callback: t => {
         return t.popup({
-          title: 'Link Feature Flag',
-          url: './addfeatureflag',
-          height: 380
+          title: "Link Feature Flag",
+          url: "./addfeatureflag",
+          height: 380,
         });
-      }
+      },
     },
     {
       // usually you will provide a callback function to be run on button click
       // we recommend that you use a popup on click generally
       icon: CONFIGCAT_ICON,
-      text: 'Create and Link Feature Flag',
+      text: "Create and Link Feature Flag",
       callback: t => {
         return t.popup({
-          title: 'Create and Link Feature Flag',
-          url: './createfeatureflag',
+          title: "Create and Link Feature Flag",
+          url: "./createfeatureflag",
           height: 380,
         });
-      }
+      },
     }];
-  }
+  };
 
-  private getCardBackSection = (t) => {
+  private readonly getCardBackSection = (t) => {
     return this.trelloService.getCardSettingData(t)
       .then(setting => {
         if (setting) {
           return {
-            title: 'ConfigCat',
+            title: "ConfigCat",
             icon: CONFIGCAT_ICON, // Must be a gray icon, colored icons not allowed.
             content: {
-              type: 'iframe',
-              url: t.signUrl('./featureflags')
-            }
+              type: "iframe",
+              url: t.signUrl("./featureflags"),
+            },
           };
         } else {
           return [];
         }
       });
-  }
+  };
 }

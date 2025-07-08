@@ -1,23 +1,21 @@
-import { Component, ElementRef, OnInit, inject, viewChild } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { DeleteSettingDialogComponent, PublicApiService, NgConfigCatPublicApiUIModule } from 'ng-configcat-publicapi-ui';
-import { AuthorizationParameters } from '../models/authorization-parameters';
-import { TrelloService } from '../services/trello-service';
-import { EvaluationVersion, IntegrationLinkDetail, IntegrationLinkType } from 'ng-configcat-publicapi';
-
-import { LoaderComponent } from '../loader/loader.component';
+import { Component, ElementRef, inject, OnInit, viewChild } from "@angular/core";
+import { MatDialog } from "@angular/material/dialog";
+import { EvaluationVersion, IntegrationLinkDetail, IntegrationLinkType } from "ng-configcat-publicapi";
+import { DeleteSettingDialogComponent, NgConfigCatPublicApiUIModule, PublicApiService } from "ng-configcat-publicapi-ui";
+import { LoaderComponent } from "../loader/loader.component";
+import { AuthorizationParameters } from "../models/authorization-parameters";
+import { TrelloService } from "../services/trello-service";
 
 @Component({
-    selector: 'app-feature-flags-settings',
-    templateUrl: './feature-flags-settings.component.html',
-    styleUrls: ['./feature-flags-settings.component.scss'],
-    imports: [LoaderComponent, NgConfigCatPublicApiUIModule]
+  selector: "app-feature-flags-settings",
+  templateUrl: "./feature-flags-settings.component.html",
+  styleUrls: ["./feature-flags-settings.component.scss"],
+  imports: [LoaderComponent, NgConfigCatPublicApiUIModule],
 })
 export class FeatureFlagsSettingsComponent implements OnInit {
-  private dialog = inject(MatDialog);
-  private publicApiService = inject(PublicApiService);
-  private trelloService = inject(TrelloService);
-
+  private readonly dialog = inject(MatDialog);
+  private readonly publicApiService = inject(PublicApiService);
+  private readonly trelloService = inject(TrelloService);
 
   loading = true;
   showError = false;
@@ -27,7 +25,7 @@ export class FeatureFlagsSettingsComponent implements OnInit {
 
   trelloPowerUpIframe: any;
 
-  readonly elementView = viewChild<ElementRef>('settingItem');
+  readonly elementView = viewChild<ElementRef>("settingItem");
 
   ngOnInit(): void {
     this.trelloPowerUpIframe = this.trelloService.iframe();
@@ -40,7 +38,7 @@ export class FeatureFlagsSettingsComponent implements OnInit {
     return Promise.all([
       this.trelloService.getAuthorizationParameters(this.trelloPowerUpIframe),
       this.trelloService.getCardData(this.trelloPowerUpIframe),
-      this.trelloService.getCardSettingData(this.trelloPowerUpIframe)
+      this.trelloService.getCardSettingData(this.trelloPowerUpIframe),
     ]).then(value => {
       this.authorizationParameters = value[0];
       const card = value[1];
@@ -72,8 +70,8 @@ export class FeatureFlagsSettingsComponent implements OnInit {
     const dialogRef = this.dialog.open(DeleteSettingDialogComponent, {
       data: {
         system: "Trello",
-        ticketType: "card"
-      }
+        ticketType: "card",
+      },
     });
 
     dialogRef.afterClosed()
@@ -81,7 +79,7 @@ export class FeatureFlagsSettingsComponent implements OnInit {
         if (!result) {
           return;
         }
-        if (result.button === 'remove') {
+        if (result.button === "remove") {
           this.trelloService.removeSetting(data.environment.environmentId, data.setting.settingId);
         }
       });

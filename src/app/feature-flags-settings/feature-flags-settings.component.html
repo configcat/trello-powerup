@@ -1,18 +1,20 @@
-<div id="setting-item" class="setting-item" #settingItem>
+<div #settingItem id="setting-item" class="setting-item">
   @if (loading) {
-    <app-loader> </app-loader>
+    <app-loader />
   }
   @if (!loading && !authorizationParameters) {
     <div class="container">
-      <configcat-authorization (error)="error()" (authorized)="login($event)"></configcat-authorization>
+      <configcat-authorization (error)="error()" (authorized)="login($event)" />
     </div>
   }
   @if (!loading && authorizationParameters && showError) {
     <div class="container">
       <div class="error">
         <p><b>Something went wrong!</b></p>
-        <p>You can try again later, check the console log for more information or <a
-        href="https://configcat.com/support/" rel="noopener noreferrer" target="_blank">contact us.</a></p>
+        <p>
+          You can try again later, check the console log for more information or
+          <a href="https://configcat.com/support/" rel="noopener noreferrer" target="_blank">contact us.</a>
+        </p>
       </div>
     </div>
   }
@@ -22,28 +24,34 @@
         <div>
           @if (integrationLinkDetail.config.evaluationVersion === EvaluationVersion.V1) {
             <configcat-setting-item
+              deleteSettingText="Remove from card"
               [basicAuthUsername]="authorizationParameters.basicAuthUsername"
               [basicAuthPassword]="authorizationParameters.basicAuthPassword"
-              [productId]="integrationLinkDetail.product.productId" [configId]="integrationLinkDetail.config.configId"
+              [productId]="integrationLinkDetail.product.productId"
+              [configId]="integrationLinkDetail.config.configId"
               [environmentId]="integrationLinkDetail.environment.environmentId"
               [settingId]="integrationLinkDetail.setting.settingId"
-              (deleteSettingRequested)="onDeleteSettingRequested($event)" (saveSucceeded)="saveSucceeded()"
-              (loadSucceeded)="loadSucceeded()" (formValuesChanged)="onFormValuesChanged()"
-              deleteSettingText="Remove from card" [showEnvironmentName]="true">
-            </configcat-setting-item>
+              [showEnvironmentName]="true"
+              (deleteSettingRequested)="onDeleteSettingRequested($event)"
+              (saveSucceeded)="saveSucceeded()"
+              (loadSucceeded)="loadSucceeded()"
+              (formValuesChanged)="onFormValuesChanged()" />
           }
           @if (integrationLinkDetail.config.evaluationVersion === EvaluationVersion.V2) {
             <configcat-feature-flag-item
+              deleteSettingText="Remove from card"
               [basicAuthUsername]="authorizationParameters.basicAuthUsername"
               [basicAuthPassword]="authorizationParameters.basicAuthPassword"
-              [productId]="integrationLinkDetail.product.productId" [configId]="integrationLinkDetail.config.configId"
+              [productId]="integrationLinkDetail.product.productId"
+              [configId]="integrationLinkDetail.config.configId"
               [environmentId]="integrationLinkDetail.environment.environmentId"
               [settingId]="integrationLinkDetail.setting.settingId"
-              (deleteSettingRequested)="onDeleteSettingRequested($event)" (saveSucceeded)="saveSucceeded()"
-              (loadSucceeded)="loadSucceeded()" (formValuesChanged)="onFormValuesChanged()"
-              deleteSettingText="Remove from card" [showEnvironmentName]="true"
-              (expandedStateChanged)="expandedStateChanged()">
-            </configcat-feature-flag-item>
+              [showEnvironmentName]="true"
+              (deleteSettingRequested)="onDeleteSettingRequested($event)"
+              (saveSucceeded)="saveSucceeded()"
+              (loadSucceeded)="loadSucceeded()"
+              (formValuesChanged)="onFormValuesChanged()"
+              (expandedStateChanged)="expandedStateChanged()" />
           }
         </div>
       }

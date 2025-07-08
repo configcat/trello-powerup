@@ -1,38 +1,42 @@
 <div id="outer">
   @if (!authorizationParameters) {
     <div>
-      <configcat-authorization (error)="error()" (authorized)="login($event)"></configcat-authorization>
+      <configcat-authorization (error)="error()" (authorized)="login($event)" />
     </div>
   }
   @if (authorizationParameters) {
-    <form (ngSubmit)="add()" [formGroup]="formGroup" class="form">
+    <form class="form" [formGroup]="formGroup" (ngSubmit)="add()">
       <div class="container">
-        <configcat-product-select [basicAuthUsername]="authorizationParameters.basicAuthUsername"
+        <configcat-product-select
+          name="productId"
+          [basicAuthUsername]="authorizationParameters.basicAuthUsername"
           [basicAuthPassword]="authorizationParameters.basicAuthPassword"
-          [valueFormControl]="formGroup.controls.productId" name="productId">
-        </configcat-product-select>
+          [valueFormControl]="formGroup.controls.productId" />
         @if (formGroup.controls.productId.value) {
-          <configcat-config-select [basicAuthUsername]="authorizationParameters.basicAuthUsername"
+          <configcat-config-select
+            [basicAuthUsername]="authorizationParameters.basicAuthUsername"
             [basicAuthPassword]="authorizationParameters.basicAuthPassword"
-            [productId]="formGroup.controls.productId.value" [valueFormControl]="formGroup.controls.configId"
-            (dropdownOpened)="selectDropdownPanelChanged($event)">
-          </configcat-config-select>
+            [productId]="formGroup.controls.productId.value"
+            [valueFormControl]="formGroup.controls.configId"
+            (dropdownOpened)="selectDropdownPanelChanged($event)" />
         }
         @if (formGroup.controls.productId.value) {
-          <configcat-environment-select [basicAuthUsername]="authorizationParameters.basicAuthUsername"
+          <configcat-environment-select
+            [basicAuthUsername]="authorizationParameters.basicAuthUsername"
             [productId]="formGroup.controls.productId.value"
             [basicAuthPassword]="authorizationParameters.basicAuthPassword"
             [valueFormControl]="formGroup.controls.environmentId"
-            (dropdownOpened)="selectDropdownPanelChanged($event)" [customDropdown]="true">
-          </configcat-environment-select>
+            [customDropdown]="true"
+            (dropdownOpened)="selectDropdownPanelChanged($event)" />
         }
         @if (formGroup.controls.configId.value) {
-          <configcat-setting-select [basicAuthUsername]="authorizationParameters.basicAuthUsername"
+          <configcat-setting-select
+            [basicAuthUsername]="authorizationParameters.basicAuthUsername"
             [configId]="formGroup.controls.configId.value"
             [basicAuthPassword]="authorizationParameters.basicAuthPassword"
             [valueFormControl]="formGroup.controls.settingId"
-            (dropdownOpened)="selectDropdownPanelChanged($event)" [customDropdown]="true">
-          </configcat-setting-select>
+            [customDropdown]="true"
+            (dropdownOpened)="selectDropdownPanelChanged($event)" />
         }
       </div>
       <div>

@@ -1,13 +1,13 @@
-import { Component, OnInit, input } from '@angular/core';
+import { Component, input, OnInit } from "@angular/core";
 
 declare let Snap: any;
 declare let mina: any;
 
 @Component({
-    selector: 'app-loader',
-    templateUrl: './loader.component.html',
-    styleUrls: ['./loader.component.scss'],
-    imports: []
+  selector: "app-loader",
+  templateUrl: "./loader.component.html",
+  styleUrls: ["./loader.component.scss"],
+  imports: [],
 })
 export class LoaderComponent implements OnInit {
 

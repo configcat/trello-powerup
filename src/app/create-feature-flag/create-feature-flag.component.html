@@ -1,24 +1,25 @@
 <div id="outer">
   @if (!authorizationParameters) {
     <div>
-      <configcat-authorization (error)="error()" (authorized)="login($event)"></configcat-authorization>
+      <configcat-authorization (error)="error()" (authorized)="login($event)" />
     </div>
   }
   @if (authorizationParameters) {
-    <form (ngSubmit)="add()" [formGroup]="formGroup" class="form">
+    <form class="form" [formGroup]="formGroup" (ngSubmit)="add()">
       <div class="container">
         <div>
           <div class="header small">1. Select Product and Config</div>
-          <configcat-product-select [basicAuthUsername]="authorizationParameters.basicAuthUsername"
+          <configcat-product-select
+            name="productId"
+            [basicAuthUsername]="authorizationParameters.basicAuthUsername"
             [basicAuthPassword]="authorizationParameters.basicAuthPassword"
-            [valueFormControl]="formGroup.controls.productId" name="productId">
-          </configcat-product-select>
+            [valueFormControl]="formGroup.controls.productId" />
           @if (formGroup.controls.productId.value) {
-            <configcat-config-select [basicAuthUsername]="authorizationParameters.basicAuthUsername"
+            <configcat-config-select
+              [basicAuthUsername]="authorizationParameters.basicAuthUsername"
               [basicAuthPassword]="authorizationParameters.basicAuthPassword"
-              [productId]="formGroup.controls.productId.value" [valueFormControl]="formGroup.controls.configId"
-              >
-            </configcat-config-select>
+              [productId]="formGroup.controls.productId.value"
+              [valueFormControl]="formGroup.controls.configId" />
           }
           <div class="header small">2. Setup Feature Flag</div>
           <mat-form-field class="form-field" appearance="outline">
@@ -32,23 +33,21 @@
           </mat-form-field>
           <mat-form-field class="form-field name" appearance="outline">
             <mat-label>Name for hoomans</mat-label>
-            <input matInput placeholder="My awesome feature" formControlName="name">
+            <input matInput placeholder="My awesome feature" formControlName="name" />
             <mat-hint>A friendly name that best describes your setting.</mat-hint>
             @if (formGroup.controls.name.invalid) {
               <mat-error>
-                {{ErrorHandler.getErrorMessage(formGroup.controls.name)}}
+                {{ ErrorHandler.getErrorMessage(formGroup.controls.name) }}
               </mat-error>
             }
           </mat-form-field>
           <mat-form-field class="form-field key" appearance="outline">
             <mat-label>Key for programs</mat-label>
-            <input matInput placeholder="isMyAwesomeFeatureEnabled" formControlName="key">
-            <mat-hint>
-              Your applications will access your setting via this key.
-            </mat-hint>
+            <input matInput placeholder="isMyAwesomeFeatureEnabled" formControlName="key" />
+            <mat-hint>Your applications will access your setting via this key.</mat-hint>
             @if (formGroup.controls.key.invalid) {
               <mat-error>
-                {{ErrorHandler.getErrorMessage(formGroup.controls.key)}}
+                {{ ErrorHandler.getErrorMessage(formGroup.controls.key) }}
               </mat-error>
             }
           </mat-form-field>
@@ -58,22 +57,22 @@
             <mat-hint>A description to help you remember the purpose of your setting.</mat-hint>
             @if (formGroup.controls.hint.invalid) {
               <mat-error>
-                {{ErrorHandler.getErrorMessage(formGroup.controls.hint)}}
+                {{ ErrorHandler.getErrorMessage(formGroup.controls.hint) }}
               </mat-error>
             }
           </mat-form-field>
           <div class="header small">3. Select which environment should we link to this card</div>
           @if (formGroup.controls.productId.value) {
-            <configcat-environment-select [basicAuthUsername]="authorizationParameters.basicAuthUsername"
+            <configcat-environment-select
+              [basicAuthUsername]="authorizationParameters.basicAuthUsername"
               [productId]="formGroup.controls.productId.value"
               [basicAuthPassword]="authorizationParameters.basicAuthPassword"
-              [valueFormControl]="formGroup.controls.environmentId">
-            </configcat-environment-select>
+              [valueFormControl]="formGroup.controls.environmentId" />
           }
         </div>
         @if (formGroup.errors && formGroup.errors.serverSide) {
           <div class="error">
-            <span>{{formGroup.errors.serverSide}}</span>
+            <span>{{ formGroup.errors.serverSide }}</span>
           </div>
         }
         <div class="buttons">

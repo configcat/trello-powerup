@@ -1,3 +1,3 @@
 export interface CardSettingData {
-    lastUpdatedAt: Date;
+  lastUpdatedAt: Date;
 }

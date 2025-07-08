@@ -1,25 +1,23 @@
-import { Component, OnInit, OnDestroy, inject, DOCUMENT } from '@angular/core';
-
-import { UntypedFormGroup, UntypedFormBuilder, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { TrelloService } from '../services/trello-service';
-import { AuthorizationParameters } from '../models/authorization-parameters';
-import { Subscription } from 'rxjs';
-import { PublicApiService, NgConfigCatPublicApiUIModule } from 'ng-configcat-publicapi-ui';
-import { IntegrationLinkType } from 'ng-configcat-publicapi';
-import { MatButton } from '@angular/material/button';
+import { Component, DOCUMENT, inject, OnDestroy, OnInit } from "@angular/core";
+import { FormsModule, ReactiveFormsModule, UntypedFormBuilder, UntypedFormGroup, Validators } from "@angular/forms";
+import { MatButton } from "@angular/material/button";
+import { IntegrationLinkType } from "ng-configcat-publicapi";
+import { NgConfigCatPublicApiUIModule, PublicApiService } from "ng-configcat-publicapi-ui";
+import { Subscription } from "rxjs";
+import { AuthorizationParameters } from "../models/authorization-parameters";
+import { TrelloService } from "../services/trello-service";
 
 @Component({
-    selector: 'app-add-feature-flag',
-    templateUrl: './add-feature-flag.component.html',
-    styleUrls: ['./add-feature-flag.component.scss'],
-    imports: [NgConfigCatPublicApiUIModule, FormsModule, ReactiveFormsModule, MatButton]
+  selector: "app-add-feature-flag",
+  templateUrl: "./add-feature-flag.component.html",
+  styleUrls: ["./add-feature-flag.component.scss"],
+  imports: [NgConfigCatPublicApiUIModule, FormsModule, ReactiveFormsModule, MatButton],
 })
 export class AddFeatureFlagComponent implements OnInit, OnDestroy {
-  private formBuilder = inject(UntypedFormBuilder);
-  private trelloService = inject(TrelloService);
-  private publicApiService = inject(PublicApiService);
-  private document = inject<Document>(DOCUMENT);
-
+  private readonly formBuilder = inject(UntypedFormBuilder);
+  private readonly trelloService = inject(TrelloService);
+  private readonly publicApiService = inject(PublicApiService);
+  private readonly document = inject<Document>(DOCUMENT);
 
   formGroup: UntypedFormGroup;
   authorizationParameters: AuthorizationParameters;
@@ -30,7 +28,7 @@ export class AddFeatureFlagComponent implements OnInit, OnDestroy {
       productId: [null, [Validators.required]],
       configId: [null, [Validators.required]],
       environmentId: [null, [Validators.required]],
-      settingId: [null, [Validators.required]]
+      settingId: [null, [Validators.required]],
     });
 
     this.subscription = this.formGroup.statusChanges.subscribe(() => {
@@ -92,20 +90,20 @@ export class AddFeatureFlagComponent implements OnInit, OnDestroy {
     if (event === false) {
       this.resize();
     } else {
-      this.resize('.cdk-overlay-container');
+      this.resize(".cdk-overlay-container");
     }
 
   }
 
   resize(selector?: string) {
     setTimeout(() => {
-      if (selector === '.cdk-overlay-container') {
+      if (selector === ".cdk-overlay-container") {
         //element height calculation based on trello sizeTo method + 15 px
         const el = this.document.querySelector(selector);
-        let requestedHeight = Math.ceil(Math.max(el.scrollHeight, el.getBoundingClientRect().height));
+        const requestedHeight = Math.ceil(Math.max(el.scrollHeight, el.getBoundingClientRect().height));
         this.trelloService.sizeTo(requestedHeight + 15);
       } else {
-        this.trelloService.sizeTo('#outer');
+        this.trelloService.sizeTo("#outer");
       }
     }, 200);
   }

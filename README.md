@@ -66,6 +66,9 @@ Manage features and change your software configuration using [ConfigCat feature 
    - [x] Show Authorization
 8. If you encounter CORS errors during the ConfigCat public api authorization flow, use [this](https://chrome.google.com/webstore/detail/moesif-origin-cors-change/digfbfaphojjndkpccljibejjbppifbc?hl=en-US) magic stick.
 
+## Code formatting
+We have configured prettier to format the code. Prettier settings are in the .prettierrc file. It is recommended to install the [Prettier - Code](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode) formatter extension in VSCode.
+
 ## Contributions are welcome
 
 ## Need help?

@@ -113,6 +113,12 @@
               "devServerTarget": "configcat-trello-powerup:serve:production"
             }
           }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": ["app/**/*.ts", "app/**/*.html"]
+          }
         }
       }
     }
@@ -121,6 +127,12 @@
     "analytics": false
   },
   "schematics": {
+    "@angular-eslint/schematics:application": {
+      "setParserOptionsProject": true
+    },
+    "@angular-eslint/schematics:library": {
+      "setParserOptionsProject": true
+    },
     "@schematics/angular:component": {
       "type": "component"
     },

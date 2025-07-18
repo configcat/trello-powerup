@@ -1,15 +1,13 @@
 import { Component } from "@angular/core";
+import { RouterModule } from "@angular/router";
 
 @Component({
-  selector: "app-root",
+  selector: "configcat-trello-root",
   templateUrl: "./app.component.html",
-  standalone: false,
+  imports: [RouterModule],
 })
 export class AppComponent {
   title = "configcat-trello-powerup";
 
-  constructor() {
-    //empty consturctor
-  }
 }
 

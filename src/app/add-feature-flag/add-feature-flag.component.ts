@@ -1,41 +1,52 @@
 import { Component, DOCUMENT, inject, OnDestroy, OnInit } from "@angular/core";
-import { FormsModule, ReactiveFormsModule, UntypedFormBuilder, UntypedFormGroup, Validators } from "@angular/forms";
+import { FormControl, FormsModule, NonNullableFormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatButton } from "@angular/material/button";
 import { IntegrationLinkType } from "ng-configcat-publicapi";
-import { NgConfigCatPublicApiUIModule, PublicApiService } from "ng-configcat-publicapi-ui";
+import { AuthorizationModel, NgConfigCatPublicApiUIModule, PublicApiService } from "ng-configcat-publicapi-ui";
 import { Subscription } from "rxjs";
 import { AuthorizationParameters } from "../models/authorization-parameters";
 import { TrelloService } from "../services/trello-service";
 
 @Component({
-  selector: "app-add-feature-flag",
+  selector: "configcat-trello-add-feature-flag",
   templateUrl: "./add-feature-flag.component.html",
   styleUrls: ["./add-feature-flag.component.scss"],
   imports: [NgConfigCatPublicApiUIModule, FormsModule, ReactiveFormsModule, MatButton],
 })
 export class AddFeatureFlagComponent implements OnInit, OnDestroy {
-  private readonly formBuilder = inject(UntypedFormBuilder);
+  private readonly formBuilder = inject(NonNullableFormBuilder);
   private readonly trelloService = inject(TrelloService);
   private readonly publicApiService = inject(PublicApiService);
   private readonly document = inject<Document>(DOCUMENT);
 
-  formGroup: UntypedFormGroup;
-  authorizationParameters: AuthorizationParameters;
-  subscription: Subscription;
+  authorizationParameters!: AuthorizationParameters;
+  subscription!: Subscription | null;
+
+  formGroup = this.formBuilder.group({
+    productId: new FormControl<string>("", {
+      nonNullable: true,
+      validators: [Validators.required],
+    }),
+    environmentId: new FormControl<string>("", {
+      nonNullable: true,
+      validators: [Validators.required],
+    }),
+    configId: new FormControl<string>("", {
+      nonNullable: true,
+      validators: [Validators.required],
+    }),
+    settingId: new FormControl<number>(0, {
+      nonNullable: true,
+      validators: [Validators.required],
+    }),
+  });
 
   ngOnInit(): void {
-    this.formGroup = this.formBuilder.group({
-      productId: [null, [Validators.required]],
-      configId: [null, [Validators.required]],
-      environmentId: [null, [Validators.required]],
-      settingId: [null, [Validators.required]],
-    });
-
     this.subscription = this.formGroup.statusChanges.subscribe(() => {
       this.resize();
     });
 
-    this.init();
+    void this.init();
   }
 
   ngOnDestroy() {
@@ -50,11 +61,16 @@ export class AddFeatureFlagComponent implements OnInit, OnDestroy {
     this.resize();
   }
 
-  login(authorizationParameters) {
+  login(authorizationModel: AuthorizationModel) {
     this.trelloService
-      .setAuthorizationParameters(authorizationParameters)
+      .setAuthorizationParameters({ basicAuthUsername: authorizationModel.basicAuthUsername, basicAuthPassword: authorizationModel.basicAuthPassword })
       .then(() => {
-        this.init();
+        this.init().catch(() => {
+          console.log("AddFeatureFlagComponent init failed.");
+        });
+      })
+      .catch(() => {
+        console.log("trelloService setAuthorizationParameters failed.");
       });
   }
 
@@ -70,10 +86,9 @@ export class AddFeatureFlagComponent implements OnInit, OnDestroy {
     this.trelloService.getCardData().then(
       card => this.publicApiService
         .createIntegrationLinksService(this.authorizationParameters.basicAuthUsername, this.authorizationParameters.basicAuthPassword)
-        .addOrUpdateIntegrationLink(this.formGroup.value.environmentId, this.formGroup.value.settingId,
+        .addOrUpdateIntegrationLink(this.formGroup.controls.environmentId.value, this.formGroup.controls.settingId.value,
           IntegrationLinkType.Trello, card.id,
           { description: card.name, url: card.url })
-        .toPromise()
     )
       .then(() => {
         return this.trelloService.setCardSettingData({ lastUpdatedAt: new Date() });
@@ -81,13 +96,13 @@ export class AddFeatureFlagComponent implements OnInit, OnDestroy {
       .then(() => {
         return this.trelloService.closePopup();
       })
-      .catch(error => {
+      .catch((error: unknown) => {
         console.log(error);
       });
   }
 
-  selectDropdownPanelChanged(event: any) {
-    if (event === false) {
+  selectDropdownPanelChanged(event: boolean) {
+    if (!event) {
       this.resize();
     } else {
       this.resize(".cdk-overlay-container");
@@ -100,10 +115,12 @@ export class AddFeatureFlagComponent implements OnInit, OnDestroy {
       if (selector === ".cdk-overlay-container") {
         //element height calculation based on trello sizeTo method + 15 px
         const el = this.document.querySelector(selector);
-        const requestedHeight = Math.ceil(Math.max(el.scrollHeight, el.getBoundingClientRect().height));
-        this.trelloService.sizeTo(requestedHeight + 15);
+        if (el) {
+          const requestedHeight = Math.ceil(Math.max(el.scrollHeight, el.getBoundingClientRect().height));
+          void this.trelloService.sizeToHeight(requestedHeight + 15);
+        }
       } else {
-        this.trelloService.sizeTo("#outer");
+        void this.trelloService.sizeTo("#outer");
       }
     }, 200);
   }

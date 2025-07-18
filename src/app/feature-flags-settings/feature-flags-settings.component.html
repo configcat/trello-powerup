@@ -1,10 +1,10 @@
 <div #settingItem id="setting-item" class="setting-item">
   @if (loading) {
-    <app-loader />
+    <configcat-trello-loader />
   }
   @if (!loading && !authorizationParameters) {
     <div class="container">
-      <configcat-authorization (error)="error()" (authorized)="login($event)" />
+      <app-authorization (error)="error()" (authorized)="login($event)" />
     </div>
   }
   @if (!loading && authorizationParameters && showError) {
@@ -23,7 +23,7 @@
       @for (integrationLinkDetail of integrationLinkDetails; track integrationLinkDetail) {
         <div>
           @if (integrationLinkDetail.config.evaluationVersion === EvaluationVersion.V1) {
-            <configcat-setting-item
+            <app-setting-item
               deleteSettingText="Remove from card"
               [basicAuthUsername]="authorizationParameters.basicAuthUsername"
               [basicAuthPassword]="authorizationParameters.basicAuthPassword"
@@ -38,7 +38,7 @@
               (formValuesChanged)="onFormValuesChanged()" />
           }
           @if (integrationLinkDetail.config.evaluationVersion === EvaluationVersion.V2) {
-            <configcat-feature-flag-item
+            <app-feature-flag-item
               deleteSettingText="Remove from card"
               [basicAuthUsername]="authorizationParameters.basicAuthUsername"
               [basicAuthPassword]="authorizationParameters.basicAuthPassword"

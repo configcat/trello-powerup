@@ -1,7 +1,7 @@
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
 
-const routes: Routes = [
+export const routes: Routes = [
   { path: "", pathMatch: "full", loadComponent: () => import("./home/home.component").then(m => m.HomeComponent) },
   { path: "authorize", loadComponent: () => import("./authorization/authorization.component").then(m => m.AuthorizationComponent) },
   { path: "addfeatureflag", loadComponent: () => import("./add-feature-flag/add-feature-flag.component").then(m => m.AddFeatureFlagComponent) },

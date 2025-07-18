@@ -2,7 +2,7 @@ import { Component, inject, OnInit } from "@angular/core";
 import { TrelloBootstrapService } from "../services/trello-bootstrap.service";
 
 @Component({
-  selector: "app-home",
+  selector: "configcat-trello-home",
   templateUrl: "./home.component.html",
   styleUrls: ["./home.component.scss"],
 })

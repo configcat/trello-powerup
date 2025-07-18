@@ -15,15 +15,14 @@ import { NgConfigCatPublicApiUIModule } from "ng-configcat-publicapi-ui";
 import { environment } from "./../environments/environment";
 import { AddFeatureFlagComponent } from "./add-feature-flag/add-feature-flag.component";
 import { AppRoutingModule } from "./app-routing.module";
-import { AppComponent } from "./app.component";
-import { AuthorizationComponent } from "./authorization/authorization.component";
+import { AuthComponent } from "./authorization/authorization.component";
 import { CreateFeatureFlagComponent } from "./create-feature-flag/create-feature-flag.component";
 import { FeatureFlagsSettingsComponent } from "./feature-flags-settings/feature-flags-settings.component";
 import { HomeComponent } from "./home/home.component";
 import { LoaderComponent } from "./loader/loader.component";
 
 @NgModule({
-  bootstrap: [AppComponent], imports: [BrowserModule,
+  imports: [BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
     FormsModule,
@@ -37,7 +36,7 @@ import { LoaderComponent } from "./loader/loader.component";
     MatCardModule,
     NgConfigCatPublicApiUIModule.forRoot(() => ({ basePath: environment.publicApiBaseUrl, dashboardBasePath: environment.dashboardBasePath })),
     MatDialogModule,
-    AuthorizationComponent,
+    AuthComponent,
     HomeComponent,
     FeatureFlagsSettingsComponent,
     AddFeatureFlagComponent,

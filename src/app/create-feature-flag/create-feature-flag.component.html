@@ -1,7 +1,7 @@
 <div id="outer">
   @if (!authorizationParameters) {
     <div>
-      <configcat-authorization (error)="error()" (authorized)="login($event)" />
+      <app-authorization (error)="error()" (authorized)="login($event)" />
     </div>
   }
   @if (authorizationParameters) {
@@ -9,13 +9,13 @@
       <div class="container">
         <div>
           <div class="header small">1. Select Product and Config</div>
-          <configcat-product-select
+          <app-product-select
             name="productId"
             [basicAuthUsername]="authorizationParameters.basicAuthUsername"
             [basicAuthPassword]="authorizationParameters.basicAuthPassword"
             [valueFormControl]="formGroup.controls.productId" />
           @if (formGroup.controls.productId.value) {
-            <configcat-config-select
+            <app-config-select
               [basicAuthUsername]="authorizationParameters.basicAuthUsername"
               [basicAuthPassword]="authorizationParameters.basicAuthPassword"
               [productId]="formGroup.controls.productId.value"
@@ -63,7 +63,7 @@
           </mat-form-field>
           <div class="header small">3. Select which environment should we link to this card</div>
           @if (formGroup.controls.productId.value) {
-            <configcat-environment-select
+            <app-environment-select
               [basicAuthUsername]="authorizationParameters.basicAuthUsername"
               [productId]="formGroup.controls.productId.value"
               [basicAuthPassword]="authorizationParameters.basicAuthPassword"

@@ -1,23 +1,14 @@
 import { Component, input, OnInit } from "@angular/core";
 
-declare let Snap: any;
-declare let mina: any;
-
 @Component({
-  selector: "app-loader",
+  selector: "configcat-trello-loader",
   templateUrl: "./loader.component.html",
   styleUrls: ["./loader.component.scss"],
   imports: [],
 })
 export class LoaderComponent implements OnInit {
-
-  set: any;
   showLoader = false;
-  readonly skipTimeOut = input<boolean>(undefined);
-
-  constructor() {
-    //empty constructor
-  }
+  readonly skipTimeOut = input<boolean>(false);
 
   ngOnInit() {
     if (this.skipTimeOut()) {

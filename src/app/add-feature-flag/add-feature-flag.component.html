@@ -1,19 +1,19 @@
 <div id="outer">
   @if (!authorizationParameters) {
     <div>
-      <configcat-authorization (error)="error()" (authorized)="login($event)" />
+      <app-authorization (error)="error()" (authorized)="login($event)" />
     </div>
   }
   @if (authorizationParameters) {
     <form class="form" [formGroup]="formGroup" (ngSubmit)="add()">
       <div class="container">
-        <configcat-product-select
+        <app-product-select
           name="productId"
           [basicAuthUsername]="authorizationParameters.basicAuthUsername"
           [basicAuthPassword]="authorizationParameters.basicAuthPassword"
           [valueFormControl]="formGroup.controls.productId" />
         @if (formGroup.controls.productId.value) {
-          <configcat-config-select
+          <app-config-select
             [basicAuthUsername]="authorizationParameters.basicAuthUsername"
             [basicAuthPassword]="authorizationParameters.basicAuthPassword"
             [productId]="formGroup.controls.productId.value"
@@ -21,7 +21,7 @@
             (dropdownOpened)="selectDropdownPanelChanged($event)" />
         }
         @if (formGroup.controls.productId.value) {
-          <configcat-environment-select
+          <app-environment-select
             [basicAuthUsername]="authorizationParameters.basicAuthUsername"
             [productId]="formGroup.controls.productId.value"
             [basicAuthPassword]="authorizationParameters.basicAuthPassword"
@@ -30,7 +30,7 @@
             (dropdownOpened)="selectDropdownPanelChanged($event)" />
         }
         @if (formGroup.controls.configId.value) {
-          <configcat-setting-select
+          <app-setting-select
             [basicAuthUsername]="authorizationParameters.basicAuthUsername"
             [configId]="formGroup.controls.configId.value"
             [basicAuthPassword]="authorizationParameters.basicAuthPassword"

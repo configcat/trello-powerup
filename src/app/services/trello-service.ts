@@ -1,7 +1,7 @@
 import { inject, Injectable } from "@angular/core";
 import { IntegrationLinkDetailsModel, IntegrationLinkType } from "ng-configcat-publicapi";
 import { PublicApiService } from "ng-configcat-publicapi-ui";
-import { forkJoin } from "rxjs";
+import { firstValueFrom } from "rxjs";
 import { CallbackHandler, CardBadge, IFrame } from "trellopowerup/lib/powerup";
 import { AuthorizationParameters } from "../models/authorization-parameters";
 import { CardSettingData } from "../models/card-setting-data";
@@ -50,7 +50,7 @@ export class TrelloService {
         return this.setCardSettingData({ lastUpdatedAt: new Date() }, trelloPowerUp);
       })
       .finally(() => {
-        return (trelloPowerUp ?? trelloPowerUpCallbackHandler)
+        return void (trelloPowerUp ?? trelloPowerUpCallbackHandler)
           .alert({
             message: "Authorized to ConfigCat 🎉",
             duration: 5,
@@ -69,11 +69,11 @@ export class TrelloService {
     return (trelloPowerUp ?? trelloPowerUpCallbackHandler).get("card", "shared", "cardSettingData");
   }
 
-  setCardSettingData(cardData: CardSettingData, trelloPowerUp: CallbackHandler | null = null): Promise<CardSettingData> {
+  setCardSettingData(cardData: CardSettingData, trelloPowerUp: CallbackHandler | null = null): Promise<void> {
     return (trelloPowerUp ?? trelloPowerUpCallbackHandler).set("card", "shared", "cardSettingData", cardData);
   }
 
-  removeCardSettingData(trelloPowerUp: CallbackHandler | null = null): Promise<CardSettingData> {
+  removeCardSettingData(trelloPowerUp: CallbackHandler | null = null): Promise<void> {
     return (trelloPowerUp ?? trelloPowerUpCallbackHandler).remove("card", "shared", "cardSettingData");
   }
 
@@ -99,15 +99,17 @@ export class TrelloService {
       return this.publicApiService
         .createIntegrationLinksService(authorizationParameters.basicAuthUsername, authorizationParameters.basicAuthPassword)
         .deleteIntegrationLink(environmentId, settingId, IntegrationLinkType.Trello, card.id)
-        .toPromise();
-    })
-      .then((deleteModel) => {
-        if (!deleteModel.hasRemainingIntegrationLink) {
-          return this.removeCardSettingData(trelloPowerUp);
-        } else {
-          return this.updateCardSettingDataLastUpdatedAt(trelloPowerUp);
+        .subscribe({
+          next: deleteModel => {
+            if (!deleteModel.hasRemainingIntegrationLink) {
+              void this.removeCardSettingData(trelloPowerUp);
+            } else {
+              void this.updateCardSettingDataLastUpdatedAt(trelloPowerUp);
+            }
+          },
         }
-      });
+        );
+    });
   }
 
   render(func: () => void, trelloPowerUpIFrame: IFrame | null = null) {
@@ -119,65 +121,34 @@ export class TrelloService {
   }
 
   getBadgeData(trelloPowerUp: CallbackHandler | null = null): Promise<CardBadge[]> {
-    return forkJoin({
-      authorizationParameters: this.getAuthorizationParameters(trelloPowerUp),
-      setting: this.getCardSettingData(trelloPowerUp),
-      card: this.getCardData(trelloPowerUp),
-    }).subscribe({
-      next: result => {
-        if (!result.setting || !result.card || !result.authorizationParameters) {
-          return [] as CardBadge[];
-        }
-        return this.publicApiService
-          .createIntegrationLinksService(result.authorizationParameters.basicAuthUsername, result.authorizationParameters.basicAuthPassword)
-          .getIntegrationLinkDetails(IntegrationLinkType.Trello, result.card.id)
-          .subscribe((linkDetails: IntegrationLinkDetailsModel) => {
-            if (linkDetails?.details && linkDetails.details.length > 0) {
-              return linkDetails.details.map(detail => {
-                return {
-                  text: linkDetails.details!.length > 1 ? detail.setting.name + ": " + detail.status : detail.status,
-                  icon: CONFIGCAT_ICON,
-                  color: "green",
-                } as CardBadge;
-              });
-            }
-            return [] as CardBadge[];
-          });
-      },
-      error: () => {
-        console.log("Well fail.");
+    return Promise.all([
+      this.getAuthorizationParameters(trelloPowerUp),
+      this.getCardSettingData(trelloPowerUp),
+      this.getCardData(trelloPowerUp),
+    ]).then(async value => {
+      const authorizationParameters = value[0];
+      const setting = value[1];
+      const card = value[2];
+
+      if (!setting || !card || !authorizationParameters) {
         return [] as CardBadge[];
-      },
+      }
+
+      const linkDetails: IntegrationLinkDetailsModel = await firstValueFrom(this.publicApiService
+        .createIntegrationLinksService(authorizationParameters.basicAuthUsername, authorizationParameters.basicAuthPassword)
+        .getIntegrationLinkDetails(IntegrationLinkType.Trello, card.id));
+
+      if (linkDetails?.details && linkDetails.details.length > 0) {
+        return linkDetails.details.map(detail => {
+          return {
+            text: linkDetails.details!.length > 1 ? detail.setting.name + ": " + detail.status : detail.status,
+            icon: CONFIGCAT_ICON,
+            color: "green",
+          } as CardBadge;
+        });
+      }
+      return [] as CardBadge[];
     });
-    // return Promise.all([
-    //   this.getAuthorizationParameters(trelloPowerUp),
-    //   this.getCardSettingData(trelloPowerUp),
-    //   this.getCardData(trelloPowerUp),
-    // ]).then(value => {
-    //   const authorizationParameters = value[0];
-    //   const setting = value[1];
-    //   const card = value[2];
-
-    //   if (!setting || !card || !authorizationParameters) {
-    //     return [] as CardBadge[];
-    //   }
-
-    //   return this.publicApiService
-    //     .createIntegrationLinksService(authorizationParameters.basicAuthUsername, authorizationParameters.basicAuthPassword)
-    //     .getIntegrationLinkDetails(IntegrationLinkType.Trello, card.id)
-    //     .subscribe((linkDetails: IntegrationLinkDetailsModel) => {
-    //       if (linkDetails?.details && linkDetails.details.length > 0) {
-    //         return linkDetails.details.map(detail => {
-    //           return {
-    //             text: linkDetails.details!.length > 1 ? detail.setting.name + ": " + detail.status : detail.status,
-    //             icon: CONFIGCAT_ICON,
-    //             color: "green",
-    //           } as CardBadge;
-    //         });
-    //       }
-    //       return [] as CardBadge[];
-    //     });
-    // });
   }
 
   showHttpUnauthorizedAlert(trelloPowerUp: CallbackHandler | null = null) {

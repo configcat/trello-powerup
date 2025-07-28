@@ -11,15 +11,6 @@
       "name": "debug app",
       "url": "https://localhost:4200",
       "webRoot": "${workspaceFolder}"
-    },
-    {
-      "type": "node",
-      "request": "launch",
-      "name": "debug e2e",
-      "program": "${workspaceRoot}/node_modules/protractor/bin/protractor",
-      "args": ["${workspaceRoot}/e2e/protractor.conf.js"],
-      "preLaunchTask": "tsc: build - tsconfig.json",
-      "outFiles": ["${workspaceFolder}/dist/out-tsc/**/*.js"]
     }
   ]
 }

@@ -41,7 +41,7 @@ export class TrelloBootstrapService {
   };
 
   private readonly getAuthorizationStatus = () => {
-    this.trelloService.getAuthorizationParameters(t)
+    this.trelloService.getAuthorizationParameters()
       .then(authorizationParameters => {
         if (authorizationParameters?.basicAuthUsername && authorizationParameters?.basicAuthPassword) {
           return { authorized: true };

@@ -2,8 +2,6 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { FormControl, FormGroup } from "@angular/forms";
 
 export class ErrorHandler {
-
-  //TODO replace with UI FromHelper calls?
   public static getErrorMessage(control: FormControl<string>, hint = "") {
     if (!control || control.valid) {
       return null;

@@ -6,7 +6,6 @@ import { CallbackHandler, CardBadge, IFrame } from "trellopowerup/lib/powerup";
 import { AuthorizationParameters } from "../models/authorization-parameters";
 import { CardSettingData } from "../models/card-setting-data";
 
-declare let trelloPowerUpCallbackHandler: Trello.PowerUp.CallbackHandler;
 declare let trelloPowerUp: Trello.PowerUp.PowerUp;
 
 const CONFIGCAT_ICON = "./assets/cat_red.svg";
@@ -21,36 +20,32 @@ export class TrelloService {
     return trelloPowerUp.iframe();
   }
 
-  callbackHandler(): CallbackHandler {
-    return trelloPowerUpCallbackHandler;
+  closePopup(trelloPowerUpIFrame: IFrame | null = null) {
+    return (trelloPowerUpIFrame ?? trelloPowerUp.iframe()).closePopup();
   }
 
-  closePopup(trelloPowerUp: CallbackHandler | null = null) {
-    return (trelloPowerUp ?? trelloPowerUpCallbackHandler).closePopup();
+  sizeTo(selector: string, trelloPowerUpIFrame: IFrame | null = null) {
+    return (trelloPowerUpIFrame ?? trelloPowerUp.iframe()).sizeTo(selector);
   }
 
-  sizeTo(selector: string, trelloPowerUp: CallbackHandler | null = null) {
-    return (trelloPowerUp ?? trelloPowerUpCallbackHandler).sizeTo(selector);
+  sizeToHeight(height: number, trelloPowerUpIFrame: IFrame | null = null) {
+    return (trelloPowerUpIFrame ?? trelloPowerUp.iframe()).sizeTo(height);
   }
 
-  sizeToHeight(height: number, trelloPowerUp: CallbackHandler | null = null) {
-    return (trelloPowerUp ?? trelloPowerUpCallbackHandler).sizeTo(height);
-  }
-
-  getAuthorizationParameters(trelloPowerUp: CallbackHandler | null = null): Promise<AuthorizationParameters> {
-    return (trelloPowerUp ?? trelloPowerUpCallbackHandler).loadSecret("authorization").then((authorizationParameters: string) => {
+  getAuthorizationParameters(trelloPowerUpCallbackHandler: CallbackHandler | null = null): Promise<AuthorizationParameters> {
+    return (trelloPowerUpCallbackHandler ?? trelloPowerUp.iframe()).loadSecret("authorization").then((authorizationParameters: string) => {
       return JSON.parse(authorizationParameters) as AuthorizationParameters;
     });
   }
 
-  setAuthorizationParameters(authorizationParameters: AuthorizationParameters, trelloPowerUp: CallbackHandler | null = null): Promise<void> {
-    return (trelloPowerUp ?? trelloPowerUpCallbackHandler)
+  setAuthorizationParameters(authorizationParameters: AuthorizationParameters, trelloPowerUpCallbackHandler: CallbackHandler | null = null): Promise<void> {
+    return (trelloPowerUpCallbackHandler ?? trelloPowerUp.iframe())
       .storeSecret("authorization", JSON.stringify(authorizationParameters))
       .then(() => {
-        return this.setCardSettingData({ lastUpdatedAt: new Date() }, trelloPowerUp);
+        return this.setCardSettingData({ lastUpdatedAt: new Date() }, trelloPowerUpCallbackHandler);
       })
       .finally(() => {
-        return void (trelloPowerUp ?? trelloPowerUpCallbackHandler)
+        return void (trelloPowerUpCallbackHandler ?? trelloPowerUp.iframe())
           .alert({
             message: "Authorized to ConfigCat 🎉",
             duration: 5,
@@ -60,38 +55,37 @@ export class TrelloService {
 
   }
 
-  removeAuthorizationParameters(trelloPowerUp: CallbackHandler | null = null) {
-    return (trelloPowerUp ?? trelloPowerUpCallbackHandler)
-      .clearSecret("authorization");
+  removeAuthorizationParameters(trelloPowerUpCallbackHandler: CallbackHandler | null = null) {
+    return (trelloPowerUpCallbackHandler ?? trelloPowerUp.iframe()).clearSecret("authorization");
   }
 
-  getCardSettingData(trelloPowerUp: CallbackHandler | null = null): Promise<CardSettingData> {
-    return (trelloPowerUp ?? trelloPowerUpCallbackHandler).get("card", "shared", "cardSettingData");
+  getCardSettingData(trelloPowerUpCallbackHandler: CallbackHandler | null = null): Promise<CardSettingData> {
+    return (trelloPowerUpCallbackHandler ?? trelloPowerUp.iframe()).get("card", "shared", "cardSettingData");
   }
 
-  setCardSettingData(cardData: CardSettingData, trelloPowerUp: CallbackHandler | null = null): Promise<void> {
-    return (trelloPowerUp ?? trelloPowerUpCallbackHandler).set("card", "shared", "cardSettingData", cardData);
+  setCardSettingData(cardData: CardSettingData, trelloPowerUpCallbackHandler: CallbackHandler | null = null): Promise<void> {
+    return (trelloPowerUpCallbackHandler ?? trelloPowerUp.iframe()).set("card", "shared", "cardSettingData", cardData);
   }
 
-  removeCardSettingData(trelloPowerUp: CallbackHandler | null = null): Promise<void> {
-    return (trelloPowerUp ?? trelloPowerUpCallbackHandler).remove("card", "shared", "cardSettingData");
+  removeCardSettingData(trelloPowerUpCallbackHandler: CallbackHandler | null = null): Promise<void> {
+    return (trelloPowerUpCallbackHandler ?? trelloPowerUp.iframe()).remove("card", "shared", "cardSettingData");
   }
 
-  updateCardSettingDataLastUpdatedAt(trelloPowerUp: CallbackHandler | null = null) {
-    return this.getCardSettingData((trelloPowerUp ?? trelloPowerUpCallbackHandler)).then(setting => {
+  updateCardSettingDataLastUpdatedAt(trelloPowerUpCallbackHandler: CallbackHandler | null = null) {
+    return this.getCardSettingData(trelloPowerUpCallbackHandler).then(setting => {
       if (!setting) {
         setting = { lastUpdatedAt: new Date() };
       }
 
       setting.lastUpdatedAt = new Date();
-      return this.setCardSettingData(setting, (trelloPowerUp ?? trelloPowerUpCallbackHandler));
+      return this.setCardSettingData(setting, trelloPowerUpCallbackHandler);
     });
   }
 
-  removeSetting(environmentId: string, settingId: number, trelloPowerUp: CallbackHandler | null = null) {
+  removeSetting(environmentId: string, settingId: number, trelloPowerUpCallbackHandler: CallbackHandler | null = null) {
     return Promise.all([
-      this.getAuthorizationParameters(trelloPowerUp),
-      this.getCardData(trelloPowerUp),
+      this.getAuthorizationParameters(trelloPowerUpCallbackHandler),
+      this.getCardData(trelloPowerUpCallbackHandler),
     ]).then(value => {
       const authorizationParameters = value[0];
       const card = value[1];
@@ -102,9 +96,9 @@ export class TrelloService {
         .subscribe({
           next: deleteModel => {
             if (!deleteModel.hasRemainingIntegrationLink) {
-              void this.removeCardSettingData(trelloPowerUp);
+              void this.removeCardSettingData(trelloPowerUpCallbackHandler);
             } else {
-              void this.updateCardSettingDataLastUpdatedAt(trelloPowerUp);
+              void this.updateCardSettingDataLastUpdatedAt(trelloPowerUpCallbackHandler);
             }
           },
         }
@@ -116,15 +110,15 @@ export class TrelloService {
     return (trelloPowerUpIFrame ?? trelloPowerUp.iframe()).render(func);
   }
 
-  getCardData(trelloPowerUp: CallbackHandler | null = null) {
-    return (trelloPowerUp ?? trelloPowerUpCallbackHandler).card("id", "name", "url");
+  getCardData(trelloPowerUpCallbackHandler: CallbackHandler | null = null) {
+    return (trelloPowerUpCallbackHandler ?? trelloPowerUp.iframe()).card("id", "name", "url");
   }
 
-  getBadgeData(trelloPowerUp: CallbackHandler | null = null): Promise<CardBadge[]> {
+  getBadgeData(trelloPowerUpCallbackHandler: CallbackHandler | null = null): Promise<CardBadge[]> {
     return Promise.all([
-      this.getAuthorizationParameters(trelloPowerUp),
-      this.getCardSettingData(trelloPowerUp),
-      this.getCardData(trelloPowerUp),
+      this.getAuthorizationParameters(trelloPowerUpCallbackHandler),
+      this.getCardSettingData(trelloPowerUpCallbackHandler),
+      this.getCardData(trelloPowerUpCallbackHandler),
     ]).then(async value => {
       const authorizationParameters = value[0];
       const setting = value[1];
@@ -151,8 +145,8 @@ export class TrelloService {
     });
   }
 
-  showHttpUnauthorizedAlert(trelloPowerUp: CallbackHandler | null = null) {
-    return (trelloPowerUp ?? trelloPowerUpCallbackHandler)
+  showHttpUnauthorizedAlert(trelloPowerUpIFrame: IFrame | null = null) {
+    return (trelloPowerUpIFrame ?? trelloPowerUp.iframe())
       .alert({
         message: "Authorization failed. Please try to log in again.",
         duration: 5,

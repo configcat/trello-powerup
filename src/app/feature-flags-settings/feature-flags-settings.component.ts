@@ -3,7 +3,6 @@ import { Component, ElementRef, inject, OnInit, viewChild } from "@angular/core"
 import { MatDialog } from "@angular/material/dialog";
 import { EvaluationVersion, IntegrationLinkDetail, IntegrationLinkType } from "ng-configcat-publicapi";
 import { DeleteSettingDialogComponent, DeleteSettingDialogData, DeleteSettingDialogResult, DeleteSettingModel, NgConfigCatPublicApiUIModule, PublicApiService } from "ng-configcat-publicapi-ui";
-import { CallbackHandler } from "trellopowerup/lib/powerup";
 import { LoaderComponent } from "../loader/loader.component";
 import { AuthorizationParameters } from "../models/authorization-parameters";
 import { TrelloService } from "../services/trello-service";
@@ -25,12 +24,9 @@ export class FeatureFlagsSettingsComponent implements OnInit {
   integrationLinkDetails!: IntegrationLinkDetail[] | null;
   EvaluationVersion = EvaluationVersion;
 
-  trelloCallbackHandler!: CallbackHandler;
-
   readonly elementView = viewChild<ElementRef<HTMLElement>>("settingItem");
 
   ngOnInit(): void {
-    this.trelloCallbackHandler = this.trelloService.callbackHandler();
     const trelloPowerUpIframe = this.trelloService.iframe();
     this.trelloService.render(() => this.reloadSettings(), trelloPowerUpIframe);
   }
@@ -38,14 +34,14 @@ export class FeatureFlagsSettingsComponent implements OnInit {
   reloadSettings() {
     this.loading = true;
     this.showError = false;
-    return Promise.all([
-      this.trelloService.getAuthorizationParameters(this.trelloCallbackHandler),
-      this.trelloService.getCardData(this.trelloCallbackHandler),
-      this.trelloService.getCardSettingData(this.trelloCallbackHandler),
+    Promise.all([
+      this.trelloService.getAuthorizationParameters(),
+      this.trelloService.getCardData(),
+      this.trelloService.getCardSettingData(),
     ]).then(value => {
       this.authorizationParameters = value[0];
       const card = value[1];
-      return this.publicApiService
+      this.publicApiService
         .createIntegrationLinksService(this.authorizationParameters.basicAuthUsername, this.authorizationParameters.basicAuthPassword)
         .getIntegrationLinkDetails(IntegrationLinkType.Trello, card.id)
         .subscribe((integrationLinkDetails) => {
@@ -99,7 +95,7 @@ export class FeatureFlagsSettingsComponent implements OnInit {
   }
 
   saveSucceeded() {
-    void this.trelloService.setCardSettingData({ lastUpdatedAt: new Date() }, this.trelloCallbackHandler);
+    void this.trelloService.setCardSettingData({ lastUpdatedAt: new Date() });
   }
 
   onFormValuesChanged() {
@@ -110,7 +106,7 @@ export class FeatureFlagsSettingsComponent implements OnInit {
     setTimeout(() => {
       const contentHeight = this.elementView()?.nativeElement?.offsetHeight;
       const height = contentHeight && contentHeight < 700 ? contentHeight : 700;
-      void this.trelloService.sizeToHeight(height, this.trelloCallbackHandler);
+      void this.trelloService.sizeToHeight(height, this.trelloService.iframe());
     }, 300);
   }
 
@@ -118,9 +114,7 @@ export class FeatureFlagsSettingsComponent implements OnInit {
     this.trelloService
       .setAuthorizationParameters(authorizationParameters)
       .then(() => {
-        this.reloadSettings().catch(() => {
-          console.log("reloadSettings failed.");
-        });
+        this.reloadSettings();
       }).catch(() => {
         console.log("trelloService setAuthorizationParameters failed.");
       });

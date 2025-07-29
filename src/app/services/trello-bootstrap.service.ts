@@ -52,7 +52,7 @@ export class TrelloBootstrapService {
   };
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private readonly getCardButtons = (t: CallbackHandler) => {
+  private readonly getCardButtons = (_t: CallbackHandler) => {
     return Promise.resolve([{
       // usually you will provide a callback function to be run on button click
       // we recommend that you use a popup on click generally

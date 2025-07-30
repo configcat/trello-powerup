@@ -8,6 +8,5 @@ import { RouterModule } from "@angular/router";
 })
 export class AppComponent {
   title = "configcat-trello-powerup";
-
 }
 

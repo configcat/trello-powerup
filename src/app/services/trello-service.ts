@@ -1,5 +1,5 @@
 import { inject, Injectable } from "@angular/core";
-import { IntegrationLinkDetailsModel, IntegrationLinkType } from "ng-configcat-publicapi";
+import { IntegrationLinkType } from "ng-configcat-publicapi";
 import { PublicApiService } from "ng-configcat-publicapi-ui";
 import { firstValueFrom } from "rxjs";
 import { CallbackHandler, CardBadge, IFrame } from "trellopowerup/lib/powerup";
@@ -119,7 +119,7 @@ export class TrelloService {
       this.getAuthorizationParameters(trelloPowerUpCallbackHandler),
       this.getCardSettingData(trelloPowerUpCallbackHandler),
       this.getCardData(trelloPowerUpCallbackHandler),
-    ]).then(async value => {
+    ]).then(value => {
       const authorizationParameters = value[0];
       const setting = value[1];
       const card = value[2];
@@ -128,20 +128,24 @@ export class TrelloService {
         return [] as CardBadge[];
       }
 
-      const linkDetails: IntegrationLinkDetailsModel = await firstValueFrom(this.publicApiService
+      return firstValueFrom(this.publicApiService
         .createIntegrationLinksService(authorizationParameters.basicAuthUsername, authorizationParameters.basicAuthPassword)
-        .getIntegrationLinkDetails(IntegrationLinkType.Trello, card.id));
+        .getIntegrationLinkDetails(IntegrationLinkType.Trello, card.id)).then(linkDetails => {
+        if (linkDetails?.details && linkDetails.details.length > 0) {
+          return linkDetails.details.map(detail => {
+            return {
+              text: linkDetails.details!.length > 1 ? detail.setting.name + ": " + detail.status : detail.status,
+              icon: CONFIGCAT_ICON,
+              color: "green",
+            } as CardBadge;
+          });
+        }
+        return [] as CardBadge[];
+      }).catch(() => {
+        /* intentionally empty */
+        return [] as CardBadge[];
+      });
 
-      if (linkDetails?.details && linkDetails.details.length > 0) {
-        return linkDetails.details.map(detail => {
-          return {
-            text: linkDetails.details!.length > 1 ? detail.setting.name + ": " + detail.status : detail.status,
-            icon: CONFIGCAT_ICON,
-            color: "green",
-          } as CardBadge;
-        });
-      }
-      return [] as CardBadge[];
     });
   }
 

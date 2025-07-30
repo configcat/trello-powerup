@@ -1,4 +1,4 @@
-import { ApplicationConfig } from "@angular/core";
+import { ApplicationConfig, importProvidersFrom } from "@angular/core";
 import { provideAnimations } from "@angular/platform-browser/animations";
 import {
   provideRouter,
@@ -7,9 +7,11 @@ import {
   withRouterConfig,
 } from "@angular/router";
 import { routes } from "./app-routing.module";
+import { AppModule } from "./app.module";
 
 export const appConfig: ApplicationConfig = {
   providers: [
+    importProvidersFrom(AppModule),
     // provideZoneChangeDetection({ eventCoalescing: true, runCoalescing: true }),
     provideRouter(
       routes,

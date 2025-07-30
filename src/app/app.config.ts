@@ -1,4 +1,5 @@
-import { ApplicationConfig, importProvidersFrom } from "@angular/core";
+import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
+import { ApplicationConfig, importProvidersFrom, provideZoneChangeDetection } from "@angular/core";
 import { provideAnimations } from "@angular/platform-browser/animations";
 import {
   provideRouter,
@@ -12,14 +13,14 @@ import { AppModule } from "./app.module";
 export const appConfig: ApplicationConfig = {
   providers: [
     importProvidersFrom(AppModule),
-    // provideZoneChangeDetection({ eventCoalescing: true, runCoalescing: true }),
+    provideZoneChangeDetection({ eventCoalescing: true, runCoalescing: true }),
     provideRouter(
       routes,
       withInMemoryScrolling({ scrollPositionRestoration: "enabled", anchorScrolling: "enabled" }),
       withComponentInputBinding(),
       withRouterConfig({ paramsInheritanceStrategy: "always" })
     ),
-    // provideHttpClient(withInterceptorsFromDi()),
+    provideHttpClient(withInterceptorsFromDi()),
     provideAnimations(),
   ],
 };

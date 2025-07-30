@@ -1,5 +1,4 @@
 import { CommonModule } from "@angular/common";
-import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 import { NgModule } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
@@ -43,5 +42,6 @@ import { LoaderComponent } from "./loader/loader.component";
     CreateFeatureFlagComponent,
     LoaderComponent],
 
-  providers: [provideHttpClient(withInterceptorsFromDi())] })
+  // providers: [provideHttpClient(withInterceptorsFromDi())]
+})
 export class AppModule { }

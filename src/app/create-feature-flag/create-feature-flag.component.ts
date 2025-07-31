@@ -5,7 +5,7 @@ import { MatError, MatFormField, MatHint, MatLabel } from "@angular/material/for
 import { MatInput } from "@angular/material/input";
 import { MatOption, MatSelect } from "@angular/material/select";
 import { IntegrationLinkType, SettingType } from "ng-configcat-publicapi";
-import { AuthorizationModel, NgConfigCatPublicApiUIModule, PublicApiService } from "ng-configcat-publicapi-ui";
+import { AuthorizationComponent, AuthorizationModel, ConfigSelectComponent, EnvironmentSelectComponent, ProductSelectComponent, PublicApiService } from "ng-configcat-publicapi-ui";
 import { Subscription } from "rxjs";
 import { AuthorizationParameters } from "../models/authorization-parameters";
 import { ErrorHandler } from "../services/error-handler";
@@ -15,7 +15,9 @@ import { TrelloService } from "../services/trello-service";
   selector: "configcat-trello-create-feature-flag",
   templateUrl: "./create-feature-flag.component.html",
   styleUrls: ["./create-feature-flag.component.scss"],
-  imports: [NgConfigCatPublicApiUIModule, FormsModule, ReactiveFormsModule, MatFormField,
+  imports: [
+    ProductSelectComponent, ConfigSelectComponent, EnvironmentSelectComponent, AuthorizationComponent,
+    FormsModule, ReactiveFormsModule, MatFormField,
     MatLabel, MatSelect, MatOption, MatInput, MatHint, MatError, MatButton],
 })
 export class CreateFeatureFlagComponent implements OnInit, OnDestroy {

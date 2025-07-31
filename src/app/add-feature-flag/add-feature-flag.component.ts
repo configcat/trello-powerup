@@ -2,7 +2,7 @@ import { Component, DOCUMENT, inject, OnDestroy, OnInit } from "@angular/core";
 import { FormControl, FormsModule, NonNullableFormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatButton } from "@angular/material/button";
 import { IntegrationLinkType } from "ng-configcat-publicapi";
-import { AuthorizationModel, NgConfigCatPublicApiUIModule, PublicApiService } from "ng-configcat-publicapi-ui";
+import { AuthorizationComponent, AuthorizationModel, ConfigSelectComponent, EnvironmentSelectComponent, ProductSelectComponent, PublicApiService, SettingSelectComponent } from "ng-configcat-publicapi-ui";
 import { Subscription } from "rxjs";
 import { AuthorizationParameters } from "../models/authorization-parameters";
 import { TrelloService } from "../services/trello-service";
@@ -11,7 +11,10 @@ import { TrelloService } from "../services/trello-service";
   selector: "configcat-trello-add-feature-flag",
   templateUrl: "./add-feature-flag.component.html",
   styleUrls: ["./add-feature-flag.component.scss"],
-  imports: [NgConfigCatPublicApiUIModule, FormsModule, ReactiveFormsModule, MatButton],
+  imports: [
+    ProductSelectComponent, ConfigSelectComponent, EnvironmentSelectComponent, SettingSelectComponent, AuthorizationComponent,
+    FormsModule, ReactiveFormsModule, MatButton,
+  ],
 })
 export class AddFeatureFlagComponent implements OnInit, OnDestroy {
   private readonly formBuilder = inject(NonNullableFormBuilder);

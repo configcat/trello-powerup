@@ -2,7 +2,7 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { Component, ElementRef, inject, OnInit, viewChild } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { EvaluationVersion, IntegrationLinkDetail, IntegrationLinkType } from "ng-configcat-publicapi";
-import { DeleteSettingDialogComponent, DeleteSettingDialogData, DeleteSettingDialogResult, DeleteSettingModel, NgConfigCatPublicApiUIModule, PublicApiService } from "ng-configcat-publicapi-ui";
+import { AuthorizationComponent, DeleteSettingDialogComponent, DeleteSettingDialogData, DeleteSettingDialogResult, DeleteSettingModel, FeatureFlagItemComponent, PublicApiService, SettingItemComponent } from "ng-configcat-publicapi-ui";
 import { LoaderComponent } from "../loader/loader.component";
 import { AuthorizationParameters } from "../models/authorization-parameters";
 import { TrelloService } from "../services/trello-service";
@@ -11,7 +11,7 @@ import { TrelloService } from "../services/trello-service";
   selector: "configcat-trello-feature-flags-settings",
   templateUrl: "./feature-flags-settings.component.html",
   styleUrls: ["./feature-flags-settings.component.scss"],
-  imports: [NgConfigCatPublicApiUIModule, LoaderComponent],
+  imports: [AuthorizationComponent, SettingItemComponent, FeatureFlagItemComponent, LoaderComponent],
 })
 export class FeatureFlagsSettingsComponent implements OnInit {
   private readonly dialog = inject(MatDialog);

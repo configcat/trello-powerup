@@ -1,5 +1,7 @@
 import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 import { ApplicationConfig, importProvidersFrom, provideZoneChangeDetection } from "@angular/core";
+import { MatNativeDateModule } from "@angular/material/core";
+import { MatDialogModule } from "@angular/material/dialog";
 import { provideAnimations } from "@angular/platform-browser/animations";
 import {
   provideRouter,
@@ -7,12 +9,16 @@ import {
   withInMemoryScrolling,
   withRouterConfig,
 } from "@angular/router";
+import { CONFIGCAT_PUBLICAPI_UI_CONFIGURATION, provideConfigCatPublicApiUi } from "ng-configcat-publicapi-ui";
+import { environment } from "src/environments/environment";
 import { routes } from "./app-routing.module";
-import { AppModule } from "./app.module";
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    importProvidersFrom(AppModule),
+    importProvidersFrom(
+      MatDialogModule,
+      MatNativeDateModule
+    ),
     provideZoneChangeDetection({ eventCoalescing: true, runCoalescing: true }),
     provideRouter(
       routes,
@@ -22,5 +28,10 @@ export const appConfig: ApplicationConfig = {
     ),
     provideHttpClient(withInterceptorsFromDi()),
     provideAnimations(),
+    {
+      provide: CONFIGCAT_PUBLICAPI_UI_CONFIGURATION,
+      useValue: { basePath: environment.publicApiBaseUrl, dashboardBasePath: environment.dashboardBasePath },
+    },
+    provideConfigCatPublicApiUi(),
   ],
 };

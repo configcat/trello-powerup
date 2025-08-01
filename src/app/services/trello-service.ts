@@ -2,7 +2,7 @@ import { inject, Injectable } from "@angular/core";
 import { IntegrationLinkType } from "ng-configcat-publicapi";
 import { PublicApiService } from "ng-configcat-publicapi-ui";
 import { firstValueFrom } from "rxjs";
-import { CallbackHandler, CardBadge, IFrame } from "trellopowerup/lib/powerup";
+import { CallbackHandler, CardBackSection, CardBadge, CardButton, IFrame } from "trellopowerup/lib/powerup";
 import { AuthorizationParameters } from "../models/authorization-parameters";
 import { CardSettingData } from "../models/card-setting-data";
 
@@ -16,36 +16,130 @@ const CONFIGCAT_ICON = "./assets/cat_red.svg";
 export class TrelloService {
   private readonly publicApiService = inject(PublicApiService);
 
-  iframe(): IFrame {
-    return trelloPowerUp.iframe();
+  initialize() {
+    // trelloPowerUp = window["TrelloPowerUp"];
+    window["TrelloPowerUp"].initialize({
+      "card-back-section": this.getCardBackSection,
+      "card-buttons": this.getCardButtons,
+      "authorization-status": this.getAuthorizationStatus,
+      "show-authorization": this.showAuthorization,
+      "on-disable": this.disable,
+      "card-badges": this.getBadges,
+    });
+    trelloPowerUp = window["TrelloPowerUp"];
   }
 
-  closePopup(trelloPowerUpIFrame: IFrame | null = null) {
-    return (trelloPowerUpIFrame ?? trelloPowerUp.iframe()).closePopup();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  private readonly getBadges = (_t: CallbackHandler) => {
+    return this.getBadgeData();
+  };
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  private readonly disable = (_t: CallbackHandler) => {
+    return this.removeAuthorizationParameters();
+  };
+
+  private readonly showAuthorization = () => {
+    void trelloPowerUp.iframe().popup({
+      title: "Authorize ConfigCat",
+      url: "./authorize",
+      height: 300,
+    });
+  };
+
+  private readonly getAuthorizationStatus = () => {
+    this.getAuthorizationParameters()
+      .then(authorizationParameters => {
+        if (authorizationParameters?.basicAuthUsername && authorizationParameters?.basicAuthPassword) {
+          return { authorized: true };
+        }
+        return { authorized: false };
+      })
+      .catch(() => ({ authorized: false }));
+  };
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  private readonly getCardButtons = (_t: CallbackHandler) => {
+    return Promise.resolve([{
+      // usually you will provide a callback function to be run on button click
+      // we recommend that you use a popup on click generally
+      icon: CONFIGCAT_ICON,
+      text: "Link Feature Flag",
+      callback: (t: CallbackHandler) => {
+        return t.popup({
+          title: "Link Feature Flag",
+          url: "./addfeatureflag",
+          height: 380,
+        });
+      },
+    } as CardButton,
+    {
+      // usually you will provide a callback function to be run on button click
+      // we recommend that you use a popup on click generally
+      icon: CONFIGCAT_ICON,
+      text: "Create and Link Feature Flag",
+      callback: (t: CallbackHandler) => {
+        return t.popup({
+          title: "Create and Link Feature Flag",
+          url: "./createfeatureflag",
+          height: 380,
+        });
+      },
+    } as CardButton]);
+  };
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  private readonly getCardBackSection = (_t: CallbackHandler) => {
+    return this.getCardSettingData()
+      .then(setting => {
+        if (setting) {
+          return {
+            title: "ConfigCat",
+            icon: CONFIGCAT_ICON, // Must be a gray icon, colored icons not allowed.
+            content: {
+              type: "iframe",
+              url: trelloPowerUp.iframe().signUrl("./featureflags"),
+            },
+          } as CardBackSection;
+        } else {
+          // This should be an empty Card Back section
+          return {
+            title: "ConfigCat",
+            icon: CONFIGCAT_ICON, // Must be a gray icon, colored icons not allowed.
+            content: {
+              type: "iframe",
+              url: "",
+            },
+          } as CardBackSection;
+        }
+      });
+  };
+
+  closePopup() {
+    return trelloPowerUp.iframe().closePopup();
   }
 
-  sizeTo(selector: string, trelloPowerUpIFrame: IFrame | null = null) {
-    return (trelloPowerUpIFrame ?? trelloPowerUp.iframe()).sizeTo(selector);
+  sizeTo(selector: string) {
+    return trelloPowerUp.iframe().sizeTo(selector);
   }
 
-  sizeToHeight(height: number, trelloPowerUpIFrame: IFrame | null = null) {
-    return (trelloPowerUpIFrame ?? trelloPowerUp.iframe()).sizeTo(height);
+  sizeToHeight(height: number) {
+    return trelloPowerUp.iframe().sizeTo(height);
   }
 
-  getAuthorizationParameters(trelloPowerUpCallbackHandler: CallbackHandler | null = null): Promise<AuthorizationParameters> {
-    return (trelloPowerUpCallbackHandler ?? trelloPowerUp.iframe()).loadSecret("authorization").then((authorizationParameters: string) => {
+  getAuthorizationParameters(): Promise<AuthorizationParameters> {
+    return trelloPowerUp.iframe().loadSecret("authorization").then((authorizationParameters: string) => {
       return JSON.parse(authorizationParameters) as AuthorizationParameters;
     });
   }
 
-  setAuthorizationParameters(authorizationParameters: AuthorizationParameters, trelloPowerUpCallbackHandler: CallbackHandler | null = null): Promise<void> {
-    return (trelloPowerUpCallbackHandler ?? trelloPowerUp.iframe())
-      .storeSecret("authorization", JSON.stringify(authorizationParameters))
+  setAuthorizationParameters(authorizationParameters: AuthorizationParameters): Promise<void> {
+    return trelloPowerUp.iframe().storeSecret("authorization", JSON.stringify(authorizationParameters))
       .then(() => {
-        return this.setCardSettingData({ lastUpdatedAt: new Date() }, trelloPowerUpCallbackHandler);
+        return this.setCardSettingData({ lastUpdatedAt: new Date() });
       })
       .finally(() => {
-        return void (trelloPowerUpCallbackHandler ?? trelloPowerUp.iframe())
+        return void trelloPowerUp.iframe()
           .alert({
             message: "Authorized to ConfigCat 🎉",
             duration: 5,
@@ -55,37 +149,37 @@ export class TrelloService {
 
   }
 
-  removeAuthorizationParameters(trelloPowerUpCallbackHandler: CallbackHandler | null = null) {
-    return (trelloPowerUpCallbackHandler ?? trelloPowerUp.iframe()).clearSecret("authorization");
+  removeAuthorizationParameters() {
+    return trelloPowerUp.iframe().clearSecret("authorization");
   }
 
-  getCardSettingData(trelloPowerUpCallbackHandler: CallbackHandler | null = null): Promise<CardSettingData> {
-    return (trelloPowerUpCallbackHandler ?? trelloPowerUp.iframe()).get("card", "shared", "cardSettingData");
+  getCardSettingData(): Promise<CardSettingData> {
+    return trelloPowerUp.iframe().get("card", "shared", "cardSettingData");
   }
 
-  setCardSettingData(cardData: CardSettingData, trelloPowerUpCallbackHandler: CallbackHandler | null = null): Promise<void> {
-    return (trelloPowerUpCallbackHandler ?? trelloPowerUp.iframe()).set("card", "shared", "cardSettingData", cardData);
+  setCardSettingData(cardData: CardSettingData): Promise<void> {
+    return trelloPowerUp.iframe().set("card", "shared", "cardSettingData", cardData);
   }
 
-  removeCardSettingData(trelloPowerUpCallbackHandler: CallbackHandler | null = null): Promise<void> {
-    return (trelloPowerUpCallbackHandler ?? trelloPowerUp.iframe()).remove("card", "shared", "cardSettingData");
+  removeCardSettingData(): Promise<void> {
+    return trelloPowerUp.iframe().remove("card", "shared", "cardSettingData");
   }
 
-  updateCardSettingDataLastUpdatedAt(trelloPowerUpCallbackHandler: CallbackHandler | null = null) {
-    return this.getCardSettingData(trelloPowerUpCallbackHandler).then(setting => {
+  updateCardSettingDataLastUpdatedAt() {
+    return this.getCardSettingData().then(setting => {
       if (!setting) {
         setting = { lastUpdatedAt: new Date() };
       }
 
       setting.lastUpdatedAt = new Date();
-      return this.setCardSettingData(setting, trelloPowerUpCallbackHandler);
+      return this.setCardSettingData(setting);
     });
   }
 
-  removeSetting(environmentId: string, settingId: number, trelloPowerUpCallbackHandler: CallbackHandler | null = null) {
+  removeSetting(environmentId: string, settingId: number) {
     return Promise.all([
-      this.getAuthorizationParameters(trelloPowerUpCallbackHandler),
-      this.getCardData(trelloPowerUpCallbackHandler),
+      this.getAuthorizationParameters(),
+      this.getCardData(),
     ]).then(value => {
       const authorizationParameters = value[0];
       const card = value[1];
@@ -96,9 +190,9 @@ export class TrelloService {
         .subscribe({
           next: deleteModel => {
             if (!deleteModel.hasRemainingIntegrationLink) {
-              void this.removeCardSettingData(trelloPowerUpCallbackHandler);
+              void this.removeCardSettingData();
             } else {
-              void this.updateCardSettingDataLastUpdatedAt(trelloPowerUpCallbackHandler);
+              void this.updateCardSettingDataLastUpdatedAt();
             }
           },
         }
@@ -106,19 +200,19 @@ export class TrelloService {
     });
   }
 
-  render(func: () => void, trelloPowerUpIFrame: IFrame | null = null) {
-    return (trelloPowerUpIFrame ?? trelloPowerUp.iframe()).render(func);
+  render(func: () => void) {
+    return trelloPowerUp.iframe().render(func);
   }
 
-  getCardData(trelloPowerUpCallbackHandler: CallbackHandler | null = null) {
-    return (trelloPowerUpCallbackHandler ?? trelloPowerUp.iframe()).card("id", "name", "url");
+  getCardData() {
+    return trelloPowerUp.iframe().card("id", "name", "url");
   }
 
-  getBadgeData(trelloPowerUpCallbackHandler: CallbackHandler | null = null): Promise<CardBadge[]> {
+  getBadgeData(): Promise<CardBadge[]> {
     return Promise.all([
-      this.getAuthorizationParameters(trelloPowerUpCallbackHandler),
-      this.getCardSettingData(trelloPowerUpCallbackHandler),
-      this.getCardData(trelloPowerUpCallbackHandler),
+      this.getAuthorizationParameters(),
+      this.getCardSettingData(),
+      this.getCardData(),
     ]).then(value => {
       const authorizationParameters = value[0];
       const setting = value[1];

@@ -27,8 +27,7 @@ export class FeatureFlagsSettingsComponent implements OnInit {
   readonly elementView = viewChild<ElementRef<HTMLElement>>("settingItem");
 
   ngOnInit(): void {
-    const trelloPowerUpIframe = this.trelloService.iframe();
-    this.trelloService.render(() => this.reloadSettings(), trelloPowerUpIframe);
+    this.trelloService.render(() => this.reloadSettings());
   }
 
   reloadSettings() {
@@ -106,7 +105,7 @@ export class FeatureFlagsSettingsComponent implements OnInit {
     setTimeout(() => {
       const contentHeight = this.elementView()?.nativeElement?.offsetHeight;
       const height = contentHeight && contentHeight < 700 ? contentHeight : 700;
-      void this.trelloService.sizeToHeight(height, this.trelloService.iframe());
+      void this.trelloService.sizeToHeight(height);
     }, 300);
   }
 

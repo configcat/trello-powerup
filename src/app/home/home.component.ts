@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from "@angular/core";
-import { TrelloBootstrapService } from "../services/trello-bootstrap.service";
+import { TrelloService } from "../services/trello-service";
 
 @Component({
   selector: "configcat-trello-home",
@@ -7,10 +7,10 @@ import { TrelloBootstrapService } from "../services/trello-bootstrap.service";
   styleUrls: ["./home.component.scss"],
 })
 export class HomeComponent implements OnInit {
-  private readonly trelloBootstrapService = inject(TrelloBootstrapService);
+  private readonly trelloService = inject(TrelloService);
 
   ngOnInit(): void {
-    this.trelloBootstrapService.initialize();
+    this.trelloService.initialize();
   }
 
 }

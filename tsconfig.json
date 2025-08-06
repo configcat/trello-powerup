@@ -19,7 +19,11 @@
     "lib": ["ES2022", "dom"],
     "useDefineForClassFields": false,
     "noUnusedLocals": true,
-    "noUnusedParameters": true
+    "noUnusedParameters": true,
+    "isolatedModules": true,
+    "resolveJsonModule": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

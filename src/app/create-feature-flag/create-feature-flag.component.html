@@ -70,9 +70,9 @@
               [valueFormControl]="formGroup.controls.environmentId" />
           }
         </div>
-        @if (formGroup.errors && formGroup.errors.serverSide) {
+        @if (formGroup.errors && formGroup.errors["serverSide"]) {
           <div class="error">
-            <span>{{ formGroup.errors.serverSide }}</span>
+            <span>{{ formGroup.errors["serverSide"] }}</span>
           </div>
         }
         <div class="buttons">

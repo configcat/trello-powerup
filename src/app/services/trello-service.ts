@@ -2,7 +2,7 @@ import { inject, Injectable } from "@angular/core";
 import { IntegrationLinkType } from "ng-configcat-publicapi";
 import { PublicApiService } from "ng-configcat-publicapi-ui";
 import { firstValueFrom } from "rxjs";
-import { CallbackHandler, CardBackSection, CardBadge, CardButton } from "trellopowerup/lib/powerup";
+import { CardBadge } from "trellopowerup/lib/powerup";
 import { AuthorizationParameters } from "../models/authorization-parameters";
 import { CardSettingData } from "../models/card-setting-data";
 
@@ -14,104 +14,6 @@ const CONFIGCAT_ICON = "./assets/cat_red.svg";
 export class TrelloService {
   private readonly publicApiService = inject(PublicApiService);
   private readonly trelloPowerUp = window["TrelloPowerUp"];
-
-  initialize() {
-    // trelloPowerUp = window["TrelloPowerUp"];
-    this.trelloPowerUp.initialize({
-      "card-back-section": this.getCardBackSection,
-      "card-buttons": this.getCardButtons,
-      "authorization-status": this.getAuthorizationStatus,
-      "show-authorization": this.showAuthorization,
-      "on-disable": this.disable,
-      "card-badges": this.getBadges,
-    });
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private readonly getBadges = (_t: CallbackHandler) => {
-    return this.getBadgeData();
-  };
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private readonly disable = (_t: CallbackHandler) => {
-    return this.removeAuthorizationParameters();
-  };
-
-  private readonly showAuthorization = () => {
-    void this.trelloPowerUp.iframe().popup({
-      title: "Authorize ConfigCat",
-      url: "./authorize",
-      height: 300,
-    });
-  };
-
-  private readonly getAuthorizationStatus = () => {
-    this.getAuthorizationParameters()
-      .then(authorizationParameters => {
-        if (authorizationParameters?.basicAuthUsername && authorizationParameters?.basicAuthPassword) {
-          return { authorized: true };
-        }
-        return { authorized: false };
-      })
-      .catch(() => ({ authorized: false }));
-  };
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private readonly getCardButtons = (_t: CallbackHandler) => {
-    return Promise.resolve([{
-      // usually you will provide a callback function to be run on button click
-      // we recommend that you use a popup on click generally
-      icon: CONFIGCAT_ICON,
-      text: "Link Feature Flag",
-      callback: (t: CallbackHandler) => {
-        return t.popup({
-          title: "Link Feature Flag",
-          url: "./addfeatureflag",
-          height: 380,
-        });
-      },
-    } as CardButton,
-    {
-      // usually you will provide a callback function to be run on button click
-      // we recommend that you use a popup on click generally
-      icon: CONFIGCAT_ICON,
-      text: "Create and Link Feature Flag",
-      callback: (t: CallbackHandler) => {
-        return t.popup({
-          title: "Create and Link Feature Flag",
-          url: "./createfeatureflag",
-          height: 380,
-        });
-      },
-    } as CardButton]);
-  };
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private readonly getCardBackSection = (_t: CallbackHandler) => {
-    return this.getCardSettingData()
-      .then(setting => {
-        if (setting) {
-          return {
-            title: "ConfigCat",
-            icon: CONFIGCAT_ICON, // Must be a gray icon, colored icons not allowed.
-            content: {
-              type: "iframe",
-              url: this.trelloPowerUp.iframe().signUrl("./featureflags"),
-            },
-          } as CardBackSection;
-        } else {
-          // This should be an empty Card Back section
-          return {
-            title: "ConfigCat",
-            icon: CONFIGCAT_ICON, // Must be a gray icon, colored icons not allowed.
-            content: {
-              type: "iframe",
-              url: "",
-            },
-          } as CardBackSection;
-        }
-      });
-  };
 
   closePopup() {
     return this.trelloPowerUp.iframe().closePopup();

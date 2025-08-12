@@ -2,7 +2,7 @@ import { inject, Injectable } from "@angular/core";
 import { IntegrationLinkType } from "ng-configcat-publicapi";
 import { PublicApiService } from "ng-configcat-publicapi-ui";
 import { firstValueFrom } from "rxjs";
-import { CardBadge } from "trellopowerup/lib/powerup";
+import { CallbackHandler, CardBadge, IFrame } from "trellopowerup/lib/powerup";
 import { AuthorizationParameters } from "../models/authorization-parameters";
 import { CardSettingData } from "../models/card-setting-data";
 
@@ -13,33 +13,36 @@ const CONFIGCAT_ICON = "./assets/cat_red.svg";
 })
 export class TrelloService {
   private readonly publicApiService = inject(PublicApiService);
-  private readonly trelloPowerUp = window["TrelloPowerUp"];
+
+  iframe(): IFrame {
+    return window["TrelloPowerUp"].iframe();
+  }
 
   closePopup() {
-    return this.trelloPowerUp.iframe().closePopup();
+    return window["TrelloPowerUp"].iframe().closePopup();
   }
 
   sizeTo(selector: string) {
-    return this.trelloPowerUp.iframe().sizeTo(selector);
+    return window["TrelloPowerUp"].iframe().sizeTo(selector);
   }
 
-  sizeToHeight(height: number) {
-    return this.trelloPowerUp.iframe().sizeTo(height);
+  sizeToHeight(height: number, t: CallbackHandler | IFrame | null = null) {
+    return (t ?? window["TrelloPowerUp"].iframe()).sizeTo(height);
   }
 
-  getAuthorizationParameters(): Promise<AuthorizationParameters> {
-    return this.trelloPowerUp.iframe().loadSecret("authorization").then((authorizationParameters: string) => {
+  getAuthorizationParameters(t: CallbackHandler | IFrame | null = null): Promise<AuthorizationParameters> {
+    return (t ?? window["TrelloPowerUp"].iframe()).loadSecret("authorization").then((authorizationParameters: string) => {
       return JSON.parse(authorizationParameters) as AuthorizationParameters;
     });
   }
 
-  setAuthorizationParameters(authorizationParameters: AuthorizationParameters): Promise<void> {
-    return this.trelloPowerUp.iframe().storeSecret("authorization", JSON.stringify(authorizationParameters))
+  setAuthorizationParameters(authorizationParameters: AuthorizationParameters, t: CallbackHandler | IFrame | null = null): Promise<void> {
+    return (t ?? window["TrelloPowerUp"].iframe()).storeSecret("authorization", JSON.stringify(authorizationParameters))
       .then(() => {
-        return this.setCardSettingData({ lastUpdatedAt: new Date() });
+        return this.setCardSettingData({ lastUpdatedAt: new Date() }, t);
       })
       .finally(() => {
-        return void this.trelloPowerUp.iframe()
+        return void (t ?? window["TrelloPowerUp"].iframe())
           .alert({
             message: "Authorized to ConfigCat 🎉",
             duration: 5,
@@ -49,20 +52,20 @@ export class TrelloService {
 
   }
 
-  removeAuthorizationParameters() {
-    return this.trelloPowerUp.iframe().clearSecret("authorization");
+  removeAuthorizationParameters(t: CallbackHandler | IFrame | null = null) {
+    return (t ?? window["TrelloPowerUp"].iframe()).clearSecret("authorization");
   }
 
-  getCardSettingData(): Promise<CardSettingData> {
-    return this.trelloPowerUp.iframe().get("card", "shared", "cardSettingData");
+  getCardSettingData(t: CallbackHandler | IFrame | null = null): Promise<CardSettingData> {
+    return (t ?? window["TrelloPowerUp"].iframe()).get("card", "shared", "cardSettingData");
   }
 
-  setCardSettingData(cardData: CardSettingData): Promise<void> {
-    return this.trelloPowerUp.iframe().set("card", "shared", "cardSettingData", cardData);
+  setCardSettingData(cardData: CardSettingData, t: CallbackHandler | IFrame | null = null): Promise<void> {
+    return (t ?? window["TrelloPowerUp"].iframe()).set("card", "shared", "cardSettingData", cardData);
   }
 
   removeCardSettingData(): Promise<void> {
-    return this.trelloPowerUp.iframe().remove("card", "shared", "cardSettingData");
+    return window["TrelloPowerUp"].iframe().remove("card", "shared", "cardSettingData");
   }
 
   updateCardSettingDataLastUpdatedAt() {
@@ -100,19 +103,19 @@ export class TrelloService {
     });
   }
 
-  render(func: () => void) {
-    return this.trelloPowerUp.iframe().render(func);
+  render(func: () => void, t: IFrame | null = null) {
+    return (t ?? window["TrelloPowerUp"].iframe()).render(func);
   }
 
-  getCardData() {
-    return this.trelloPowerUp.iframe().card("id", "name", "url");
+  getCardData(t: CallbackHandler | IFrame | null = null) {
+    return (t ?? window["TrelloPowerUp"].iframe()).card("id", "name", "url");
   }
 
-  getBadgeData(): Promise<CardBadge[]> {
+  getBadgeData(t: CallbackHandler): Promise<CardBadge[]> {
     return Promise.all([
-      this.getAuthorizationParameters(),
-      this.getCardSettingData(),
-      this.getCardData(),
+      this.getAuthorizationParameters(t),
+      this.getCardSettingData(t),
+      this.getCardData(t),
     ]).then(value => {
       const authorizationParameters = value[0];
       const setting = value[1];
@@ -144,7 +147,7 @@ export class TrelloService {
   }
 
   showHttpUnauthorizedAlert() {
-    return this.trelloPowerUp.iframe()
+    return window["TrelloPowerUp"].iframe()
       .alert({
         message: "Authorization failed. Please try to log in again.",
         duration: 5,

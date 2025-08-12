@@ -3,6 +3,7 @@ import { Component, ElementRef, inject, OnInit, viewChild } from "@angular/core"
 import { MatDialog } from "@angular/material/dialog";
 import { EvaluationVersion, IntegrationLinkDetail, IntegrationLinkType } from "ng-configcat-publicapi";
 import { AuthorizationComponent, DeleteSettingDialogComponent, DeleteSettingDialogData, DeleteSettingDialogResult, DeleteSettingModel, FeatureFlagItemComponent, PublicApiService, SettingItemComponent } from "ng-configcat-publicapi-ui";
+import { IFrame } from "trellopowerup/lib/powerup";
 import { LoaderComponent } from "../loader/loader.component";
 import { AuthorizationParameters } from "../models/authorization-parameters";
 import { TrelloService } from "../services/trello-service";
@@ -24,32 +25,42 @@ export class FeatureFlagsSettingsComponent implements OnInit {
   integrationLinkDetails!: IntegrationLinkDetail[] | null;
   EvaluationVersion = EvaluationVersion;
 
+  trelloPowerUpIframe!: IFrame;
+
   readonly elementView = viewChild<ElementRef<HTMLElement>>("settingItem");
 
   ngOnInit(): void {
-    this.trelloService.render(() => this.reloadSettings());
+    this.trelloPowerUpIframe = this.trelloService.iframe();
+    console.log("FeatureFlagsSettingsComponent ngOnInit ");
+    this.trelloService.render(() => { this.reloadSettings(); }, this.trelloPowerUpIframe);
+    this.reloadSettings();
   }
 
   reloadSettings() {
+    console.log("realaod called?");
     this.loading = true;
     this.showError = false;
     Promise.all([
-      this.trelloService.getAuthorizationParameters(),
-      this.trelloService.getCardData(),
-      this.trelloService.getCardSettingData(),
+      this.trelloService.getAuthorizationParameters(this.trelloPowerUpIframe),
+      this.trelloService.getCardData(this.trelloPowerUpIframe),
+      this.trelloService.getCardSettingData(this.trelloPowerUpIframe),
     ]).then(value => {
       this.authorizationParameters = value[0];
       const card = value[1];
+      console.log("realaod then?");
+
       this.publicApiService
         .createIntegrationLinksService(this.authorizationParameters.basicAuthUsername, this.authorizationParameters.basicAuthPassword)
         .getIntegrationLinkDetails(IntegrationLinkType.Trello, card.id)
         .subscribe((integrationLinkDetails) => {
           this.integrationLinkDetails = integrationLinkDetails.details;
+          console.log("realaod integrationLinkDetails? " + this.integrationLinkDetails?.length);
           this.loading = false;
           this.resize();
         });
     })
       .catch((error: unknown) => {
+        console.log("realaod error?");
         if (error instanceof HttpErrorResponse && error?.status === 401) {
           this.authorizationParameters = null;
           void this.trelloService.removeAuthorizationParameters();
@@ -105,7 +116,8 @@ export class FeatureFlagsSettingsComponent implements OnInit {
     setTimeout(() => {
       const contentHeight = this.elementView()?.nativeElement?.offsetHeight;
       const height = contentHeight && contentHeight < 700 ? contentHeight : 700;
-      void this.trelloService.sizeToHeight(height);
+      console.log("ffs resize " + height);
+      void this.trelloService.sizeToHeight(height, this.trelloPowerUpIframe);
     }, 300);
   }
 

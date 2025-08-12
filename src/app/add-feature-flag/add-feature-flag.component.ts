@@ -92,16 +92,20 @@ export class AddFeatureFlagComponent implements OnInit, OnDestroy {
         .addOrUpdateIntegrationLink(this.formGroup.controls.environmentId.value, this.formGroup.controls.settingId.value,
           IntegrationLinkType.Trello, card.id,
           { description: card.name, url: card.url })
-    )
-      .then(() => {
-        return this.trelloService.setCardSettingData({ lastUpdatedAt: new Date() });
-      })
-      .then(() => {
-        return this.trelloService.closePopup();
-      })
-      .catch((error: unknown) => {
-        console.log(error);
-      });
+        .subscribe(() => {
+          console.log("post success?");
+          this.trelloService.setCardSettingData({ lastUpdatedAt: new Date() })
+            .then(() => {
+              return this.trelloService.closePopup();
+            })
+            .catch((error: unknown) => {
+              console.log(error);
+            });
+        })
+    ).catch((error: unknown) => {
+      console.log(error);
+    });
+
   }
 
   selectDropdownPanelChanged(event: boolean) {

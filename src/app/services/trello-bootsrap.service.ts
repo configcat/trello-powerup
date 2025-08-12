@@ -3,16 +3,18 @@ import { CallbackHandler, CardBackSection, CardButton } from "trellopowerup/lib/
 import { TrelloService } from "./trello-service";
 
 const CONFIGCAT_ICON = "./assets/cat_red.svg";
+declare const t: Trello.PowerUp.CallbackHandler;
 
 @Injectable({
   providedIn: "root",
 })
 export class TrelloBootstrapService {
   private readonly trelloService = inject(TrelloService);
-  private readonly trelloPowerUp = window["TrelloPowerUp"];
+  // private readonly trelloPowerUp = window["TrelloPowerUp"];
 
   initialize() {
-    this.trelloPowerUp.initialize({
+    console.log("initialize cool");
+    window["TrelloPowerUp"].initialize({
       "card-back-section": this.getCardBackSection,
       "card-buttons": this.getCardButtons,
       "authorization-status": this.getAuthorizationStatus,
@@ -22,18 +24,16 @@ export class TrelloBootstrapService {
     });
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private readonly getBadges = (_t: CallbackHandler) => {
-    return this.trelloService.getBadgeData();
+  private readonly getBadges = (t: CallbackHandler) => {
+    return this.trelloService.getBadgeData(t);
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private readonly disable = (_t: CallbackHandler) => {
-    return this.trelloService.removeAuthorizationParameters();
+  private readonly disable = (t: CallbackHandler) => {
+    return this.trelloService.removeAuthorizationParameters(t);
   };
 
   private readonly showAuthorization = () => {
-    void this.trelloPowerUp.iframe().popup({
+    void t.popup({
       title: "Authorize ConfigCat",
       url: "./authorize",
       height: 300,
@@ -41,7 +41,7 @@ export class TrelloBootstrapService {
   };
 
   private readonly getAuthorizationStatus = () => {
-    this.trelloService.getAuthorizationParameters()
+    this.trelloService.getAuthorizationParameters(t)
       .then(authorizationParameters => {
         if (authorizationParameters?.basicAuthUsername && authorizationParameters?.basicAuthPassword) {
           return { authorized: true };
@@ -82,7 +82,7 @@ export class TrelloBootstrapService {
   };
 
   private readonly getCardBackSection = (t: CallbackHandler) => {
-    return this.trelloService.getCardSettingData()
+    return this.trelloService.getCardSettingData(t)
       .then(setting => {
         if (setting) {
           return {

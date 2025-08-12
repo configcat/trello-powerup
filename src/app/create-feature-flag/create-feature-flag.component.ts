@@ -117,16 +117,20 @@ export class CreateFeatureFlagComponent implements OnInit, OnDestroy {
                 .createIntegrationLinksService(this.authorizationParameters.basicAuthUsername, this.authorizationParameters.basicAuthPassword)
                 .addOrUpdateIntegrationLink(this.formGroup.controls.environmentId.value, setting.settingId,
                   IntegrationLinkType.Trello, card.id,
-                  { description: card.name, url: card.url });
+                  { description: card.name, url: card.url })
+                .subscribe(() => {
+                  this.trelloService.setCardSettingData({ lastUpdatedAt: new Date() }).then(() => {
+                    return this.trelloService.closePopup();
+                  })
+                    .catch((error: unknown) => {
+                      //not sure this works
+                      ErrorHandler.handleErrors(this.formGroup, error as Error);
+                      console.log(error);
+                    });
+                });
             });
         }
       )
-      .then(() => {
-        return this.trelloService.setCardSettingData({ lastUpdatedAt: new Date() });
-      })
-      .then(() => {
-        return this.trelloService.closePopup();
-      })
       .catch((error: unknown) => {
         //not sure this works
         ErrorHandler.handleErrors(this.formGroup, error as Error);

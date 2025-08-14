@@ -93,7 +93,6 @@ export class AddFeatureFlagComponent implements OnInit, OnDestroy {
           IntegrationLinkType.Trello, card.id,
           { description: card.name, url: card.url })
         .subscribe(() => {
-          console.log("post success?");
           this.trelloService.setCardSettingData({ lastUpdatedAt: new Date() })
             .then(() => {
               return this.trelloService.closePopup();

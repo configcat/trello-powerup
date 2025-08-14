@@ -13,7 +13,6 @@ export class TrelloBootstrapService {
   // private readonly trelloPowerUp = window["TrelloPowerUp"];
 
   initialize() {
-    console.log("initialize cool");
     window["TrelloPowerUp"].initialize({
       "card-back-section": this.getCardBackSection,
       "card-buttons": this.getCardButtons,

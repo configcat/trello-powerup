@@ -31,13 +31,11 @@ export class FeatureFlagsSettingsComponent implements OnInit {
 
   ngOnInit(): void {
     this.trelloPowerUpIframe = this.trelloService.iframe();
-    console.log("FeatureFlagsSettingsComponent ngOnInit ");
     this.trelloService.render(() => { this.reloadSettings(); }, this.trelloPowerUpIframe);
     this.reloadSettings();
   }
 
   reloadSettings() {
-    console.log("realaod called?");
     this.loading = true;
     this.showError = false;
     Promise.all([
@@ -47,20 +45,17 @@ export class FeatureFlagsSettingsComponent implements OnInit {
     ]).then(value => {
       this.authorizationParameters = value[0];
       const card = value[1];
-      console.log("realaod then?");
 
       this.publicApiService
         .createIntegrationLinksService(this.authorizationParameters.basicAuthUsername, this.authorizationParameters.basicAuthPassword)
         .getIntegrationLinkDetails(IntegrationLinkType.Trello, card.id)
         .subscribe((integrationLinkDetails) => {
           this.integrationLinkDetails = integrationLinkDetails.details;
-          console.log("realaod integrationLinkDetails? " + this.integrationLinkDetails?.length);
           this.loading = false;
           this.resize();
         });
     })
       .catch((error: unknown) => {
-        console.log("realaod error?");
         if (error instanceof HttpErrorResponse && error?.status === 401) {
           this.authorizationParameters = null;
           void this.trelloService.removeAuthorizationParameters();
@@ -116,7 +111,6 @@ export class FeatureFlagsSettingsComponent implements OnInit {
     setTimeout(() => {
       const contentHeight = this.elementView()?.nativeElement?.offsetHeight;
       const height = contentHeight && contentHeight < 700 ? contentHeight : 700;
-      console.log("ffs resize " + height);
       void this.trelloService.sizeToHeight(height, this.trelloPowerUpIframe);
     }, 300);
   }

@@ -8,6 +8,8 @@ import { CardSettingData } from "../models/card-setting-data";
 
 const CONFIGCAT_ICON = "./assets/cat_red.svg";
 
+type TrelloFrame = CallbackHandler | IFrame | null;
+
 @Injectable({
   providedIn: "root",
 })
@@ -26,17 +28,17 @@ export class TrelloService {
     return window["TrelloPowerUp"].iframe().sizeTo(selector);
   }
 
-  sizeToHeight(height: number, t: CallbackHandler | IFrame | null = null) {
+  sizeToHeight(height: number, t: TrelloFrame = null) {
     return (t ?? window["TrelloPowerUp"].iframe()).sizeTo(height);
   }
 
-  getAuthorizationParameters(t: CallbackHandler | IFrame | null = null): Promise<AuthorizationParameters> {
+  getAuthorizationParameters(t: TrelloFrame = null): Promise<AuthorizationParameters> {
     return (t ?? window["TrelloPowerUp"].iframe()).loadSecret("authorization").then((authorizationParameters: string) => {
       return JSON.parse(authorizationParameters) as AuthorizationParameters;
     });
   }
 
-  setAuthorizationParameters(authorizationParameters: AuthorizationParameters, t: CallbackHandler | IFrame | null = null): Promise<void> {
+  setAuthorizationParameters(authorizationParameters: AuthorizationParameters, t: TrelloFrame = null): Promise<void> {
     return (t ?? window["TrelloPowerUp"].iframe()).storeSecret("authorization", JSON.stringify(authorizationParameters))
       .then(() => {
         return this.setCardSettingData({ lastUpdatedAt: new Date() }, t);
@@ -52,15 +54,15 @@ export class TrelloService {
 
   }
 
-  removeAuthorizationParameters(t: CallbackHandler | IFrame | null = null) {
+  removeAuthorizationParameters(t: TrelloFrame = null) {
     return (t ?? window["TrelloPowerUp"].iframe()).clearSecret("authorization");
   }
 
-  getCardSettingData(t: CallbackHandler | IFrame | null = null): Promise<CardSettingData> {
+  getCardSettingData(t: TrelloFrame = null): Promise<CardSettingData> {
     return (t ?? window["TrelloPowerUp"].iframe()).get("card", "shared", "cardSettingData");
   }
 
-  setCardSettingData(cardData: CardSettingData, t: CallbackHandler | IFrame | null = null): Promise<void> {
+  setCardSettingData(cardData: CardSettingData, t: TrelloFrame = null): Promise<void> {
     return (t ?? window["TrelloPowerUp"].iframe()).set("card", "shared", "cardSettingData", cardData);
   }
 

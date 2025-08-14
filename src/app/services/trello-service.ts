@@ -39,6 +39,7 @@ export class TrelloService {
   }
 
   setAuthorizationParameters(authorizationParameters: AuthorizationParameters, t: TrelloFrame = null): Promise<void> {
+    console.log("Set auth");
     return (t ?? window["TrelloPowerUp"].iframe()).storeSecret("authorization", JSON.stringify(authorizationParameters))
       .then(() => {
         return this.setCardSettingData({ lastUpdatedAt: new Date() }, t);

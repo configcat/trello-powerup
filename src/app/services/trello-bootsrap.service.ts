@@ -1,19 +1,26 @@
 import { inject, Injectable } from "@angular/core";
-import { CallbackHandler, CardBackSection, CardButton } from "trellopowerup/lib/powerup";
+import { CallbackHandler, CapabilityHandlers, CardBackSection, CardButton, Plugin, PluginOptions, PowerUp } from "trellopowerup/lib/powerup";
 import { TrelloService } from "./trello-service";
 
 const CONFIGCAT_ICON = "./assets/cat_red.svg";
-declare const t: Trello.PowerUp.CallbackHandler;
+
+interface MyCapabilityHandlers extends Omit<CapabilityHandlers, "show-authorization" | "authorization-status" > {
+  "show-authorization"?: (t: CallbackHandler) => Promise<void>;
+  "authorization-status"?: (t: CallbackHandler) => Promise<{ authorized: boolean }>;
+}
+
+interface MyPowerUp extends Omit<PowerUp, "initialize"> {
+  initialize(handlers: MyCapabilityHandlers, options?: PluginOptions): Plugin;
+}
 
 @Injectable({
   providedIn: "root",
 })
 export class TrelloBootstrapService {
   private readonly trelloService = inject(TrelloService);
-  // private readonly trelloPowerUp = window["TrelloPowerUp"];
 
   initialize() {
-    window["TrelloPowerUp"].initialize({
+    (window["TrelloPowerUp"] as MyPowerUp).initialize({
       "card-back-section": this.getCardBackSection,
       "card-buttons": this.getCardButtons,
       "authorization-status": this.getAuthorizationStatus,
@@ -21,6 +28,7 @@ export class TrelloBootstrapService {
       "on-disable": this.disable,
       "card-badges": this.getBadges,
     });
+    console.log("init success");
   }
 
   private readonly getBadges = (t: CallbackHandler) => {
@@ -31,23 +39,28 @@ export class TrelloBootstrapService {
     return this.trelloService.removeAuthorizationParameters(t);
   };
 
-  private readonly showAuthorization = () => {
-    void t.popup({
+  private readonly showAuthorization = (t: CallbackHandler) => {
+    return t.popup({
       title: "Authorize ConfigCat",
       url: "./authorize",
       height: 300,
     });
   };
 
-  private readonly getAuthorizationStatus = () => {
-    this.trelloService.getAuthorizationParameters(t)
+  private readonly getAuthorizationStatus = (t: CallbackHandler) => {
+    console.log("asd");
+    return this.trelloService.getAuthorizationParameters(t)
       .then(authorizationParameters => {
+        console.log("getAuth returned " + authorizationParameters?.basicAuthPassword);
         if (authorizationParameters?.basicAuthUsername && authorizationParameters?.basicAuthPassword) {
           return { authorized: true };
         }
         return { authorized: false };
       })
-      .catch(() => ({ authorized: false }));
+      .catch(() => {
+        console.log("catch");
+        return { authorized: false };
+      });
   };
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

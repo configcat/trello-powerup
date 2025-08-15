@@ -39,12 +39,14 @@ export class TrelloService {
   }
 
   setAuthorizationParameters(authorizationParameters: AuthorizationParameters, t: TrelloFrame = null): Promise<void> {
-    console.log("Set auth");
     return (t ?? window["TrelloPowerUp"].iframe()).storeSecret("authorization", JSON.stringify(authorizationParameters))
       .then(() => {
         return this.setCardSettingData({ lastUpdatedAt: new Date() }, t);
       })
-      .finally(() => {
+      .catch(() => {
+        // empty for a good reason. set card call shuould be use a param.
+      })
+      .then(() => {
         return void (t ?? window["TrelloPowerUp"].iframe())
           .alert({
             message: "Authorized to ConfigCat 🎉",

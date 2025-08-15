@@ -5,6 +5,7 @@ import { IntegrationLinkType } from "ng-configcat-publicapi";
 import { AuthorizationComponent, AuthorizationModel, ConfigSelectComponent, EnvironmentSelectComponent, ProductSelectComponent, PublicApiService, SettingSelectComponent } from "ng-configcat-publicapi-ui";
 import { Subscription } from "rxjs";
 import { AuthorizationParameters } from "../models/authorization-parameters";
+import { ErrorHandler } from "../services/error-handler";
 import { TrelloService } from "../services/trello-service";
 
 @Component({
@@ -92,14 +93,17 @@ export class AddFeatureFlagComponent implements OnInit, OnDestroy {
         .addOrUpdateIntegrationLink(this.formGroup.controls.environmentId.value, this.formGroup.controls.settingId.value,
           IntegrationLinkType.Trello, card.id,
           { description: card.name, url: card.url })
-        .subscribe(() => {
-          this.trelloService.setCardSettingData({ lastUpdatedAt: new Date() })
-            .then(() => {
-              return this.trelloService.closePopup();
-            })
-            .catch((error: unknown) => {
-              console.log(error);
-            });
+        .subscribe({
+          next: () => {
+            void this.trelloService.setCardSettingData({ lastUpdatedAt: new Date() })
+              .then(() => {
+                return this.trelloService.closePopup();
+              });
+          },
+          error: (error: Error) => {
+            ErrorHandler.handleErrors(this.formGroup, error);
+            console.log(error);
+          },
         })
     ).catch((error: unknown) => {
       console.log(error);

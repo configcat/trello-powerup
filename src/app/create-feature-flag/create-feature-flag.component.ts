@@ -112,28 +112,33 @@ export class CreateFeatureFlagComponent implements OnInit, OnDestroy {
               name: this.formGroup.controls.name.value,
               hint: this.formGroup.controls.hint.value,
             })
-            .subscribe(setting => {
-              return this.publicApiService
-                .createIntegrationLinksService(this.authorizationParameters.basicAuthUsername, this.authorizationParameters.basicAuthPassword)
-                .addOrUpdateIntegrationLink(this.formGroup.controls.environmentId.value, setting.settingId,
-                  IntegrationLinkType.Trello, card.id,
-                  { description: card.name, url: card.url })
-                .subscribe(() => {
-                  this.trelloService.setCardSettingData({ lastUpdatedAt: new Date() }).then(() => {
-                    return this.trelloService.closePopup();
-                  })
-                    .catch((error: unknown) => {
-                      //not sure this works
-                      ErrorHandler.handleErrors(this.formGroup, error as Error);
+            .subscribe({
+              next: setting => {
+                return this.publicApiService
+                  .createIntegrationLinksService(this.authorizationParameters.basicAuthUsername, this.authorizationParameters.basicAuthPassword)
+                  .addOrUpdateIntegrationLink(this.formGroup.controls.environmentId.value, setting.settingId,
+                    IntegrationLinkType.Trello, card.id,
+                    { description: card.name, url: card.url })
+                  .subscribe({
+                    next: () => {
+                      void this.trelloService.setCardSettingData({ lastUpdatedAt: new Date() }).then(() => {
+                        return this.trelloService.closePopup();
+                      });
+                    },
+                    error: (error: Error) => {
+                      ErrorHandler.handleErrors(this.formGroup, error);
                       console.log(error);
-                    });
-                });
+                    },
+                  });
+              },
+              error: (error: Error) => {
+                ErrorHandler.handleErrors(this.formGroup, error);
+                console.log(error);
+              },
             });
         }
       )
       .catch((error: unknown) => {
-        //not sure this works
-        ErrorHandler.handleErrors(this.formGroup, error as Error);
         console.log(error);
       });
   }

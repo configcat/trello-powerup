@@ -38,13 +38,13 @@ export class TrelloService {
     });
   }
 
-  setAuthorizationParameters(authorizationParameters: AuthorizationParameters, t: TrelloFrame = null): Promise<void> {
+  setAuthorizationParameters(authorizationParameters: AuthorizationParameters, t: TrelloFrame = null, setCardSettingData = true): Promise<void> {
     return (t ?? window["TrelloPowerUp"].iframe()).storeSecret("authorization", JSON.stringify(authorizationParameters))
       .then(() => {
-        return this.setCardSettingData({ lastUpdatedAt: new Date() }, t);
-      })
-      .catch(() => {
-        // empty for a good reason. set card call shuould be use a param.
+        if (setCardSettingData) {
+          return this.setCardSettingData({ lastUpdatedAt: new Date() }, t);
+        }
+        return;
       })
       .then(() => {
         return void (t ?? window["TrelloPowerUp"].iframe())

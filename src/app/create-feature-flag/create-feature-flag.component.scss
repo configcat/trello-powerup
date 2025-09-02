@@ -32,8 +32,8 @@
         }
 
         .error {
-            color: #ff5252;
-            margin-bottom: 12px;
+            color: var(--flag-validation-error);
+            margin: 0 5px 5px 5px;
         }
     }
 }

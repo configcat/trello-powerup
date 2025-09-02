@@ -38,6 +38,11 @@
             [customDropdown]="true"
             (dropdownOpened)="selectDropdownPanelChanged($event)" />
         }
+        @if (formGroup.errors && formGroup.errors["serverSide"]) {
+        <div class="error">
+          <span>{{ formGroup.errors["serverSide"] }}</span>
+        </div>
+       }
       </div>
       <div>
         <button mat-raised-button color="primary" type="submit">Add</button>

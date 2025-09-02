@@ -3,6 +3,11 @@
     padding-left: 8px;
     padding-bottom: 8px;
     min-height: 80px;
+
+     .error {
+      color: var(--flag-validation-error);
+      margin: 0 5px;
+    }
 }
 
 .setting-item {

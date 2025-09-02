@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from "@angular/common/http";
 import { Component, DOCUMENT, inject, OnDestroy, OnInit } from "@angular/core";
 import { FormControl, FormsModule, NonNullableFormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatButton } from "@angular/material/button";
@@ -101,7 +102,11 @@ export class AddFeatureFlagComponent implements OnInit, OnDestroy {
               });
           },
           error: (error: Error) => {
-            ErrorHandler.handleErrors(this.formGroup, error);
+            if (error instanceof HttpErrorResponse && error?.status === 409) {
+              this.formGroup.setErrors({ serverSide: "Integration link already exists." });
+            } else {
+              ErrorHandler.handleErrors(this.formGroup, error);
+            }
             console.log(error);
           },
         })

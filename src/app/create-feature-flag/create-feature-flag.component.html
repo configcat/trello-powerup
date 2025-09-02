@@ -37,7 +37,7 @@
             <mat-hint>A friendly name that best describes your setting.</mat-hint>
             @if (formGroup.controls.name.invalid) {
               <mat-error>
-                {{ ErrorHandler.getErrorMessage(formGroup.controls.name) }}
+                {{  FormHelper.getErrorMessage(formGroup.controls.name) }}
               </mat-error>
             }
           </mat-form-field>
@@ -47,7 +47,7 @@
             <mat-hint>Your applications will access your setting via this key.</mat-hint>
             @if (formGroup.controls.key.invalid) {
               <mat-error>
-                {{ ErrorHandler.getErrorMessage(formGroup.controls.key) }}
+                {{ FormHelper.getErrorMessage(formGroup.controls.key) }}
               </mat-error>
             }
           </mat-form-field>
@@ -57,7 +57,7 @@
             <mat-hint>A description to help you remember the purpose of your setting.</mat-hint>
             @if (formGroup.controls.hint.invalid) {
               <mat-error>
-                {{ ErrorHandler.getErrorMessage(formGroup.controls.hint) }}
+                {{ FormHelper.getErrorMessage(formGroup.controls.hint) }}
               </mat-error>
             }
           </mat-form-field>

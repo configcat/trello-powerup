@@ -1,58 +1,8 @@
 import { HttpErrorResponse } from "@angular/common/http";
-import { FormControl, FormGroup } from "@angular/forms";
+import { FormGroup } from "@angular/forms";
+import { FormHelper } from "ng-configcat-publicapi-ui";
 
 export class ErrorHandler {
-  public static getErrorMessage(control: FormControl<string>, hint = "") {
-    if (!control || control.valid) {
-      return null;
-    }
-
-    if (control.hasError("required")) {
-      return `${hint} The field is required.`;
-    }
-
-    if (control.hasError("pattern")) {
-      return "Not a valid e-mail address.";
-    }
-
-    if (control.hasError("minlength")) {
-      return "The field must be at least " + (control.errors!["minlength"] as { requiredLength: number }).requiredLength + " characters long";
-    }
-
-    if (control.hasError("maxlength")) {
-      return "The field must be at max " + (control.errors!["maxlength"] as { requiredLength: number }).requiredLength + " characters long";
-    }
-
-    if (control.hasError("serverSide")) {
-      return control.errors!["serverSide"] as string;
-    }
-    return "";
-  }
-
-  public static getHttpErrorResponseMessage(error: HttpErrorResponse, fieldName: string): string | undefined {
-    if (!error.error || !Object.prototype.hasOwnProperty.call(error.error, fieldName)) {
-      return;
-    }
-
-    const errorObjectValue = error.error as Record<string, { Errors: { ErrorMessage: string }[] }>;
-    if (
-      Object.prototype.hasOwnProperty.call(errorObjectValue, fieldName)
-      && Object.prototype.hasOwnProperty.call(errorObjectValue[fieldName], "Errors")
-      && errorObjectValue[fieldName].Errors.length > 0
-    ) {
-      return errorObjectValue[fieldName].Errors.map(e => e.ErrorMessage).join(", ");
-    }
-
-    const errorStringValue = error.error as Record<string, string | string[]>;
-    const errorValue = errorStringValue[fieldName];
-    if (!errorValue) {
-      return;
-    }
-    if (Array.isArray(errorValue)) {
-      return errorValue[0];
-    }
-    return errorValue;
-  }
 
   public static handleErrors(formGroup: FormGroup, error: Error) {
     if (error instanceof HttpErrorResponse) {
@@ -60,7 +10,7 @@ export class ErrorHandler {
         case 400:
           let unknownFieldName = false;
           for (const fieldName in error.error) {
-            const errorMessage = this.getHttpErrorResponseMessage(error, fieldName);
+            const errorMessage = FormHelper.getHttpErrorResponseMessage(error, fieldName);
 
             if (errorMessage) {
               let jsonFieldName = fieldName;

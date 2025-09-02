@@ -5,7 +5,7 @@ import { MatError, MatFormField, MatHint, MatLabel } from "@angular/material/for
 import { MatInput } from "@angular/material/input";
 import { MatOption, MatSelect } from "@angular/material/select";
 import { IntegrationLinkType, SettingType } from "ng-configcat-publicapi";
-import { AuthorizationComponent, AuthorizationModel, ConfigSelectComponent, EnvironmentSelectComponent, ProductSelectComponent, PublicApiService } from "ng-configcat-publicapi-ui";
+import { AuthorizationComponent, AuthorizationModel, ConfigSelectComponent, EnvironmentSelectComponent, featureFlagKeyRegex, FormHelper, ProductSelectComponent, PublicApiService } from "ng-configcat-publicapi-ui";
 import { Subscription } from "rxjs";
 import { AuthorizationParameters } from "../models/authorization-parameters";
 import { ErrorHandler } from "../services/error-handler";
@@ -44,7 +44,7 @@ export class CreateFeatureFlagComponent implements OnInit, OnDestroy {
     }),
     key: new FormControl<string>("", {
       nonNullable: true,
-      validators: [Validators.required, Validators.maxLength(255)],
+      validators: [Validators.required, Validators.maxLength(255), Validators.pattern(featureFlagKeyRegex)],
     }),
     hint: new FormControl<string>("", {
       nonNullable: true,
@@ -59,6 +59,7 @@ export class CreateFeatureFlagComponent implements OnInit, OnDestroy {
   subscription!: Subscription | null;
   SettingTypeEnum = SettingType;
   ErrorHandler = ErrorHandler;
+  FormHelper = FormHelper;
 
   ngOnInit(): void {
     this.subscription = this.formGroup.statusChanges.subscribe(() => {

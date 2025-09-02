@@ -15,6 +15,7 @@ import { TrelloService } from "../services/trello-service";
   imports: [AuthorizationComponent, SettingItemComponent, FeatureFlagItemComponent, LoaderComponent],
 })
 export class FeatureFlagsSettingsComponent implements OnInit {
+
   private readonly dialog = inject(MatDialog);
   private readonly publicApiService = inject(PublicApiService);
   private readonly trelloService = inject(TrelloService);
@@ -30,6 +31,12 @@ export class FeatureFlagsSettingsComponent implements OnInit {
   readonly elementView = viewChild<ElementRef<HTMLElement>>("settingItem");
 
   ngOnInit(): void {
+    this.dialog.afterOpened.subscribe(result => {
+      this.resize(result.id);
+    });
+    this.dialog.afterAllClosed.subscribe(() => {
+      this.resize();
+    });
     this.trelloPowerUpIframe = this.trelloService.iframe();
     this.trelloService.render(() => { this.reloadSettings(); }, this.trelloPowerUpIframe);
     this.reloadSettings();
@@ -107,10 +114,15 @@ export class FeatureFlagsSettingsComponent implements OnInit {
     this.resize();
   }
 
-  resize() {
+  resize(dialogId?: string) {
     setTimeout(() => {
       const contentHeight = this.elementView()?.nativeElement?.offsetHeight;
-      const height = contentHeight && contentHeight < 700 ? contentHeight : 700;
+      let height = contentHeight && contentHeight < 700 ? contentHeight : 700;
+      if (dialogId) {
+        const dialogHeight = document.getElementById(dialogId)?.offsetHeight ?? 0;
+        // the extra 130 px is hard coded. because of the dialog content dinamically changes the height.
+        height = height < dialogHeight ? dialogHeight + 130 : height;
+      }
       void this.trelloService.sizeToHeight(height, this.trelloPowerUpIframe);
     }, 300);
   }

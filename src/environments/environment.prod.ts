@@ -1,5 +1,5 @@
 export const environment = {
-    production: true,  
-    publicApiBaseUrl: '${CC_PublicApiBaseUrl}',
-    dashboardBasePath: '${CC_DashboardBaseUrl}',
+  production: true,
+  publicApiBaseUrl: "${CC_PublicApiBaseUrl}",
+  dashboardBasePath: "${CC_DashboardBaseUrl}",
 };

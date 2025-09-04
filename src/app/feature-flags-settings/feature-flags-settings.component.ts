@@ -1,64 +1,72 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { DeleteSettingDialogComponent, PublicApiService } from 'ng-configcat-publicapi-ui';
-import { AuthorizationParameters } from '../models/authorization-parameters';
-import { TrelloService } from '../services/trello-service';
-import { EvaluationVersion, IntegrationLinkDetail, IntegrationLinkType } from 'ng-configcat-publicapi';
+import { HttpErrorResponse } from "@angular/common/http";
+import { Component, ElementRef, inject, OnInit, viewChild } from "@angular/core";
+import { MatDialog } from "@angular/material/dialog";
+import { EvaluationVersion, IntegrationLinkDetail, IntegrationLinkType } from "ng-configcat-publicapi";
+import { AuthorizationComponent, DeleteSettingDialogComponent, DeleteSettingDialogData, DeleteSettingDialogResult, DeleteSettingModel, FeatureFlagItemComponent, PublicApiService, SettingItemComponent } from "ng-configcat-publicapi-ui";
+import { IFrame } from "trellopowerup/lib/powerup";
+import { LoaderComponent } from "../loader/loader.component";
+import { AuthorizationParameters } from "../models/authorization-parameters";
+import { TrelloService } from "../services/trello-service";
 
 @Component({
-  selector: 'app-feature-flags-settings',
-  templateUrl: './feature-flags-settings.component.html',
-  styleUrls: ['./feature-flags-settings.component.scss']
+  selector: "configcat-trello-feature-flags-settings",
+  templateUrl: "./feature-flags-settings.component.html",
+  styleUrls: ["./feature-flags-settings.component.scss"],
+  imports: [AuthorizationComponent, SettingItemComponent, FeatureFlagItemComponent, LoaderComponent],
 })
 export class FeatureFlagsSettingsComponent implements OnInit {
 
+  private readonly dialog = inject(MatDialog);
+  private readonly publicApiService = inject(PublicApiService);
+  private readonly trelloService = inject(TrelloService);
+
   loading = true;
   showError = false;
-  authorizationParameters: AuthorizationParameters;
-  integrationLinkDetails: IntegrationLinkDetail[];
+  authorizationParameters!: AuthorizationParameters | null;
+  integrationLinkDetails!: IntegrationLinkDetail[] | null;
   EvaluationVersion = EvaluationVersion;
 
-  trelloPowerUpIframe: any;
+  trelloPowerUpIframe!: IFrame;
 
-  @ViewChild('settingItem') elementView: ElementRef;
-
-  constructor(
-    private dialog: MatDialog,
-    private publicApiService: PublicApiService,
-    private trelloService: TrelloService
-  ) {
-  }
+  readonly elementView = viewChild<ElementRef<HTMLElement>>("settingItem");
 
   ngOnInit(): void {
+    this.dialog.afterOpened.subscribe(result => {
+      this.resize(result.id);
+    });
+    this.dialog.afterAllClosed.subscribe(() => {
+      this.resize();
+    });
     this.trelloPowerUpIframe = this.trelloService.iframe();
-    this.trelloService.render(() => this.reloadSettings(), this.trelloPowerUpIframe);
+    this.trelloService.render(() => { this.reloadSettings(); }, this.trelloPowerUpIframe);
+    this.reloadSettings();
   }
 
   reloadSettings() {
     this.loading = true;
     this.showError = false;
-    return Promise.all([
+    Promise.all([
       this.trelloService.getAuthorizationParameters(this.trelloPowerUpIframe),
       this.trelloService.getCardData(this.trelloPowerUpIframe),
-      this.trelloService.getCardSettingData(this.trelloPowerUpIframe)
+      this.trelloService.getCardSettingData(this.trelloPowerUpIframe),
     ]).then(value => {
       this.authorizationParameters = value[0];
       const card = value[1];
-      return this.publicApiService
+
+      this.publicApiService
         .createIntegrationLinksService(this.authorizationParameters.basicAuthUsername, this.authorizationParameters.basicAuthPassword)
         .getIntegrationLinkDetails(IntegrationLinkType.Trello, card.id)
-        .toPromise()
-        .then((integrationLinkDetails) => {
+        .subscribe((integrationLinkDetails) => {
           this.integrationLinkDetails = integrationLinkDetails.details;
           this.loading = false;
           this.resize();
         });
     })
-      .catch(error => {
-        if (error?.status === 401) {
+      .catch((error: unknown) => {
+        if (error instanceof HttpErrorResponse && error?.status === 401) {
           this.authorizationParameters = null;
-          this.trelloService.removeAuthorizationParameters();
-          this.trelloService.showHttpUnauthorizedAlert();
+          void this.trelloService.removeAuthorizationParameters();
+          void this.trelloService.showHttpUnauthorizedAlert();
         } else {
           this.showError = true;
         }
@@ -68,23 +76,26 @@ export class FeatureFlagsSettingsComponent implements OnInit {
       });
   }
 
-  onDeleteSettingRequested(data) {
-    const dialogRef = this.dialog.open(DeleteSettingDialogComponent, {
+  onDeleteSettingRequested(data: DeleteSettingModel) {
+    const dialogRef = this.dialog.open<
+      DeleteSettingDialogComponent,
+      DeleteSettingDialogData,
+      DeleteSettingDialogResult
+    >(DeleteSettingDialogComponent, {
       data: {
         system: "Trello",
-        ticketType: "card"
-      }
+        ticketType: "card",
+      },
     });
 
-    dialogRef.afterClosed()
-      .subscribe(result => {
-        if (!result) {
-          return;
-        }
-        if (result.button === 'remove') {
-          this.trelloService.removeSetting(data.environment.environmentId, data.setting.settingId);
-        }
-      });
+    dialogRef.afterClosed().subscribe(result => {
+      if (!result) {
+        return;
+      }
+      if (result.button === "remove") {
+        void this.trelloService.removeSetting(data.environment.environmentId, data.setting.settingId);
+      }
+    });
   }
 
   loadSucceeded() {
@@ -96,26 +107,33 @@ export class FeatureFlagsSettingsComponent implements OnInit {
   }
 
   saveSucceeded() {
-    this.trelloService.setCardSettingData({ lastUpdatedAt: new Date() }, this.trelloPowerUpIframe);
+    void this.trelloService.setCardSettingData({ lastUpdatedAt: new Date() });
   }
 
   onFormValuesChanged() {
     this.resize();
   }
 
-  resize() {
+  resize(dialogId?: string) {
     setTimeout(() => {
-      const contentHeight = this.elementView?.nativeElement?.offsetHeight;
-      const height = contentHeight && contentHeight < 700 ? contentHeight : 700;
-      this.trelloService.sizeToHeight(height, this.trelloPowerUpIframe);
+      const contentHeight = this.elementView()?.nativeElement?.offsetHeight;
+      let height = contentHeight && contentHeight < 700 ? contentHeight : 700;
+      if (dialogId) {
+        const dialogHeight = document.getElementById(dialogId)?.offsetHeight ?? 0;
+        // the extra 130 px is hard coded. because of the dialog content dinamically changes the height.
+        height = height < dialogHeight ? dialogHeight + 130 : height;
+      }
+      void this.trelloService.sizeToHeight(height, this.trelloPowerUpIframe);
     }, 300);
   }
 
-  login(authorizationParameters) {
+  login(authorizationParameters: AuthorizationParameters) {
     this.trelloService
       .setAuthorizationParameters(authorizationParameters)
       .then(() => {
         this.reloadSettings();
+      }).catch(() => {
+        console.log("trelloService setAuthorizationParameters failed.");
       });
   }
 

@@ -6,9 +6,7 @@
       "node"
     ]
   },
-  "files": [
-    "src/polyfills.ts"
-  ],
+  "files": [],
   "include": [
     "src/**/*.spec.ts",
     "src/**/*.d.ts"

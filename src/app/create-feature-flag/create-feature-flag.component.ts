@@ -63,6 +63,7 @@ export class CreateFeatureFlagComponent implements OnInit, OnDestroy {
   FormHelper = FormHelper;
 
   ngOnInit(): void {
+    this.formGroup.reset();
     this.subscription = this.formGroup.statusChanges.subscribe(() => {
       this.resize();
     });

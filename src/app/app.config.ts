@@ -2,7 +2,6 @@ import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http"
 import { ApplicationConfig, importProvidersFrom, provideZoneChangeDetection } from "@angular/core";
 import { MatNativeDateModule } from "@angular/material/core";
 import { MatDialogModule } from "@angular/material/dialog";
-import { provideAnimations } from "@angular/platform-browser/animations";
 import {
   provideRouter,
   withComponentInputBinding,
@@ -27,7 +26,6 @@ export const appConfig: ApplicationConfig = {
       withRouterConfig({ paramsInheritanceStrategy: "always" })
     ),
     provideHttpClient(withInterceptorsFromDi()),
-    provideAnimations(),
     {
       provide: CONFIGCAT_PUBLICAPI_UI_CONFIGURATION,
       useValue: { basePath: environment.publicApiBaseUrl, dashboardBasePath: environment.dashboardBasePath },

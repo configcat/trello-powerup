@@ -3,7 +3,6 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { MatDialog } from "@angular/material/dialog";
 import { RouterModule } from "@angular/router";
 import { Theme, ThemeService } from "ng-configcat-publicapi-ui";
-// import { IFrame } from "trellopowerup/lib/powerup";
 import { TrelloService } from "./services/trello-service";
 
 @Component({
@@ -19,11 +18,8 @@ export class AppComponent implements OnInit {
   readonly resizeReference = viewChild<ElementRef<HTMLElement>>("resizeReference");
 
   title = "configcat-trello-powerup";
-  // trelloPowerUpIframe!: IFrame;
 
   ngOnInit(): void {
-    // this.trelloPowerUpIframe = this.trelloService.iframe();
-
     this.dialog.afterOpened.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(result => {
       this.resize(result.id);
     });

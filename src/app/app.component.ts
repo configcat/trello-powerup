@@ -18,13 +18,20 @@ export class AppComponent implements OnInit {
   readonly resizeReference = viewChild<ElementRef<HTMLElement>>("resizeReference");
 
   title = "configcat-trello-powerup";
+  shouldResizeOnAfterAllClosed = false;
 
   ngOnInit(): void {
     this.dialog.afterOpened.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(result => {
       this.resize(result.id);
     });
+    // The afterAllClosed method will emit on subscribe if there are no open dialogs to begin with. To avoid a false resize we check the openDialogs.
+    this.shouldResizeOnAfterAllClosed = !!this.dialog.openDialogs.length;
     this.dialog.afterAllClosed.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
-      this.resize();
+      if (this.shouldResizeOnAfterAllClosed) {
+        this.resize();
+      } else {
+        this.shouldResizeOnAfterAllClosed = true;
+      }
     });
 
     const darkModeOn =

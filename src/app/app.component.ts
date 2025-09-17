@@ -24,7 +24,7 @@ export class AppComponent implements OnInit {
     this.dialog.afterOpened.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(result => {
       this.resize(result.id);
     });
-    // the afterAllClosed method will emit on subscribe if there are no open dialogs to begin with. To avoid a false resize we check the openDialogs
+    // The afterAllClosed method will emit on subscribe if there are no open dialogs to begin with. To avoid a false resize we check the openDialogs.
     this.shouldResizeOnAfterAllClosed = !!this.dialog.openDialogs.length;
     this.dialog.afterAllClosed.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
       if (this.shouldResizeOnAfterAllClosed) {

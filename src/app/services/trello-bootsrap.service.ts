@@ -70,6 +70,7 @@ export class TrelloBootstrapService {
         return t.popup({
           title: "Link Feature Flag",
           url: "./addfeatureflag",
+          width: 500,
           height: 380,
         });
       },

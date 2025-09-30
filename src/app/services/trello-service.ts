@@ -47,6 +47,7 @@ export class TrelloService {
         return;
       })
       .then(() => {
+        console.log("The auth success");
         return void (t ?? window["TrelloPowerUp"].iframe())
           .alert({
             message: "Authorized to ConfigCat 🎉",

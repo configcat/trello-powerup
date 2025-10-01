@@ -38,7 +38,7 @@ export class TrelloService {
     });
   }
 
-  setAuthorizationParameters(authorizationParameters: AuthorizationParameters, t: TrelloFrame = null, setCardSettingData = true): Promise<void> {
+  setAuthorizationParameters(authorizationParameters: AuthorizationParameters, setCardSettingData = true, t: TrelloFrame = null ): Promise<void> {
     return (t ?? window["TrelloPowerUp"].iframe()).storeSecret("authorization", JSON.stringify(authorizationParameters))
       .then(() => {
         if (setCardSettingData) {

@@ -32,12 +32,11 @@ export class FeatureFlagsSettingsComponent implements OnInit {
 
   ngOnInit(): void {
     this.trelloPowerUpIframe = this.trelloService.iframe();
-    this.trelloService.render(() => { this.reloadSettings(); }, this.trelloPowerUpIframe);
     this.reloadSettings();
   }
 
-  reloadSettings() {
-    this.loading = true;
+  reloadSettings(disableSetLoading = false) {
+    this.loading = !disableSetLoading;
     this.showError = false;
     Promise.all([
       this.trelloService.getAuthorizationParameters(this.trelloPowerUpIframe),

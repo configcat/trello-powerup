@@ -17,13 +17,13 @@ export class AuthComponent implements OnInit {
 
   login(authorizationModel: AuthorizationModel) {
     this.trelloService
-      .setAuthorizationParameters({ basicAuthUsername: authorizationModel.basicAuthUsername, basicAuthPassword: authorizationModel.basicAuthPassword })
+      .setAuthorizationParameters({ basicAuthUsername: authorizationModel.basicAuthUsername, basicAuthPassword: authorizationModel.basicAuthPassword }, false)
       .then(() => {
         this.trelloService.closePopup().catch(() => {
           console.log("trelloService closePopup failed.");
         });
-      }).catch(() => {
-        console.log("trelloService setAuthorizationParameters failed.");
+      }).catch((error: unknown) => {
+        console.log("trelloService setAuthorizationParameters failed.", error);
       });
   }
 

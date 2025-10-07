@@ -35,8 +35,8 @@ export class FeatureFlagsSettingsComponent implements OnInit {
     this.reloadSettings();
   }
 
-  reloadSettings(disableSetLoading = false) {
-    this.loading = !disableSetLoading;
+  reloadSettings() {
+    this.loading = true;
     this.showError = false;
     Promise.all([
       this.trelloService.getAuthorizationParameters(this.trelloPowerUpIframe),

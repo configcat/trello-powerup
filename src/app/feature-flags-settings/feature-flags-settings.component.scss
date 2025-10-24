@@ -8,6 +8,14 @@
       color: var(--flag-validation-error);
       margin: 0 5px;
     }
+
+     .info-box {
+        padding-top: 11px;
+
+        button {
+            margin-top: 12px;
+        }
+    }
 }
 
 .setting-item {

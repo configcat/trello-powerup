@@ -1,6 +1,8 @@
 import { HttpErrorResponse } from "@angular/common/http";
 import { Component, ElementRef, inject, OnInit, viewChild } from "@angular/core";
+import { MatButton } from "@angular/material/button";
 import { MatDialog } from "@angular/material/dialog";
+import { MatIcon } from "@angular/material/icon";
 import { EvaluationVersion, IntegrationLinkDetail, IntegrationLinkType } from "ng-configcat-publicapi";
 import { AuthorizationComponent, DeleteSettingDialogComponent, DeleteSettingDialogData, DeleteSettingDialogResult, DeleteSettingModel, FeatureFlagItemComponent, PublicApiService, SettingItemComponent } from "ng-configcat-publicapi-ui";
 import { IFrame } from "trellopowerup/lib/powerup";
@@ -12,7 +14,7 @@ import { TrelloService } from "../services/trello-service";
   selector: "configcat-trello-feature-flags-settings",
   templateUrl: "./feature-flags-settings.component.html",
   styleUrls: ["./feature-flags-settings.component.scss"],
-  imports: [AuthorizationComponent, SettingItemComponent, FeatureFlagItemComponent, LoaderComponent],
+  imports: [AuthorizationComponent, SettingItemComponent, FeatureFlagItemComponent, LoaderComponent, MatIcon, MatButton],
 })
 export class FeatureFlagsSettingsComponent implements OnInit {
 
@@ -23,7 +25,7 @@ export class FeatureFlagsSettingsComponent implements OnInit {
   loading = true;
   showError = false;
   authorizationParameters!: AuthorizationParameters | null;
-  integrationLinkDetails!: IntegrationLinkDetail[] | null;
+  integrationLinkDetails: IntegrationLinkDetail[] | null = null;
   EvaluationVersion = EvaluationVersion;
 
   trelloPowerUpIframe!: IFrame;
@@ -32,7 +34,44 @@ export class FeatureFlagsSettingsComponent implements OnInit {
 
   ngOnInit(): void {
     this.trelloPowerUpIframe = this.trelloService.iframe();
-    this.reloadSettings();
+    this.loading = true;
+    this.showError = false;
+    Promise.all([
+      this.trelloService.getAuthorizationParameters(this.trelloPowerUpIframe),
+      this.trelloService.getCardData(this.trelloPowerUpIframe),
+      this.trelloService.getCardSettingData(this.trelloPowerUpIframe),
+    ]).then(value => {
+      this.authorizationParameters = value[0];
+      const card = value[1];
+      const cardSettingData = value[2];
+      if (cardSettingData !== null) {
+        this.publicApiService
+          .createIntegrationLinksService(this.authorizationParameters.basicAuthUsername, this.authorizationParameters.basicAuthPassword)
+          .getIntegrationLinkDetails(IntegrationLinkType.Trello, card.id)
+          .subscribe((integrationLinkDetails) => {
+            this.integrationLinkDetails = integrationLinkDetails.details;
+            this.loading = false;
+            this.resize();
+          });
+      }
+    })
+      .then(() => {
+        this.loading = false;
+        this.resize();
+      })
+      .catch((error: unknown) => {
+        if (error instanceof HttpErrorResponse && error?.status === 401) {
+          this.authorizationParameters = null;
+          void this.trelloService.removeAuthorizationParameters();
+          void this.trelloService.showHttpUnauthorizedAlert();
+        } else {
+          this.showError = true;
+        }
+        this.integrationLinkDetails = null;
+        this.loading = false;
+        this.resize();
+        console.log(error);
+      });
   }
 
   reloadSettings() {
@@ -86,7 +125,10 @@ export class FeatureFlagsSettingsComponent implements OnInit {
         return;
       }
       if (result.button === "remove") {
-        void this.trelloService.removeSetting(data.environment.environmentId, data.setting.settingId);
+        void this.trelloService.removeSetting(data.environment.environmentId, data.setting.settingId)
+          .then(() => {
+            this.reloadSettings();
+          });
       }
     });
   }

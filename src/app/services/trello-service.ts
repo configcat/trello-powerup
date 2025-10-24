@@ -38,7 +38,7 @@ export class TrelloService {
     });
   }
 
-  setAuthorizationParameters(authorizationParameters: AuthorizationParameters, setCardSettingData = true, t: TrelloFrame = null ): Promise<void> {
+  setAuthorizationParameters(authorizationParameters: AuthorizationParameters, setCardSettingData = true, t: TrelloFrame = null): Promise<void> {
     return (t ?? window["TrelloPowerUp"].iframe()).storeSecret("authorization", JSON.stringify(authorizationParameters))
       .then(() => {
         if (setCardSettingData) {
@@ -62,8 +62,8 @@ export class TrelloService {
     return (t ?? window["TrelloPowerUp"].iframe()).clearSecret("authorization");
   }
 
-  getCardSettingData(t: TrelloFrame = null): Promise<CardSettingData> {
-    return (t ?? window["TrelloPowerUp"].iframe()).get("card", "shared", "cardSettingData");
+  getCardSettingData(t: TrelloFrame = null): Promise<CardSettingData | null> {
+    return (t ?? window["TrelloPowerUp"].iframe()).get("card", "shared", "cardSettingData", null);
   }
 
   setCardSettingData(cardData: CardSettingData, t: TrelloFrame = null): Promise<void> {

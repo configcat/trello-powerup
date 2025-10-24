@@ -1,59 +1,67 @@
 <div #settingItem id="setting-item" class="setting-item">
   @if (loading) {
     <configcat-trello-loader />
-  }
-  @if (!loading && !authorizationParameters) {
+  } @else {
     <div class="container">
-      <app-authorization (error)="error()" (authorized)="login($event)" />
-    </div>
-  }
-  @if (!loading && authorizationParameters && showError) {
-    <div class="container">
-      <div class="error">
-        <p><b>Something went wrong!</b></p>
-        <p>
-          You can try again later, check the console log for more information or
-          <a href="https://configcat.com/support/" rel="noopener noreferrer" target="_blank">contact us.</a>
-        </p>
-      </div>
-    </div>
-  }
-  @if (!loading && authorizationParameters && integrationLinkDetails) {
-    <div class="container">
-      @for (integrationLinkDetail of integrationLinkDetails; track integrationLinkDetail) {
-        <div>
-          @if (integrationLinkDetail.config.evaluationVersion === EvaluationVersion.V1) {
-            <app-setting-item
-              deleteSettingText="Remove from card"
-              [basicAuthUsername]="authorizationParameters.basicAuthUsername"
-              [basicAuthPassword]="authorizationParameters.basicAuthPassword"
-              [productId]="integrationLinkDetail.product.productId"
-              [configId]="integrationLinkDetail.config.configId"
-              [environmentId]="integrationLinkDetail.environment.environmentId"
-              [settingId]="integrationLinkDetail.setting.settingId"
-              [showEnvironmentName]="true"
-              (deleteSettingRequested)="onDeleteSettingRequested($event)"
-              (saveSucceeded)="saveSucceeded()"
-              (loadSucceeded)="loadSucceeded()"
-              (formValuesChanged)="onFormValuesChanged()" />
-          }
-          @if (integrationLinkDetail.config.evaluationVersion === EvaluationVersion.V2) {
-            <app-feature-flag-item
-              deleteSettingText="Remove from card"
-              [basicAuthUsername]="authorizationParameters.basicAuthUsername"
-              [basicAuthPassword]="authorizationParameters.basicAuthPassword"
-              [productId]="integrationLinkDetail.product.productId"
-              [configId]="integrationLinkDetail.config.configId"
-              [environmentId]="integrationLinkDetail.environment.environmentId"
-              [settingId]="integrationLinkDetail.setting.settingId"
-              [showEnvironmentName]="true"
-              (deleteSettingRequested)="onDeleteSettingRequested($event)"
-              (saveSucceeded)="saveSucceeded()"
-              (loadSucceeded)="loadSucceeded()"
-              (formValuesChanged)="onFormValuesChanged()"
-              (expandedStateChanged)="expandedStateChanged()" />
-          }
+      @if (!authorizationParameters) {
+          <app-authorization (error)="error()" (authorized)="login($event)" />
+      }
+      @if (authorizationParameters && showError) {
+          <div class="error">
+            <p><b>Something went wrong!</b></p>
+            <p>
+              You can try again later, check the console log for more information or
+              <a href="https://configcat.com/support/" rel="noopener noreferrer" target="_blank">contact us.</a>
+            </p>
+          </div>
+      }
+        @if (authorizationParameters && (!integrationLinkDetails || integrationLinkDetails.length === 0)) {
+        <div class="info-box">
+          <div>There aren't any linked Feature Flags.</div>
+          <div class="button">
+            <button mat-raised-button color="primary" type="button" (click)="reloadSettings()">
+                <mat-icon>sync</mat-icon>
+                Refresh
+            </button>
+          </div>
         </div>
+      }
+      @if (authorizationParameters && integrationLinkDetails) {
+          @for (integrationLinkDetail of integrationLinkDetails; track integrationLinkDetail) {
+            <div>
+              @if (integrationLinkDetail.config.evaluationVersion === EvaluationVersion.V1) {
+                <app-setting-item
+                  deleteSettingText="Remove from card"
+                  [basicAuthUsername]="authorizationParameters.basicAuthUsername"
+                  [basicAuthPassword]="authorizationParameters.basicAuthPassword"
+                  [productId]="integrationLinkDetail.product.productId"
+                  [configId]="integrationLinkDetail.config.configId"
+                  [environmentId]="integrationLinkDetail.environment.environmentId"
+                  [settingId]="integrationLinkDetail.setting.settingId"
+                  [showEnvironmentName]="true"
+                  (deleteSettingRequested)="onDeleteSettingRequested($event)"
+                  (saveSucceeded)="saveSucceeded()"
+                  (loadSucceeded)="loadSucceeded()"
+                  (formValuesChanged)="onFormValuesChanged()" />
+              }
+              @if (integrationLinkDetail.config.evaluationVersion === EvaluationVersion.V2) {
+                <app-feature-flag-item
+                  deleteSettingText="Remove from card"
+                  [basicAuthUsername]="authorizationParameters.basicAuthUsername"
+                  [basicAuthPassword]="authorizationParameters.basicAuthPassword"
+                  [productId]="integrationLinkDetail.product.productId"
+                  [configId]="integrationLinkDetail.config.configId"
+                  [environmentId]="integrationLinkDetail.environment.environmentId"
+                  [settingId]="integrationLinkDetail.setting.settingId"
+                  [showEnvironmentName]="true"
+                  (deleteSettingRequested)="onDeleteSettingRequested($event)"
+                  (saveSucceeded)="saveSucceeded()"
+                  (loadSucceeded)="loadSucceeded()"
+                  (formValuesChanged)="onFormValuesChanged()"
+                  (expandedStateChanged)="expandedStateChanged()" />
+              }
+            </div>
+          }
       }
     </div>
   }

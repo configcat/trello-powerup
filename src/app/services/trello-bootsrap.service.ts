@@ -90,13 +90,28 @@ export class TrelloBootstrapService {
   };
 
   private readonly getCardBackSection = (t: CallbackHandler) => {
-    return Promise.resolve({
-      title: "ConfigCat",
-      icon: CONFIGCAT_ICON, // Must be a gray icon, colored icons not allowed.
-      content: {
-        type: "iframe",
-        url: t.signUrl("./featureflags"),
-      },
-    } as CardBackSection);
+    return this.trelloService.getAuthorizationParameters(t)
+      .then(authParams => {
+        if (authParams) {
+          return {
+            title: "ConfigCat",
+            icon: CONFIGCAT_ICON, // Must be a gray icon, colored icons not allowed.
+            content: {
+              type: "iframe",
+              url: t.signUrl("./featureflags"),
+            },
+          } as CardBackSection;
+        } else {
+          // This should be an empty Card Back section
+          return {
+            title: "ConfigCat",
+            icon: CONFIGCAT_ICON, // Must be a gray icon, colored icons not allowed.
+            content: {
+              type: "iframe",
+              url: "",
+            },
+          } as CardBackSection;
+        }
+      });
   };
 }

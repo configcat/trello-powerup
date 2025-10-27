@@ -5,8 +5,8 @@
     <div class="container">
       @if (!authorizationParameters) {
           <app-authorization (error)="error()" (authorized)="login($event)" />
-      }
-      @if (authorizationParameters && showError) {
+      } @else {
+        @if (showError) {
           <div class="error">
             <p><b>Something went wrong!</b></p>
             <p>
@@ -14,19 +14,15 @@
               <a href="https://configcat.com/support/" rel="noopener noreferrer" target="_blank">contact us.</a>
             </p>
           </div>
-      }
-        @if (authorizationParameters && (!integrationLinkDetails || integrationLinkDetails.length === 0)) {
+        }
+        @if (!integrationLinkDetails || integrationLinkDetails.length === 0) {
         <div class="info-box">
-          <div>There aren't any linked Feature Flags.</div>
-          <div class="button">
-            <button mat-raised-button color="primary" type="button" (click)="reloadSettings()">
-                <mat-icon>sync</mat-icon>
-                Refresh
-            </button>
+          <div>
+            <p><b>There aren't any linked Feature Flags.</b></p>
+            <p>If you can see connected Feature Flags on the ConfigCat Dashboard, but not here. Try to <a (click)="reloadSettings()">reload</a> the flags.</p>
           </div>
         </div>
-      }
-      @if (authorizationParameters && integrationLinkDetails) {
+        } @else {
           @for (integrationLinkDetail of integrationLinkDetails; track integrationLinkDetail) {
             <div>
               @if (integrationLinkDetail.config.evaluationVersion === EvaluationVersion.V1) {
@@ -62,6 +58,7 @@
               }
             </div>
           }
+        }
       }
     </div>
   }

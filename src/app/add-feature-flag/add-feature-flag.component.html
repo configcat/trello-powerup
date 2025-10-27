@@ -3,8 +3,7 @@
     <div>
       <app-authorization (error)="error()" (authorized)="login($event)" />
     </div>
-  }
-  @if (authorizationParameters) {
+  } @else {
     <form class="form" [formGroup]="formGroup" (ngSubmit)="add()">
       <div class="container">
         <app-product-select

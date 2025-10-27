@@ -1,8 +1,6 @@
 import { HttpErrorResponse } from "@angular/common/http";
 import { Component, ElementRef, inject, OnInit, viewChild } from "@angular/core";
-import { MatButton } from "@angular/material/button";
 import { MatDialog } from "@angular/material/dialog";
-import { MatIcon } from "@angular/material/icon";
 import { EvaluationVersion, IntegrationLinkDetail, IntegrationLinkType } from "ng-configcat-publicapi";
 import { AuthorizationComponent, DeleteSettingDialogComponent, DeleteSettingDialogData, DeleteSettingDialogResult, DeleteSettingModel, FeatureFlagItemComponent, PublicApiService, SettingItemComponent } from "ng-configcat-publicapi-ui";
 import { IFrame } from "trellopowerup/lib/powerup";
@@ -14,7 +12,7 @@ import { TrelloService } from "../services/trello-service";
   selector: "configcat-trello-feature-flags-settings",
   templateUrl: "./feature-flags-settings.component.html",
   styleUrls: ["./feature-flags-settings.component.scss"],
-  imports: [AuthorizationComponent, SettingItemComponent, FeatureFlagItemComponent, LoaderComponent, MatIcon, MatButton],
+  imports: [AuthorizationComponent, SettingItemComponent, FeatureFlagItemComponent, LoaderComponent],
 })
 export class FeatureFlagsSettingsComponent implements OnInit {
 
@@ -34,6 +32,7 @@ export class FeatureFlagsSettingsComponent implements OnInit {
 
   ngOnInit(): void {
     this.trelloPowerUpIframe = this.trelloService.iframe();
+    // this.trelloService.render(() => { this.reloadSettings(); }, this.trelloPowerUpIframe);
     this.loading = true;
     this.showError = false;
     Promise.all([

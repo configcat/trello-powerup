@@ -90,9 +90,9 @@ export class TrelloBootstrapService {
   };
 
   private readonly getCardBackSection = (t: CallbackHandler) => {
-    return this.trelloService.getCardSettingData(t)
-      .then(setting => {
-        if (setting) {
+    return this.trelloService.getAuthorizationParameters(t)
+      .then(authParams => {
+        if (authParams) {
           return {
             title: "ConfigCat",
             icon: CONFIGCAT_ICON, // Must be a gray icon, colored icons not allowed.

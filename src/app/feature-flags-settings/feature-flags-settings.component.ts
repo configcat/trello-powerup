@@ -32,7 +32,7 @@ export class FeatureFlagsSettingsComponent implements OnInit {
 
   ngOnInit(): void {
     this.trelloPowerUpIframe = this.trelloService.iframe();
-    // this.trelloService.render(() => { this.reloadSettings(); }, this.trelloPowerUpIframe);
+    this.trelloService.render(() => { this.reloadSettings(); }, this.trelloPowerUpIframe);
     this.loading = true;
     this.showError = false;
     Promise.all([
@@ -74,37 +74,42 @@ export class FeatureFlagsSettingsComponent implements OnInit {
   }
 
   reloadSettings() {
-    this.loading = true;
-    this.showError = false;
-    Promise.all([
-      this.trelloService.getAuthorizationParameters(this.trelloPowerUpIframe),
-      this.trelloService.getCardData(this.trelloPowerUpIframe),
-      this.trelloService.getCardSettingData(this.trelloPowerUpIframe),
-    ]).then(value => {
-      this.authorizationParameters = value[0];
-      const card = value[1];
+    void this.trelloService.getCardSettingData(this.trelloPowerUpIframe).then(cardSettingData => {
+      if (cardSettingData?.skipRenderer) {
+        return;
+      }
+      this.loading = true;
+      this.showError = false;
+      Promise.all([
+        this.trelloService.getAuthorizationParameters(this.trelloPowerUpIframe),
+        this.trelloService.getCardData(this.trelloPowerUpIframe),
+      ]).then(value => {
+        this.authorizationParameters = value[0];
+        const card = value[1];
 
-      this.publicApiService
-        .createIntegrationLinksService(this.authorizationParameters.basicAuthUsername, this.authorizationParameters.basicAuthPassword)
-        .getIntegrationLinkDetails(IntegrationLinkType.Trello, card.id)
-        .subscribe((integrationLinkDetails) => {
-          this.integrationLinkDetails = integrationLinkDetails.details;
+        this.publicApiService
+          .createIntegrationLinksService(this.authorizationParameters.basicAuthUsername, this.authorizationParameters.basicAuthPassword)
+          .getIntegrationLinkDetails(IntegrationLinkType.Trello, card.id)
+          .subscribe((integrationLinkDetails) => {
+            this.integrationLinkDetails = integrationLinkDetails.details;
+            this.loading = false;
+            this.resize();
+          });
+      })
+        .catch((error: unknown) => {
+          if (error instanceof HttpErrorResponse && error?.status === 401) {
+            this.authorizationParameters = null;
+            void this.trelloService.removeAuthorizationParameters();
+            void this.trelloService.showHttpUnauthorizedAlert();
+          } else {
+            this.showError = true;
+          }
           this.loading = false;
           this.resize();
+          console.log(error);
         });
-    })
-      .catch((error: unknown) => {
-        if (error instanceof HttpErrorResponse && error?.status === 401) {
-          this.authorizationParameters = null;
-          void this.trelloService.removeAuthorizationParameters();
-          void this.trelloService.showHttpUnauthorizedAlert();
-        } else {
-          this.showError = true;
-        }
-        this.loading = false;
-        this.resize();
-        console.log(error);
-      });
+    });
+
   }
 
   onDeleteSettingRequested(data: DeleteSettingModel) {
@@ -141,7 +146,7 @@ export class FeatureFlagsSettingsComponent implements OnInit {
   }
 
   saveSucceeded() {
-    void this.trelloService.setCardSettingData({ lastUpdatedAt: new Date() });
+    void this.trelloService.setCardSettingData({ lastUpdatedAt: new Date(), skipRenderer: true });
   }
 
   onFormValuesChanged() {

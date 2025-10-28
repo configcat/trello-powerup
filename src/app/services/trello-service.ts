@@ -81,6 +81,7 @@ export class TrelloService {
       }
 
       setting.lastUpdatedAt = new Date();
+      setting.skipRenderer = false;
       return this.setCardSettingData(setting);
     });
   }

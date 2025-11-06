@@ -153,6 +153,15 @@ export class TrelloService {
     });
   }
 
+  showErrorAlert(message: string) {
+    return window["TrelloPowerUp"].iframe()
+      .alert({
+        message: message,
+        duration: 5,
+        display: "error",
+      });
+  }
+
   showHttpUnauthorizedAlert() {
     return window["TrelloPowerUp"].iframe()
       .alert({

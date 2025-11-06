@@ -1,9 +1,7 @@
 import { HttpErrorResponse } from "@angular/common/http";
 import { Component, DOCUMENT, inject, OnDestroy, OnInit } from "@angular/core";
-import { FormControl, FormsModule, NonNullableFormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
-import { MatButton } from "@angular/material/button";
 import { IntegrationLinkType } from "ng-configcat-publicapi";
-import { AuthorizationComponent, AuthorizationModel, ConfigSelectComponent, EnvironmentSelectComponent, ProductSelectComponent, PublicApiService, SettingSelectComponent } from "ng-configcat-publicapi-ui";
+import { AuthorizationComponent, AuthorizationModel, LinkFeatureFlagComponent, LinkFeatureFlagParameters, PublicApiService } from "ng-configcat-publicapi-ui";
 import { Subscription } from "rxjs";
 import { AuthorizationParameters } from "../models/authorization-parameters";
 import { ErrorHandler } from "../services/error-handler";
@@ -14,44 +12,21 @@ import { TrelloService } from "../services/trello-service";
   templateUrl: "./add-feature-flag.component.html",
   styleUrls: ["./add-feature-flag.component.scss"],
   imports: [
-    ProductSelectComponent, ConfigSelectComponent, EnvironmentSelectComponent, SettingSelectComponent, AuthorizationComponent,
-    FormsModule, ReactiveFormsModule, MatButton,
-  ],
+    AuthorizationComponent,
+    LinkFeatureFlagComponent,
+],
 })
 export class AddFeatureFlagComponent implements OnInit, OnDestroy {
-  private readonly formBuilder = inject(NonNullableFormBuilder);
+
   private readonly trelloService = inject(TrelloService);
   private readonly publicApiService = inject(PublicApiService);
   private readonly document = inject<Document>(DOCUMENT);
 
   authorizationParameters!: AuthorizationParameters;
   subscription!: Subscription | null;
-
-  formGroup = this.formBuilder.group({
-    productId: new FormControl<string>("", {
-      nonNullable: true,
-      validators: [Validators.required],
-    }),
-    environmentId: new FormControl<string>("", {
-      nonNullable: true,
-      validators: [Validators.required],
-    }),
-    configId: new FormControl<string>("", {
-      nonNullable: true,
-      validators: [Validators.required],
-    }),
-    settingId: new FormControl<number>(0, {
-      nonNullable: true,
-      validators: [Validators.required],
-    }),
-  });
+  errorText: string | null = null;
 
   ngOnInit(): void {
-    this.formGroup.reset();
-    this.subscription = this.formGroup.statusChanges.subscribe(() => {
-      this.resize();
-    });
-
     this.init();
   }
 
@@ -84,15 +59,14 @@ export class AddFeatureFlagComponent implements OnInit, OnDestroy {
     this.resize();
   }
 
-  add() {
-    if (!this.formGroup.valid) {
-      return;
-    }
+  add(linkFeatureFlagParameters: LinkFeatureFlagParameters) {
 
     this.trelloService.getCardData().then(
       card => this.publicApiService
         .createIntegrationLinksService(this.authorizationParameters.basicAuthUsername, this.authorizationParameters.basicAuthPassword)
-        .addOrUpdateIntegrationLink(this.formGroup.controls.environmentId.value, this.formGroup.controls.settingId.value,
+        .addOrUpdateIntegrationLink(
+          linkFeatureFlagParameters.environmentId,
+          linkFeatureFlagParameters.settingId,
           IntegrationLinkType.Trello, card.id,
           { description: card.name, url: card.url })
         .subscribe({
@@ -103,11 +77,13 @@ export class AddFeatureFlagComponent implements OnInit, OnDestroy {
               });
           },
           error: (error: Error) => {
+            let errorMessage: string;
             if (error instanceof HttpErrorResponse && error?.status === 409) {
-              this.formGroup.setErrors({ serverSide: "Integration link already exists." });
+              errorMessage = "Integration link already exists.";
             } else {
-              ErrorHandler.handleErrors(this.formGroup, error);
+              errorMessage = ErrorHandler.getErrorMessage(error);
             }
+            void this.trelloService.showErrorAlert(errorMessage);
             console.log(error);
           },
         })

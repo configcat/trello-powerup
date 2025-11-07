@@ -90,6 +90,7 @@ export class CreateLinkFeatureFlagComponent implements OnInit, OnDestroy {
         }
       )
       .catch((error: unknown) => {
+        void this.trelloService.showErrorAlert(ErrorHandler.getErrorMessage(error as Error));
         console.log(error);
       });
   }

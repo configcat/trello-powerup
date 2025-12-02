@@ -21,7 +21,7 @@
     "@angular/router": "^20.3.15",
     "@types/trellopowerup": "^1.25.0",
     "ace-builds": "^1.37.0",
-    "ng-configcat-publicapi": "^5.1.0",
+    "ng-configcat-publicapi": "^5.2.2",
     "ng-configcat-publicapi-ui": "file:../ng-configcat-publicapi-ui/dist/ng-configcat-publicapi-ui",
     "papaparse": "^5.5.3",
     "rxjs": "~7.8.1",

@@ -5,7 +5,8 @@
     </div>
   } @else {
     <app-create-feature-flag
-      [authorizationParameters]="authorizationParameters"
+      [basicAuthUsername]="authorizationParameters.basicAuthUsername"
+      [basicAuthPassword]="authorizationParameters.basicAuthPassword"
       (createInitiated)="add($event)"
       (resizeRequested)="resize()"
     />

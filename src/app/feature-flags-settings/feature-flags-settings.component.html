@@ -1,6 +1,6 @@
 <div #settingItem id="setting-item" class="setting-item">
   @if (loading) {
-    <configcat-trello-loader />
+    <app-loader />
   } @else {
     <div class="container">
       @if (!authorizationParameters) {
@@ -38,7 +38,8 @@
                   (deleteSettingRequested)="onDeleteSettingRequested($event)"
                   (saveSucceeded)="saveSucceeded()"
                   (loadSucceeded)="loadSucceeded()"
-                  (formValuesChanged)="onFormValuesChanged()" />
+                  (formValuesChanged)="onFormValuesChanged()" 
+                  (saveFailed)="saveFailed()"/>
               }
               @if (integrationLinkDetail.config.evaluationVersion === EvaluationVersion.V2) {
                 <app-feature-flag-item
@@ -54,7 +55,8 @@
                   (saveSucceeded)="saveSucceeded()"
                   (loadSucceeded)="loadSucceeded()"
                   (formValuesChanged)="onFormValuesChanged()"
-                  (expandedStateChanged)="expandedStateChanged()" />
+                  (expandedStateChanged)="expandedStateChanged()"
+                  (saveFailed)="saveFailed()"/>
               }
             </div>
           }

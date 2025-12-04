@@ -73,7 +73,7 @@ export class AddFeatureFlagComponent implements OnInit, OnDestroy {
           next: () => {
             void this.trelloService.setCardSettingData({ lastUpdatedAt: new Date() })
               .then(() => {
-                return this.trelloService.closePopup();
+                return this.trelloService.closeModal();
               });
           },
           error: (error: Error) => {

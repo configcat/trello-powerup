@@ -1,4 +1,4 @@
-<div id="outer" class="outer">
+<div id="outer">
   @if (!authorizationParameters) {
     <div>
       <app-authorization (error)="error()" (authorized)="login($event)" />

@@ -14,7 +14,7 @@ import { TrelloService } from "../services/trello-service";
   imports: [
     AuthorizationComponent,
     LinkFeatureFlagComponent,
-],
+  ],
 })
 export class AddFeatureFlagComponent implements OnInit, OnDestroy {
 

@@ -1,8 +1,7 @@
 import { HttpErrorResponse } from "@angular/common/http";
-import { Component, inject, OnDestroy, OnInit } from "@angular/core";
+import { Component, inject, OnInit } from "@angular/core";
 import { IntegrationLinkType, SettingType } from "ng-configcat-publicapi";
 import { AuthorizationComponent, AuthorizationModel, CreateFeatureFlagComponent, FormHelper, LinkFeatureFlagParameters, PublicApiService } from "ng-configcat-publicapi-ui";
-import { Subscription } from "rxjs";
 import { AuthorizationParameters } from "../models/authorization-parameters";
 import { ErrorHandler } from "../services/error-handler";
 import { TrelloService } from "../services/trello-service";
@@ -16,25 +15,17 @@ import { TrelloService } from "../services/trello-service";
     CreateFeatureFlagComponent,
   ],
 })
-export class CreateLinkFeatureFlagComponent implements OnInit, OnDestroy {
+export class CreateLinkFeatureFlagComponent implements OnInit {
   private readonly trelloService = inject(TrelloService);
   private readonly publicApiService = inject(PublicApiService);
 
   authorizationParameters!: AuthorizationParameters;
-  subscription!: Subscription | null;
   SettingTypeEnum = SettingType;
   ErrorHandler = ErrorHandler;
   FormHelper = FormHelper;
 
   ngOnInit(): void {
     this.init();
-  }
-
-  ngOnDestroy() {
-    if (this.subscription) {
-      this.subscription.unsubscribe();
-      this.subscription = null;
-    }
   }
 
   init() {

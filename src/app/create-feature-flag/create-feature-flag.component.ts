@@ -1,13 +1,7 @@
 import { HttpErrorResponse } from "@angular/common/http";
-import { Component, inject, OnDestroy, OnInit } from "@angular/core";
-import { FormControl, FormsModule, NonNullableFormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
-import { MatButton } from "@angular/material/button";
-import { MatError, MatFormField, MatHint, MatLabel } from "@angular/material/form-field";
-import { MatInput } from "@angular/material/input";
-import { MatOption, MatSelect } from "@angular/material/select";
+import { Component, inject, OnInit } from "@angular/core";
 import { IntegrationLinkType, SettingType } from "ng-configcat-publicapi";
-import { AuthorizationComponent, AuthorizationModel, ConfigSelectComponent, EnvironmentSelectComponent, featureFlagKeyRegex, FormHelper, ProductSelectComponent, PublicApiService } from "ng-configcat-publicapi-ui";
-import { Subscription } from "rxjs";
+import { AuthorizationComponent, AuthorizationModel, CreateFeatureFlagComponent, FormHelper, LinkFeatureFlagParameters, PublicApiService } from "ng-configcat-publicapi-ui";
 import { AuthorizationParameters } from "../models/authorization-parameters";
 import { ErrorHandler } from "../services/error-handler";
 import { TrelloService } from "../services/trello-service";
@@ -17,65 +11,21 @@ import { TrelloService } from "../services/trello-service";
   templateUrl: "./create-feature-flag.component.html",
   styleUrls: ["./create-feature-flag.component.scss"],
   imports: [
-    ProductSelectComponent, ConfigSelectComponent, EnvironmentSelectComponent, AuthorizationComponent,
-    FormsModule, ReactiveFormsModule, MatFormField,
-    MatLabel, MatSelect, MatOption, MatInput, MatHint, MatError, MatButton],
+    AuthorizationComponent,
+    CreateFeatureFlagComponent,
+  ],
 })
-export class CreateFeatureFlagComponent implements OnInit, OnDestroy {
-  private readonly formBuilder = inject(NonNullableFormBuilder);
+export class CreateLinkFeatureFlagComponent implements OnInit {
   private readonly trelloService = inject(TrelloService);
   private readonly publicApiService = inject(PublicApiService);
 
-  formGroup = this.formBuilder.group({
-    productId: new FormControl<string>("", {
-      nonNullable: true,
-      validators: [Validators.required],
-    }),
-    environmentId: new FormControl<string>("", {
-      nonNullable: true,
-      validators: [Validators.required],
-    }),
-    configId: new FormControl<string>("", {
-      nonNullable: true,
-      validators: [Validators.required],
-    }),
-    name: new FormControl<string>("", {
-      nonNullable: true,
-      validators: [Validators.required, Validators.maxLength(255)],
-    }),
-    key: new FormControl<string>("", {
-      nonNullable: true,
-      validators: [Validators.required, Validators.maxLength(255), Validators.pattern(featureFlagKeyRegex)],
-    }),
-    hint: new FormControl<string>("", {
-      nonNullable: true,
-      validators: [Validators.required, Validators.maxLength(255)],
-    }),
-    settingType: new FormControl<SettingType>(SettingType.Boolean, {
-      nonNullable: true,
-      validators: [Validators.required],
-    }),
-  });
   authorizationParameters!: AuthorizationParameters;
-  subscription!: Subscription | null;
   SettingTypeEnum = SettingType;
   ErrorHandler = ErrorHandler;
   FormHelper = FormHelper;
 
   ngOnInit(): void {
-    this.formGroup.reset();
-    this.subscription = this.formGroup.statusChanges.subscribe(() => {
-      this.resize();
-    });
-
     this.init();
-  }
-
-  ngOnDestroy() {
-    if (this.subscription) {
-      this.subscription.unsubscribe();
-      this.subscription = null;
-    }
   }
 
   init() {
@@ -99,53 +49,39 @@ export class CreateFeatureFlagComponent implements OnInit, OnDestroy {
     this.resize();
   }
 
-  add() {
-    if (!this.formGroup.valid) {
-      return;
-    }
-
+  add(linkFeatureFlagParameters: LinkFeatureFlagParameters) {
     this.trelloService.getCardData()
       .then(
         card => {
-          return this.publicApiService
-            .createSettingsService(this.authorizationParameters.basicAuthUsername, this.authorizationParameters.basicAuthPassword)
-            .createSetting(this.formGroup.controls.configId.value, {
-              key: this.formGroup.controls.key.value,
-              settingType: this.formGroup.controls.settingType.value,
-              name: this.formGroup.controls.name.value,
-              hint: this.formGroup.controls.hint.value,
-            })
+          this.publicApiService
+            .createIntegrationLinksService(this.authorizationParameters.basicAuthUsername, this.authorizationParameters.basicAuthPassword)
+            .addOrUpdateIntegrationLink(
+              linkFeatureFlagParameters.environmentId,
+              linkFeatureFlagParameters.settingId,
+              IntegrationLinkType.Trello, card.id,
+              { description: card.name, url: card.url })
             .subscribe({
-              next: setting => {
-                return this.publicApiService
-                  .createIntegrationLinksService(this.authorizationParameters.basicAuthUsername, this.authorizationParameters.basicAuthPassword)
-                  .addOrUpdateIntegrationLink(this.formGroup.controls.environmentId.value, setting.settingId,
-                    IntegrationLinkType.Trello, card.id,
-                    { description: card.name, url: card.url })
-                  .subscribe({
-                    next: () => {
-                      void this.trelloService.setCardSettingData({ lastUpdatedAt: new Date() }).then(() => {
-                        return this.trelloService.closePopup();
-                      });
-                    },
-                    error: (error: Error) => {
-                      if (error instanceof HttpErrorResponse && error?.status === 409) {
-                        this.formGroup.setErrors({ serverSide: "Integration link already exists." });
-                      } else {
-                        ErrorHandler.handleErrors(this.formGroup, error);
-                      }
-                      console.log(error);
-                    },
+              next: () => {
+                void this.trelloService.setCardSettingData({ lastUpdatedAt: new Date() })
+                  .then(() => {
+                    return this.trelloService.closeModal();
                   });
               },
               error: (error: Error) => {
-                ErrorHandler.handleErrors(this.formGroup, error);
+                let errorMessage: string;
+                if (error instanceof HttpErrorResponse && error?.status === 409) {
+                  errorMessage = "Integration link already exists.";
+                } else {
+                  errorMessage = ErrorHandler.getErrorMessage(error);
+                }
+                void this.trelloService.showErrorAlert(errorMessage);
                 console.log(error);
               },
             });
         }
       )
       .catch((error: unknown) => {
+        void this.trelloService.showErrorAlert(ErrorHandler.getErrorMessage(error as Error));
         console.log(error);
       });
   }

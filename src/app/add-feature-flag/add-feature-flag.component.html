@@ -4,48 +4,10 @@
       <app-authorization (error)="error()" (authorized)="login($event)" />
     </div>
   } @else {
-    <form class="form" [formGroup]="formGroup" (ngSubmit)="add()">
-      <div class="container">
-        <app-product-select
-          name="productId"
-          [basicAuthUsername]="authorizationParameters.basicAuthUsername"
-          [basicAuthPassword]="authorizationParameters.basicAuthPassword"
-          [valueFormControl]="formGroup.controls.productId" />
-        @if (formGroup.controls.productId.value) {
-          <app-config-select
-            [basicAuthUsername]="authorizationParameters.basicAuthUsername"
-            [basicAuthPassword]="authorizationParameters.basicAuthPassword"
-            [productId]="formGroup.controls.productId.value"
-            [valueFormControl]="formGroup.controls.configId"
-            (dropdownOpened)="selectDropdownPanelChanged($event)" />
-        }
-        @if (formGroup.controls.productId.value) {
-          <app-environment-select
-            [basicAuthUsername]="authorizationParameters.basicAuthUsername"
-            [productId]="formGroup.controls.productId.value"
-            [basicAuthPassword]="authorizationParameters.basicAuthPassword"
-            [valueFormControl]="formGroup.controls.environmentId"
-            [customDropdown]="true"
-            (dropdownOpened)="selectDropdownPanelChanged($event)" />
-        }
-        @if (formGroup.controls.configId.value) {
-          <app-setting-select
-            [basicAuthUsername]="authorizationParameters.basicAuthUsername"
-            [configId]="formGroup.controls.configId.value"
-            [basicAuthPassword]="authorizationParameters.basicAuthPassword"
-            [valueFormControl]="formGroup.controls.settingId"
-            [customDropdown]="true"
-            (dropdownOpened)="selectDropdownPanelChanged($event)" />
-        }
-        @if (formGroup.errors && formGroup.errors["serverSide"]) {
-          <div class="error">
-            <span>{{ formGroup.errors["serverSide"] }}</span>
-          </div>
-        }
-      </div>
-      <div>
-        <button mat-raised-button color="primary" type="submit">Add</button>
-      </div>
-    </form>
+    <app-link-feature-flag
+      [authorizationParameters]="authorizationParameters"
+      (linkInitiated)="add($event)"
+      (resizeRequested)="resize()"
+      (selectDropdownPanelChangedReqested)="selectDropdownPanelChanged($event)" />
   }
 </div>

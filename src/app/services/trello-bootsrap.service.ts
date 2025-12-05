@@ -67,7 +67,7 @@ export class TrelloBootstrapService {
       icon: CONFIGCAT_ICON,
       text: "Link Feature Flag",
       callback: (t: CallbackHandler) => {
-        return t.popup({
+        return t.modal({
           title: "Link Feature Flag",
           url: "./addfeatureflag",
           height: 380,
@@ -80,7 +80,7 @@ export class TrelloBootstrapService {
       icon: CONFIGCAT_ICON,
       text: "Create and Link Feature Flag",
       callback: (t: CallbackHandler) => {
-        return t.popup({
+        return t.modal({
           title: "Create and Link Feature Flag",
           url: "./createfeatureflag",
           height: 380,

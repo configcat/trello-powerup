@@ -1,10 +1,10 @@
 <div #settingItem id="setting-item" class="setting-item">
   @if (loading) {
-    <configcat-trello-loader />
+    <app-loader />
   } @else {
     <div class="container">
       @if (!authorizationParameters) {
-          <app-authorization (error)="error()" (authorized)="login($event)" />
+        <app-authorization (error)="error()" (authorized)="login($event)" />
       } @else {
         @if (showError) {
           <div class="error">
@@ -16,12 +16,16 @@
           </div>
         }
         @if (!integrationLinkDetails || integrationLinkDetails.length === 0) {
-        <div class="info-box">
-          <div>
-            <p><b>There aren't any linked Feature Flags.</b></p>
-            <p>If you can see connected Feature Flags on the ConfigCat Dashboard, but not here. Try to <a (click)="reloadSettings()">reload</a> the flags.</p>
+          <div class="info-box">
+            <div>
+              <p><b>There aren't any linked Feature Flags.</b></p>
+              <p>
+                If you can see connected Feature Flags on the ConfigCat Dashboard, but not here. Try to
+                <a (click)="reloadSettings()">reload</a>
+                the flags.
+              </p>
+            </div>
           </div>
-        </div>
         } @else {
           @for (integrationLinkDetail of integrationLinkDetails; track integrationLinkDetail) {
             <div>
@@ -38,7 +42,8 @@
                   (deleteSettingRequested)="onDeleteSettingRequested($event)"
                   (saveSucceeded)="saveSucceeded()"
                   (loadSucceeded)="loadSucceeded()"
-                  (formValuesChanged)="onFormValuesChanged()" />
+                  (formValuesChanged)="onFormValuesChanged()"
+                  (saveFailed)="saveFailed()" />
               }
               @if (integrationLinkDetail.config.evaluationVersion === EvaluationVersion.V2) {
                 <app-feature-flag-item
@@ -54,7 +59,8 @@
                   (saveSucceeded)="saveSucceeded()"
                   (loadSucceeded)="loadSucceeded()"
                   (formValuesChanged)="onFormValuesChanged()"
-                  (expandedStateChanged)="expandedStateChanged()" />
+                  (expandedStateChanged)="expandedStateChanged()"
+                  (saveFailed)="saveFailed()" />
               }
             </div>
           }

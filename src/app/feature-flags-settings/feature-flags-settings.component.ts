@@ -2,9 +2,8 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { Component, ElementRef, inject, OnInit, viewChild } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { EvaluationVersion, IntegrationLinkDetail, IntegrationLinkType } from "ng-configcat-publicapi";
-import { AuthorizationComponent, DeleteSettingDialogComponent, DeleteSettingDialogData, DeleteSettingDialogResult, DeleteSettingModel, FeatureFlagItemComponent, PublicApiService, SettingItemComponent } from "ng-configcat-publicapi-ui";
+import { AuthorizationComponent, DeleteSettingDialogComponent, DeleteSettingDialogData, DeleteSettingDialogResult, DeleteSettingModel, FeatureFlagItemComponent, LoaderComponent, PublicApiService, SettingItemComponent } from "ng-configcat-publicapi-ui";
 import { IFrame } from "trellopowerup/lib/powerup";
-import { LoaderComponent } from "../loader/loader.component";
 import { AuthorizationParameters } from "../models/authorization-parameters";
 import { TrelloService } from "../services/trello-service";
 
@@ -147,6 +146,10 @@ export class FeatureFlagsSettingsComponent implements OnInit {
 
   saveSucceeded() {
     void this.trelloService.setCardSettingData({ lastUpdatedAt: new Date(), skipRenderer: true });
+  }
+
+  saveFailed() {
+    this.reloadSettings();
   }
 
   onFormValuesChanged() {

@@ -45,4 +45,28 @@ export class ErrorHandler {
       });
     }
   }
+
+  public static getErrorMessage(error: Error): string {
+    if (error instanceof HttpErrorResponse) {
+      switch (error?.status ?? 0) {
+        case 400:
+          for (const fieldName in error.error) {
+            const errorMessage = FormHelper.getHttpErrorResponseMessage(error, fieldName);
+
+            if (errorMessage) {
+              return errorMessage;
+            }
+          }
+          return "Something went wrong.";
+        case 402:
+          return "You have reached the limits of your plan.";
+        case 403:
+          return "You have no permission to execute this action.";
+        default:
+          return "Something went wrong on our side. This is not your fault. Please try again.";
+      }
+    } else {
+      return "Something went wrong on our side. This is not your fault. Please try again.";
+    }
+  }
 }

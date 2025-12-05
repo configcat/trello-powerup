@@ -24,6 +24,10 @@ export class TrelloService {
     return window["TrelloPowerUp"].iframe().closePopup();
   }
 
+  closeModal() {
+    return window["TrelloPowerUp"].iframe().closeModal();
+  }
+
   sizeTo(selector: string) {
     return window["TrelloPowerUp"].iframe().sizeTo(selector);
   }
@@ -151,6 +155,15 @@ export class TrelloService {
       });
 
     });
+  }
+
+  showErrorAlert(message: string) {
+    return window["TrelloPowerUp"].iframe()
+      .alert({
+        message: message,
+        duration: 5,
+        display: "error",
+      });
   }
 
   showHttpUnauthorizedAlert() {

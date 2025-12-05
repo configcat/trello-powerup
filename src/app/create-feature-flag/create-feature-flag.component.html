@@ -4,80 +4,10 @@
       <app-authorization (error)="error()" (authorized)="login($event)" />
     </div>
   } @else {
-    <form class="form" [formGroup]="formGroup" (ngSubmit)="add()">
-      <div class="container">
-        <div>
-          <div class="header small">1. Select Product and Config</div>
-          <app-product-select
-            name="productId"
-            [basicAuthUsername]="authorizationParameters.basicAuthUsername"
-            [basicAuthPassword]="authorizationParameters.basicAuthPassword"
-            [valueFormControl]="formGroup.controls.productId" />
-          @if (formGroup.controls.productId.value) {
-            <app-config-select
-              [basicAuthUsername]="authorizationParameters.basicAuthUsername"
-              [basicAuthPassword]="authorizationParameters.basicAuthPassword"
-              [productId]="formGroup.controls.productId.value"
-              [valueFormControl]="formGroup.controls.configId" />
-          }
-          <div class="header small">2. Setup Feature Flag</div>
-          <mat-form-field class="form-field" appearance="outline">
-            <mat-label>Type</mat-label>
-            <mat-select placeholder="Type" formControlName="settingType">
-              <mat-option [value]="SettingTypeEnum.Boolean">Feature Flag (bool)</mat-option>
-              <mat-option [value]="SettingTypeEnum.String">Text (string)</mat-option>
-              <mat-option [value]="SettingTypeEnum.Int">Whole Number (integer)</mat-option>
-              <mat-option [value]="SettingTypeEnum.Double">Decimal Number (double)</mat-option>
-            </mat-select>
-          </mat-form-field>
-          <mat-form-field class="form-field name" appearance="outline">
-            <mat-label>Name for hoomans</mat-label>
-            <input matInput placeholder="My awesome feature" formControlName="name" />
-            <mat-hint>A friendly name that best describes your setting.</mat-hint>
-            @if (formGroup.controls.name.invalid) {
-              <mat-error>
-                {{  FormHelper.getErrorMessage(formGroup.controls.name) }}
-              </mat-error>
-            }
-          </mat-form-field>
-          <mat-form-field class="form-field key" appearance="outline">
-            <mat-label>Key for programs</mat-label>
-            <input matInput placeholder="isMyAwesomeFeatureEnabled" formControlName="key" />
-            <mat-hint>Your applications will access your setting via this key.</mat-hint>
-            @if (formGroup.controls.key.invalid) {
-              <mat-error>
-                {{ FormHelper.getErrorMessage(formGroup.controls.key) }}
-              </mat-error>
-            }
-          </mat-form-field>
-          <mat-form-field class="form-field hint" appearance="outline">
-            <mat-label>Hint or description (Optional)</mat-label>
-            <textarea matInput placeholder="Hint or description (Optional)" formControlName="hint"></textarea>
-            <mat-hint>A description to help you remember the purpose of your setting.</mat-hint>
-            @if (formGroup.controls.hint.invalid) {
-              <mat-error>
-                {{ FormHelper.getErrorMessage(formGroup.controls.hint) }}
-              </mat-error>
-            }
-          </mat-form-field>
-          <div class="header small">3. Select which environment should we link to this card</div>
-          @if (formGroup.controls.productId.value) {
-            <app-environment-select
-              [basicAuthUsername]="authorizationParameters.basicAuthUsername"
-              [productId]="formGroup.controls.productId.value"
-              [basicAuthPassword]="authorizationParameters.basicAuthPassword"
-              [valueFormControl]="formGroup.controls.environmentId" />
-          }
-        </div>
-        @if (formGroup.errors && formGroup.errors["serverSide"]) {
-          <div class="error">
-            <span>{{ formGroup.errors["serverSide"] }}</span>
-          </div>
-        }
-        <div class="buttons">
-          <button mat-raised-button color="primary" type="submit">Create and add to Card</button>
-        </div>
-      </div>
-    </form>
+    <app-create-feature-flag
+      [basicAuthUsername]="authorizationParameters.basicAuthUsername"
+      [basicAuthPassword]="authorizationParameters.basicAuthPassword"
+      (createInitiated)="add($event)"
+      (resizeRequested)="resize()" />
   }
 </div>

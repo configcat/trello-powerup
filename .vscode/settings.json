@@ -2,12 +2,16 @@
     "cSpell.words": [
         "Trello"
     ],
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.defaultFormatter": "prettier.prettier-vscode",
     "[typescript]": {         
         "editor.defaultFormatter": "dbaeumer.vscode-eslint"
     },
     "eslint.format.enable": true,
     "eslint.validate": ["typescript"],
     "editor.rulers": [120],
-    "editor.inlineSuggest.showToolbar": "always"
+    "editor.formatOnPaste": true,
+    "editor.inlineSuggest.showToolbar": "always",
+    "[html]": {
+        "editor.defaultFormatter": "prettier.prettier-vscode"
+    }
 }

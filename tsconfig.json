@@ -15,8 +15,9 @@
     "importHelpers": true,
     "target": "ES2022",
     "skipLibCheck": true,
-    "typeRoots": ["node_modules/@types"],
-    "lib": ["ES2022", "dom"],
+    "typeRoots": [
+      "node_modules/@types"
+    ],
     "useDefineForClassFields": false,
     "noUnusedLocals": true,
     "noUnusedParameters": true,

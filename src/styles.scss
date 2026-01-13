@@ -2,8 +2,6 @@
 
 // Limit the "Manage predefined variations" dialog table content height.
 html {
-    overflow-y: hidden;
-    
     body{
         .mat-mdc-dialog-container {
             .mat-mdc-dialog-content.mdc-dialog__content.dialog-table{

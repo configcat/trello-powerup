@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from "@angular/common/http";
-import { Component, DOCUMENT, inject, OnInit } from "@angular/core";
+import { Component, inject, OnInit } from "@angular/core";
 import { IntegrationLinkType } from "ng-configcat-publicapi";
 import { AuthorizationComponent, AuthorizationModel, LinkFeatureFlagComponent, LinkFeatureFlagParameters, PublicApiService } from "ng-configcat-publicapi-ui";
 import { AuthorizationParameters } from "../models/authorization-parameters";
@@ -19,7 +19,6 @@ export class AddFeatureFlagComponent implements OnInit {
 
   private readonly trelloService = inject(TrelloService);
   private readonly publicApiService = inject(PublicApiService);
-  private readonly document = inject<Document>(DOCUMENT);
 
   authorizationParameters!: AuthorizationParameters;
   errorText: string | null = null;
@@ -85,27 +84,13 @@ export class AddFeatureFlagComponent implements OnInit {
 
   }
 
-  selectDropdownPanelChanged(event: boolean) {
-    if (!event) {
-      this.resize();
-    } else {
-      this.resize(".cdk-overlay-container");
-    }
-
+  selectDropdownPanelChanged() {
+    this.resize();
   }
 
-  resize(selector?: string) {
+  resize() {
     setTimeout(() => {
-      if (selector === ".cdk-overlay-container") {
-        //element height calculation based on trello sizeTo method + 15 px
-        const el = this.document.querySelector(selector);
-        if (el) {
-          const requestedHeight = Math.ceil(Math.max(el.scrollHeight, el.getBoundingClientRect().height));
-          void this.trelloService.sizeToHeight(requestedHeight + 15);
-        }
-      } else {
-        void this.trelloService.sizeTo("#outer");
-      }
+      void this.trelloService.sizeTo("#outer");
     }, 200);
   }
 }

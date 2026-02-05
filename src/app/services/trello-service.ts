@@ -1,5 +1,5 @@
 import { inject, Injectable } from "@angular/core";
-import { IntegrationLinkType } from "ng-configcat-publicapi";
+import { IntegrationLinkDetail, IntegrationLinkType } from "ng-configcat-publicapi";
 import { PublicApiService } from "ng-configcat-publicapi-ui";
 import { firstValueFrom } from "rxjs";
 import { CallbackHandler, CardBadge, IFrame } from "trellopowerup/lib/powerup";
@@ -142,7 +142,7 @@ export class TrelloService {
         if (linkDetails?.details && linkDetails.details.length > 0) {
           return linkDetails.details.map(detail => {
             return {
-              text: linkDetails.details!.length > 1 ? detail.setting.name + ": " + detail.status : detail.status,
+              text: linkDetails.details!.length > 1 ? this.convertDetailDataToText(detail) : detail.status,
               icon: CONFIGCAT_ICON,
               color: "green",
             } as CardBadge;
@@ -155,6 +155,14 @@ export class TrelloService {
       });
 
     });
+  }
+
+  convertDetailDataToText(detail: IntegrationLinkDetail): string {
+    let detailName = detail.setting.name;
+    if (detailName.length > 19) {
+      detailName = detailName.slice(0, 19) + "...";
+    }
+    return detailName + ": " + detail.status;
   }
 
   showErrorAlert(message: string) {

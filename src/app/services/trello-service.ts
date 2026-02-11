@@ -67,14 +67,23 @@ export class TrelloService {
   }
 
   getCardSettingData(t: TrelloFrame = null): Promise<CardSettingData | null> {
+    console.log("getCardSettingData");
+    console.log(t);
+    // console.log(window["TrelloPowerUp"].iframe());
     return (t ?? window["TrelloPowerUp"].iframe()).get("card", "shared", "cardSettingData", null);
   }
 
   setCardSettingData(cardData: CardSettingData, t: TrelloFrame = null): Promise<void> {
+    console.log("setCardSettingData");
+    console.log(t);
+    // console.log(window["TrelloPowerUp"].iframe());
+    console.log(cardData);
     return (t ?? window["TrelloPowerUp"].iframe()).set("card", "shared", "cardSettingData", cardData);
   }
 
   removeCardSettingData(): Promise<void> {
+    console.log("removeCardSettingData");
+    // console.log(window["TrelloPowerUp"].iframe());
     return window["TrelloPowerUp"].iframe().remove("card", "shared", "cardSettingData");
   }
 

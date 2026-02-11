@@ -31,9 +31,15 @@ export class FeatureFlagsSettingsComponent implements OnInit {
 
   ngOnInit(): void {
     this.trelloPowerUpIframe = this.trelloService.iframe();
-    this.trelloService.render(() => { this.reloadSettings(); }, this.trelloPowerUpIframe);
+    console.log("init tpifm: ");
+    console.log(this.trelloPowerUpIframe);
+    this.trelloService.render(() => {
+      console.log("ff render");
+      this.reloadSettings();
+    }, this.trelloPowerUpIframe);
     this.loading = true;
     this.showError = false;
+    console.log("init");
     Promise.all([
       this.trelloService.getAuthorizationParameters(this.trelloPowerUpIframe),
       this.trelloService.getCardData(this.trelloPowerUpIframe),
@@ -74,7 +80,9 @@ export class FeatureFlagsSettingsComponent implements OnInit {
 
   reloadSettings() {
     void this.trelloService.getCardSettingData(this.trelloPowerUpIframe).then(cardSettingData => {
+      console.log("reloadSettings skp?: " + cardSettingData?.skipRenderer);
       if (cardSettingData?.skipRenderer) {
+        console.log("skip");
         return;
       }
       this.loading = true;
@@ -145,6 +153,7 @@ export class FeatureFlagsSettingsComponent implements OnInit {
   }
 
   saveSucceeded() {
+    console.log("save success");
     void this.trelloService.setCardSettingData({ lastUpdatedAt: new Date(), skipRenderer: true });
   }
 
@@ -168,6 +177,7 @@ export class FeatureFlagsSettingsComponent implements OnInit {
     this.trelloService
       .setAuthorizationParameters(authorizationParameters)
       .then(() => {
+        console.log("login");
         this.reloadSettings();
       }).catch(() => {
         console.log("trelloService setAuthorizationParameters failed.");

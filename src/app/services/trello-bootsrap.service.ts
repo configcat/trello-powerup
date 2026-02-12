@@ -66,10 +66,10 @@ export class TrelloBootstrapService {
       // we recommend that you use a popup on click generally
       icon: CONFIGCAT_ICON,
       text: "Link Feature Flag",
-      callback: (t: CallbackHandler) => {
-        return t.modal({
+      callback: (_t: CallbackHandler) => {
+        return _t.modal({
           title: "Link Feature Flag",
-          url: "./addfeatureflag",
+          url: _t.signUrl("./addfeatureflag"),
           height: 380,
         });
       },
@@ -82,7 +82,7 @@ export class TrelloBootstrapService {
       callback: (t: CallbackHandler) => {
         return t.modal({
           title: "Create and Link Feature Flag",
-          url: "./createfeatureflag",
+          url: t.signUrl("./createfeatureflag"),
           height: 380,
         });
       },

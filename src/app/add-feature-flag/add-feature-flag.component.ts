@@ -62,7 +62,7 @@ export class AddFeatureFlagComponent implements OnInit {
         .subscribe({
           next: () => {
             console.log("add");
-            void this.trelloService.setCardSettingData({ lastUpdatedAt: new Date() })
+            void this.trelloService.setCardSettingData(card.id, { lastUpdatedAt: new Date() })
               .then(() => {
                 return this.trelloService.closeModal();
               });

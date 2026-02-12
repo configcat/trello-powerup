@@ -46,7 +46,7 @@ export class TrelloService {
     return (t ?? window["TrelloPowerUp"].iframe()).storeSecret("authorization", JSON.stringify(authorizationParameters))
       .then(() => {
         if (setCardSettingData) {
-          return this.setCardSettingData({ lastUpdatedAt: new Date() }, t);
+          return this.setCardSettingData((t ?? window["TrelloPowerUp"].iframe()).getContext().card, { lastUpdatedAt: new Date() }, t);
         }
         return;
       })
@@ -69,15 +69,25 @@ export class TrelloService {
   getCardSettingData(t: TrelloFrame = null): Promise<CardSettingData | null> {
     console.log("getCardSettingData");
     console.log(t);
+    // console.log();
+    const cardId = (t ?? window["TrelloPowerUp"].iframe()).getContext().card;
     // console.log(window["TrelloPowerUp"].iframe());
+    if (cardId) {
+      console.log("getCardSettingData cardID: " + cardId);
+      return (t ?? window["TrelloPowerUp"].iframe()).get(cardId, "shared", "cardSettingData", null);
+    }
     return (t ?? window["TrelloPowerUp"].iframe()).get("card", "shared", "cardSettingData", null);
   }
 
-  setCardSettingData(cardData: CardSettingData, t: TrelloFrame = null): Promise<void> {
+  setCardSettingData(cardId: string | undefined, cardData: CardSettingData, t: TrelloFrame = null): Promise<void> {
     console.log("setCardSettingData");
     console.log(t);
+    console.log((t ?? window["TrelloPowerUp"].iframe()).getContext());
     // console.log(window["TrelloPowerUp"].iframe());
     console.log(cardData);
+    if (cardId) {
+      return (t ?? window["TrelloPowerUp"].iframe()).set(cardId, "shared", "cardSettingData", cardData);
+    }
     return (t ?? window["TrelloPowerUp"].iframe()).set("card", "shared", "cardSettingData", cardData);
   }
 
@@ -87,7 +97,7 @@ export class TrelloService {
     return window["TrelloPowerUp"].iframe().remove("card", "shared", "cardSettingData");
   }
 
-  updateCardSettingDataLastUpdatedAt() {
+  updateCardSettingDataLastUpdatedAt(cardId: string | undefined) {
     return this.getCardSettingData().then(setting => {
       if (!setting) {
         setting = { lastUpdatedAt: new Date() };
@@ -95,7 +105,7 @@ export class TrelloService {
 
       setting.lastUpdatedAt = new Date();
       setting.skipRenderer = false;
-      return this.setCardSettingData(setting);
+      return this.setCardSettingData(cardId, setting);
     });
   }
 
@@ -115,7 +125,7 @@ export class TrelloService {
             if (!deleteModel.hasRemainingIntegrationLink) {
               void this.removeCardSettingData();
             } else {
-              void this.updateCardSettingDataLastUpdatedAt();
+              void this.updateCardSettingDataLastUpdatedAt(card.id);
             }
           },
         }

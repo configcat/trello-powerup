@@ -79,6 +79,10 @@ export class FeatureFlagsSettingsComponent implements OnInit {
   }
 
   reloadSettings() {
+    this.trelloService.render(() => {
+      console.log("ff render");
+      this.reloadSettings();
+    }, this.trelloPowerUpIframe);
     void this.trelloService.getCardSettingData(this.trelloPowerUpIframe).then(cardSettingData => {
       console.log("reloadSettings skp?: " + cardSettingData?.skipRenderer);
       if (cardSettingData?.skipRenderer) {
@@ -154,7 +158,7 @@ export class FeatureFlagsSettingsComponent implements OnInit {
 
   saveSucceeded() {
     console.log("save success");
-    void this.trelloService.setCardSettingData({ lastUpdatedAt: new Date(), skipRenderer: true });
+    void this.trelloService.setCardSettingData(this.trelloPowerUpIframe.getContext().card, { lastUpdatedAt: new Date(), skipRenderer: true });
   }
 
   saveFailed() {

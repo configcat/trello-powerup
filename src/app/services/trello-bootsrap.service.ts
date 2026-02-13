@@ -89,29 +89,28 @@ export class TrelloBootstrapService {
     } as CardButton]);
   };
 
-  private readonly getCardBackSection = (t: CallbackHandler) => {
-    return this.trelloService.getAuthorizationParameters(t)
-      .then(authParams => {
-        if (authParams) {
-          return {
-            title: "ConfigCat",
-            icon: CONFIGCAT_ICON, // Must be a gray icon, colored icons not allowed.
-            content: {
-              type: "iframe",
-              url: t.signUrl("./featureflags"),
-            },
-          } as CardBackSection;
-        } else {
-          // This should be an empty Card Back section
-          return {
-            title: "ConfigCat",
-            icon: CONFIGCAT_ICON, // Must be a gray icon, colored icons not allowed.
-            content: {
-              type: "iframe",
-              url: "",
-            },
-          } as CardBackSection;
-        }
-      });
+  private readonly getCardBackSection = async (t: CallbackHandler) => {
+    const authParams = await this.trelloService.getAuthorizationParameters(t);
+    if (authParams) {
+      const urlPostfix = await t.get("card", "shared", "urlPostfix", "");
+      return {
+        title: "ConfigCat",
+        icon: CONFIGCAT_ICON, // Must be a gray icon, colored icons not allowed.
+        content: {
+          type: "iframe",
+          url: t.signUrl("./featureflags" + urlPostfix),
+        },
+      } as CardBackSection;
+    } else {
+      // This should be an empty Card Back section
+      return {
+        title: "ConfigCat",
+        icon: CONFIGCAT_ICON, // Must be a gray icon, colored icons not allowed.
+        content: {
+          type: "iframe",
+          url: "",
+        },
+      } as CardBackSection;
+    }
   };
 }

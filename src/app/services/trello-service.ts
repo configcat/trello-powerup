@@ -74,10 +74,6 @@ export class TrelloService {
     return (t ?? window["TrelloPowerUp"].iframe()).set("card", "shared", "cardSettingData", cardData);
   }
 
-  setCardSettingDataAndUrlPostfix(cardData: CardSettingData, t: TrelloFrame = null): Promise<void> {
-    return (t ?? window["TrelloPowerUp"].iframe()).set("card", "shared", { "cardSettingData": cardData, "urlPostfix": "?d=" + (new Date()).toISOString() });
-  }
-
   removeCardSettingData(): Promise<void> {
     return window["TrelloPowerUp"].iframe().remove("card", "shared", "cardSettingData");
   }

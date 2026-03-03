@@ -7,6 +7,8 @@
 > **Note**
 > When editing listings check the selected Language! Edit both US and UK version!
 
+> **Note**
+> The current images can be found on the GDrive > Design-Illustration-Graphics > integrations folder.
 
 # Current listing values
 

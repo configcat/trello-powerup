@@ -86,6 +86,11 @@ export class CreateLinkFeatureFlagComponent implements OnInit {
       });
   }
 
+  componentError(error: Error) {
+    const errorMessage = ErrorHandler.getErrorMessage(error);
+    void this.trelloService.showErrorAlert(errorMessage);
+  }
+
   resize() {
     setTimeout(() => {
       this.trelloService.sizeTo("#outer").catch(() => {

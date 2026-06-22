@@ -22,6 +22,7 @@ export class AuthComponent implements OnInit {
         this.trelloService.closePopup().catch(() => {
           console.log("trelloService closePopup failed.");
         });
+        return this.trelloService.closeModal();
       }).catch((error: unknown) => {
         console.log("trelloService setAuthorizationParameters failed.", error);
       });

@@ -5,6 +5,7 @@ import { EvaluationVersion, IntegrationLinkDetail, IntegrationLinkType } from "n
 import { AuthorizationComponent, DeleteSettingDialogComponent, DeleteSettingDialogData, DeleteSettingDialogResult, DeleteSettingModel, FeatureFlagItemComponent, LoaderComponent, PublicApiService, SettingItemComponent } from "ng-configcat-publicapi-ui";
 import { IFrame } from "trellopowerup/lib/powerup";
 import { AuthorizationParameters } from "../models/authorization-parameters";
+import { ErrorHandler } from "../services/error-handler";
 import { TrelloService } from "../services/trello-service";
 
 @Component({
@@ -46,10 +47,23 @@ export class FeatureFlagsSettingsComponent implements OnInit {
         this.publicApiService
           .createIntegrationLinksService(this.authorizationParameters.basicAuthUsername, this.authorizationParameters.basicAuthPassword)
           .getIntegrationLinkDetails(IntegrationLinkType.Trello, card.id)
-          .subscribe((integrationLinkDetails) => {
-            this.integrationLinkDetails = integrationLinkDetails.details;
-            this.loading = false;
-            this.resize();
+          .subscribe({
+            next: (integrationLinkDetails) => {
+              this.integrationLinkDetails = integrationLinkDetails.details;
+              this.loading = false;
+              this.resize();
+            },
+            error: (error: Error) => {
+              let errorMessage: string;
+              if (error instanceof HttpErrorResponse && error?.status === 401) {
+                errorMessage = "Unauthorized access. Check your credentials and try again.";
+              } else {
+                errorMessage = ErrorHandler.getErrorMessage(error);
+              }
+              void this.trelloService.showErrorAlert(errorMessage);
+              this.loading = false;
+              console.log(error);
+            },
           });
       }
     })
@@ -89,20 +103,27 @@ export class FeatureFlagsSettingsComponent implements OnInit {
         this.publicApiService
           .createIntegrationLinksService(this.authorizationParameters.basicAuthUsername, this.authorizationParameters.basicAuthPassword)
           .getIntegrationLinkDetails(IntegrationLinkType.Trello, card.id)
-          .subscribe((integrationLinkDetails) => {
-            this.integrationLinkDetails = integrationLinkDetails.details;
-            this.loading = false;
-            this.resize();
+          .subscribe({
+            next: (integrationLinkDetails) => {
+              this.integrationLinkDetails = integrationLinkDetails.details;
+              this.loading = false;
+              this.resize();
+            },
+            error: (error: Error) => {
+              const errorMessage = ErrorHandler.getErrorMessage(error);
+              void this.trelloService.showErrorAlert(errorMessage);
+              this.loading = false;
+              this.showError = true;
+              console.log(error);
+            },
           });
       })
         .catch((error: unknown) => {
-          if (error instanceof HttpErrorResponse && error?.status === 401) {
-            this.authorizationParameters = null;
-            void this.trelloService.removeAuthorizationParameters();
-            void this.trelloService.showHttpUnauthorizedAlert();
-          } else {
-            this.showError = true;
+          if (error instanceof Error) {
+            const errorMessage = ErrorHandler.getErrorMessage(error);
+            void this.trelloService.showErrorAlert(errorMessage);
           }
+          this.showError = true;
           this.loading = false;
           this.resize();
           console.log(error);
@@ -148,7 +169,9 @@ export class FeatureFlagsSettingsComponent implements OnInit {
     void this.trelloService.setCardSettingData({ lastUpdatedAt: new Date(), skipRenderer: true });
   }
 
-  saveFailed() {
+  componentError(error: Error) {
+    const errorMessage = ErrorHandler.getErrorMessage(error);
+    void this.trelloService.showErrorAlert(errorMessage);
     this.reloadSettings();
   }
 

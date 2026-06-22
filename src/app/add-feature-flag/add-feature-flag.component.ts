@@ -63,6 +63,7 @@ export class AddFeatureFlagComponent implements OnInit {
           next: () => {
             void this.trelloService.setCardSettingData({ lastUpdatedAt: new Date() })
               .then(() => {
+                linkFeatureFlagParameters.callback();
                 return this.trelloService.closeModal();
               });
           },
@@ -73,6 +74,7 @@ export class AddFeatureFlagComponent implements OnInit {
             } else {
               errorMessage = ErrorHandler.getErrorMessage(error);
             }
+            linkFeatureFlagParameters.callback();
             void this.trelloService.showErrorAlert(errorMessage);
             console.log(error);
           },
@@ -86,6 +88,11 @@ export class AddFeatureFlagComponent implements OnInit {
 
   selectDropdownPanelChanged() {
     this.resize();
+  }
+
+  componentError(error: Error) {
+    const errorMessage = ErrorHandler.getErrorMessage(error);
+    void this.trelloService.showErrorAlert(errorMessage);
   }
 
   resize() {

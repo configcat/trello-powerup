@@ -58,6 +58,8 @@ export class ErrorHandler {
             }
           }
           return "Something went wrong.";
+        case 401:
+          return "Unauthorized access. Check your credentials and try again.";
         case 402:
           return "You have reached the limits of your plan.";
         case 403:

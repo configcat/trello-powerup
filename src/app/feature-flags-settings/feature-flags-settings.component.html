@@ -43,7 +43,7 @@
                   (saveSucceeded)="saveSucceeded()"
                   (loadSucceeded)="loadSucceeded()"
                   (formValuesChanged)="onFormValuesChanged()"
-                  (saveFailed)="saveFailed()" />
+                  (componentError)="componentError($event)" />
               }
               @if (integrationLinkDetail.config.evaluationVersion === EvaluationVersion.V2) {
                 <app-feature-flag-item
@@ -60,7 +60,7 @@
                   (loadSucceeded)="loadSucceeded()"
                   (formValuesChanged)="onFormValuesChanged()"
                   (expandedStateChanged)="expandedStateChanged()"
-                  (saveFailed)="saveFailed()" />
+                  (componentError)="componentError($event)" />
               }
             </div>
           }

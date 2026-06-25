@@ -1,8 +1,10 @@
 import { HttpErrorResponse } from "@angular/common/http";
-import { Component, inject, OnInit } from "@angular/core";
+import { Component, DestroyRef, inject, OnInit } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { IntegrationLinkType, SettingType } from "ng-configcat-publicapi";
 import { AuthorizationComponent, AuthorizationModel, CreateFeatureFlagComponent, FormHelper, LinkFeatureFlagParameters, PublicApiService } from "ng-configcat-publicapi-ui";
 import { AuthorizationParameters } from "../models/authorization-parameters";
+import { AuthService } from "../services/auth.service";
 import { ErrorHandler } from "../services/error-handler";
 import { TrelloService } from "../services/trello-service";
 
@@ -16,32 +18,40 @@ import { TrelloService } from "../services/trello-service";
   ],
 })
 export class CreateLinkFeatureFlagComponent implements OnInit {
+  private readonly authService = inject(AuthService);
   private readonly trelloService = inject(TrelloService);
   private readonly publicApiService = inject(PublicApiService);
+  private readonly destroyRef = inject(DestroyRef);
 
-  authorizationParameters!: AuthorizationParameters;
+  authorizationParameters: AuthorizationParameters | null = null;
   SettingTypeEnum = SettingType;
   ErrorHandler = ErrorHandler;
   FormHelper = FormHelper;
 
   ngOnInit(): void {
+    this.authService.authParametersSource
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(authParameters => {
+        this.authorizationParameters = authParameters;
+      });
+
     this.init();
   }
 
   init() {
-    this.trelloService.getAuthorizationParameters().then(value => { this.authorizationParameters = value; }).catch(() => {
-      console.log("trelloService getAuthorizationParameters failed.");
+    this.authService.getAuthorizationParmeters().then(value => { this.authorizationParameters = value; }).catch(() => {
+      console.log("authService getAuthorizationParmeters failed.");
     });
     this.resize();
   }
 
   login(authorizationModel: AuthorizationModel) {
-    this.trelloService
+    this.authService
       .setAuthorizationParameters({ basicAuthUsername: authorizationModel.basicAuthUsername, basicAuthPassword: authorizationModel.basicAuthPassword })
       .then(() => {
         this.init();
       }).catch(() => {
-        console.log("trelloService setAuthorizationParameters failed.");
+        console.log("authService setAuthorizationParameters failed.");
       });
   }
 
@@ -50,11 +60,18 @@ export class CreateLinkFeatureFlagComponent implements OnInit {
   }
 
   add(linkFeatureFlagParameters: LinkFeatureFlagParameters) {
+    if (!this.authorizationParameters) {
+      void this.trelloService.showHttpUnauthorizedAlert();
+      return;
+    }
+
+    const authorizationParameters = this.authorizationParameters;
+
     this.trelloService.getCardData()
       .then(
-        card => {
+        (card: { id: string; name: string; url: string }) => {
           this.publicApiService
-            .createIntegrationLinksService(this.authorizationParameters.basicAuthUsername, this.authorizationParameters.basicAuthPassword)
+            .createIntegrationLinksService(authorizationParameters.basicAuthUsername, authorizationParameters.basicAuthPassword)
             .addOrUpdateIntegrationLink(
               linkFeatureFlagParameters.environmentId,
               linkFeatureFlagParameters.settingId,

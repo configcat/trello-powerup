@@ -1,5 +1,6 @@
 import { Component, inject, OnInit } from "@angular/core";
 import { AuthorizationComponent, AuthorizationModel } from "ng-configcat-publicapi-ui";
+import { AuthService } from "../services/auth.service";
 import { TrelloService } from "../services/trello-service";
 
 @Component({
@@ -9,6 +10,7 @@ import { TrelloService } from "../services/trello-service";
   imports: [AuthorizationComponent],
 })
 export class AuthComponent implements OnInit {
+  private readonly authService = inject(AuthService);
   private readonly trelloService = inject(TrelloService);
 
   ngOnInit(): void {
@@ -16,7 +18,7 @@ export class AuthComponent implements OnInit {
   }
 
   login(authorizationModel: AuthorizationModel) {
-    this.trelloService
+    this.authService
       .setAuthorizationParameters({ basicAuthUsername: authorizationModel.basicAuthUsername, basicAuthPassword: authorizationModel.basicAuthPassword }, false)
       .then(() => {
         this.trelloService.closePopup().catch(() => {
@@ -24,7 +26,7 @@ export class AuthComponent implements OnInit {
         });
         return this.trelloService.closeModal();
       }).catch((error: unknown) => {
-        console.log("trelloService setAuthorizationParameters failed.", error);
+        console.log("authService setAuthorizationParameters failed.", error);
       });
   }
 

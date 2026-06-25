@@ -1,5 +1,6 @@
 import { inject, Injectable } from "@angular/core";
 import { CallbackHandler, CapabilityHandlers, CardBackSection, CardButton, Plugin, PluginOptions, PowerUp } from "trellopowerup/lib/powerup";
+import { AuthService } from "./auth.service";
 import { TrelloService } from "./trello-service";
 
 const CONFIGCAT_ICON = "./assets/cat_red.svg";
@@ -13,14 +14,21 @@ export interface MyPowerUp extends Omit<PowerUp, "initialize"> {
   initialize(handlers: MyCapabilityHandlers, options?: PluginOptions): Plugin;
 }
 
+declare global {
+  interface Window {
+    TrelloPowerUp: MyPowerUp;
+  }
+}
+
 @Injectable({
   providedIn: "root",
 })
 export class TrelloBootstrapService {
+  private readonly authService = inject(AuthService);
   private readonly trelloService = inject(TrelloService);
 
   initialize() {
-    (window["TrelloPowerUp"] as MyPowerUp).initialize({
+    window.TrelloPowerUp.initialize({
       "card-back-section": this.getCardBackSection,
       "card-buttons": this.getCardButtons,
       "authorization-status": this.getAuthorizationStatus,
@@ -35,7 +43,7 @@ export class TrelloBootstrapService {
   };
 
   private readonly disable = (t: CallbackHandler) => {
-    return this.trelloService.removeAuthorizationParameters(t);
+    return this.authService.removeAuthorizationParameters(t);
   };
 
   private readonly showAuthorization = (t: CallbackHandler) => {
@@ -47,7 +55,7 @@ export class TrelloBootstrapService {
   };
 
   private readonly getAuthorizationStatus = (t: CallbackHandler) => {
-    return this.trelloService.getAuthorizationParameters(t)
+    return this.authService.getAuthorizationParmeters(t)
       .then(authorizationParameters => {
         if (authorizationParameters?.basicAuthUsername && authorizationParameters?.basicAuthPassword) {
           return { authorized: true };
@@ -90,7 +98,7 @@ export class TrelloBootstrapService {
   };
 
   private readonly getCardBackSection = async (t: CallbackHandler) => {
-    const authParams = await this.trelloService.getAuthorizationParameters(t);
+    const authParams = await this.authService.getAuthorizationParmeters(t);
     if (authParams) {
       return {
         title: "ConfigCat",

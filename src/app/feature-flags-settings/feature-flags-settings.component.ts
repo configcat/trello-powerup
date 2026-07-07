@@ -77,7 +77,7 @@ export class FeatureFlagsSettingsComponent implements OnInit {
               } else {
                 errorMessage = ErrorHandler.getErrorMessage(error);
               }
-              void this.trelloService.showErrorAlert(errorMessage);
+              this.trelloService.showErrorAlert(errorMessage).catch((e: unknown) => console.error(e));
               this.loading = false;
               console.log(error);
             },
@@ -90,8 +90,9 @@ export class FeatureFlagsSettingsComponent implements OnInit {
       })
       .catch((error: unknown) => {
         if (error instanceof HttpErrorResponse && error?.status === 401) {
-          void this.authService.removeAuthorizationParameters();
-          void this.trelloService.showHttpUnauthorizedAlert();
+          this.authService.removeAuthorizationParameters().then(() => {
+            this.trelloService.showHttpUnauthorizedAlert().catch((e: unknown) => console.error(e));
+          }).catch((e: unknown) => console.error(e));
         } else {
           this.showError = true;
         }
@@ -134,7 +135,7 @@ export class FeatureFlagsSettingsComponent implements OnInit {
             },
             error: (error: Error) => {
               const errorMessage = ErrorHandler.getErrorMessage(error);
-              void this.trelloService.showErrorAlert(errorMessage);
+              this.trelloService.showErrorAlert(errorMessage).catch((e: unknown) => console.error(e));
               this.loading = false;
               this.showError = true;
               console.log(error);
@@ -144,7 +145,7 @@ export class FeatureFlagsSettingsComponent implements OnInit {
         .catch((error: unknown) => {
           if (error instanceof Error) {
             const errorMessage = ErrorHandler.getErrorMessage(error);
-            void this.trelloService.showErrorAlert(errorMessage);
+            this.trelloService.showErrorAlert(errorMessage).catch((e: unknown) => console.error(e));
           }
           this.showError = true;
           this.loading = false;
@@ -194,7 +195,7 @@ export class FeatureFlagsSettingsComponent implements OnInit {
 
   componentError(error: Error) {
     const errorMessage = ErrorHandler.getErrorMessage(error);
-    void this.trelloService.showErrorAlert(errorMessage);
+    this.trelloService.showErrorAlert(errorMessage).catch((e: unknown) => console.error(e));
     this.reloadSettings();
   }
 

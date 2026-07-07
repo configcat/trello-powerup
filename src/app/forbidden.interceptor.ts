@@ -12,7 +12,7 @@ export class ForbiddenInterceptor implements HttpInterceptor {
       .pipe(
         catchError((error: Error) => {
           if (error instanceof HttpErrorResponse && error.status === 401) {
-            void this.authService.removeAuthorizationParameters();
+            this.authService.removeAuthorizationParameters().catch((e: unknown) => console.error(e));
             return throwError(() => error);
           } else {
             return throwError(() => error);

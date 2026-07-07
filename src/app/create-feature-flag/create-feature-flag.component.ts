@@ -1,12 +1,8 @@
-import { HttpErrorResponse } from "@angular/common/http";
-import { Component, DestroyRef, inject, OnInit } from "@angular/core";
-import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
-import { IntegrationLinkType, SettingType } from "ng-configcat-publicapi";
-import { AuthorizationComponent, AuthorizationModel, CreateFeatureFlagComponent, FormHelper, LinkFeatureFlagParameters, PublicApiService } from "ng-configcat-publicapi-ui";
-import { AuthorizationParameters } from "../models/authorization-parameters";
-import { AuthService } from "../services/auth.service";
+import { Component } from "@angular/core";
+import { SettingType } from "ng-configcat-publicapi";
+import { AuthorizationComponent, CreateFeatureFlagComponent, FormHelper } from "ng-configcat-publicapi-ui";
+import { BaseLinkFeatureFlagComponent } from "../base-link-feature-flag.component";
 import { ErrorHandler } from "../services/error-handler";
-import { TrelloService } from "../services/trello-service";
 
 @Component({
   selector: "configcat-trello-create-feature-flag",
@@ -17,102 +13,16 @@ import { TrelloService } from "../services/trello-service";
     CreateFeatureFlagComponent,
   ],
 })
-export class CreateLinkFeatureFlagComponent implements OnInit {
-  private readonly authService = inject(AuthService);
-  private readonly trelloService = inject(TrelloService);
-  private readonly publicApiService = inject(PublicApiService);
-  private readonly destroyRef = inject(DestroyRef);
-
-  authorizationParameters: AuthorizationParameters | null = null;
+export class CreateLinkFeatureFlagComponent extends BaseLinkFeatureFlagComponent {
   SettingTypeEnum = SettingType;
   ErrorHandler = ErrorHandler;
   FormHelper = FormHelper;
 
-  ngOnInit(): void {
-    this.authService.authParametersSource
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(authParameters => {
-        this.authorizationParameters = authParameters;
-      });
-
-    this.init();
+  protected override onAddSuccess(): void {
+    // No callback needed for create flow
   }
 
-  init() {
-    this.authService.getAuthorizationParmeters().then(value => { this.authorizationParameters = value; }).catch(() => {
-      console.log("authService getAuthorizationParmeters failed.");
-    });
-    this.resize();
-  }
-
-  login(authorizationModel: AuthorizationModel) {
-    this.authService
-      .setAuthorizationParameters({ basicAuthUsername: authorizationModel.basicAuthUsername, basicAuthPassword: authorizationModel.basicAuthPassword })
-      .then(() => {
-        this.init();
-      }).catch(() => {
-        console.log("authService setAuthorizationParameters failed.");
-      });
-  }
-
-  error() {
-    this.resize();
-  }
-
-  add(linkFeatureFlagParameters: LinkFeatureFlagParameters) {
-    if (!this.authorizationParameters) {
-      void this.trelloService.showHttpUnauthorizedAlert();
-      return;
-    }
-
-    const authorizationParameters = this.authorizationParameters;
-
-    this.trelloService.getCardData()
-      .then(
-        (card: { id: string; name: string; url: string }) => {
-          this.publicApiService
-            .createIntegrationLinksService(authorizationParameters.basicAuthUsername, authorizationParameters.basicAuthPassword)
-            .addOrUpdateIntegrationLink(
-              linkFeatureFlagParameters.environmentId,
-              linkFeatureFlagParameters.settingId,
-              IntegrationLinkType.Trello, card.id,
-              { description: card.name, url: card.url })
-            .subscribe({
-              next: () => {
-                void this.trelloService.setCardSettingData({ lastUpdatedAt: new Date() })
-                  .then(() => {
-                    return this.trelloService.closeModal();
-                  });
-              },
-              error: (error: Error) => {
-                let errorMessage: string;
-                if (error instanceof HttpErrorResponse && error?.status === 409) {
-                  errorMessage = "Integration link already exists.";
-                } else {
-                  errorMessage = ErrorHandler.getErrorMessage(error);
-                }
-                void this.trelloService.showErrorAlert(errorMessage);
-                console.log(error);
-              },
-            });
-        }
-      )
-      .catch((error: unknown) => {
-        void this.trelloService.showErrorAlert(ErrorHandler.getErrorMessage(error as Error));
-        console.log(error);
-      });
-  }
-
-  componentError(error: Error) {
-    const errorMessage = ErrorHandler.getErrorMessage(error);
-    void this.trelloService.showErrorAlert(errorMessage);
-  }
-
-  resize() {
-    setTimeout(() => {
-      this.trelloService.sizeTo("#outer").catch(() => {
-        console.log("trelloService sizeTo failed.");
-      });
-    }, 300);
+  protected override onAddError(): void {
+    // No callback needed for create flow
   }
 }

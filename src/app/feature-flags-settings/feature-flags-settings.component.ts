@@ -1,10 +1,13 @@
 import { HttpErrorResponse } from "@angular/common/http";
-import { Component, ElementRef, inject, OnInit, viewChild } from "@angular/core";
+import { Component, DestroyRef, ElementRef, inject, OnInit, viewChild } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { MatDialog } from "@angular/material/dialog";
 import { EvaluationVersion, IntegrationLinkDetail, IntegrationLinkType } from "ng-configcat-publicapi";
 import { AuthorizationComponent, DeleteSettingDialogComponent, DeleteSettingDialogData, DeleteSettingDialogResult, DeleteSettingModel, FeatureFlagItemComponent, LoaderComponent, PublicApiService, SettingItemComponent } from "ng-configcat-publicapi-ui";
 import { IFrame } from "trellopowerup/lib/powerup";
 import { AuthorizationParameters } from "../models/authorization-parameters";
+import { AuthService } from "../services/auth.service";
+import { ErrorHandler } from "../services/error-handler";
 import { TrelloService } from "../services/trello-service";
 
 @Component({
@@ -17,7 +20,9 @@ export class FeatureFlagsSettingsComponent implements OnInit {
 
   private readonly dialog = inject(MatDialog);
   private readonly publicApiService = inject(PublicApiService);
+  private readonly authService = inject(AuthService);
   private readonly trelloService = inject(TrelloService);
+  private readonly destroyRef = inject(DestroyRef);
 
   loading = true;
   showError = false;
@@ -30,28 +35,34 @@ export class FeatureFlagsSettingsComponent implements OnInit {
   readonly elementView = viewChild<ElementRef<HTMLElement>>("settingItem");
 
   ngOnInit(): void {
+    this.authService.authParametersSource
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(authParameters => {
+        this.authorizationParameters = authParameters;
+      });
+
     this.trelloPowerUpIframe = this.trelloService.iframe();
     this.trelloService.render(() => { this.reloadSettings(); }, this.trelloPowerUpIframe);
     this.loading = true;
     this.showError = false;
     Promise.all([
-      this.trelloService.getAuthorizationParameters(this.trelloPowerUpIframe),
+      this.authService.getAuthorizationParmeters(this.trelloPowerUpIframe),
       this.trelloService.getCardData(this.trelloPowerUpIframe),
       this.trelloService.getCardSettingData(this.trelloPowerUpIframe),
     ]).then(value => {
       this.authorizationParameters = value[0];
       const card = value[1];
       const cardSettingData = value[2];
-      if (cardSettingData !== null) {
-        this.publicApiService
-          .createIntegrationLinksService(this.authorizationParameters.basicAuthUsername, this.authorizationParameters.basicAuthPassword)
-          .getIntegrationLinkDetails(IntegrationLinkType.Trello, card.id)
-          .subscribe((integrationLinkDetails) => {
-            this.integrationLinkDetails = integrationLinkDetails.details;
-            this.loading = false;
-            this.resize();
-          });
+      const authorizationParameters = this.authorizationParameters;
+      if (cardSettingData === null) {
+        return;
       }
+      if (!authorizationParameters) {
+        this.loading = false;
+        this.resize();
+        return;
+      }
+      this.fetchIntegrationLinks(authorizationParameters, card.id);
     })
       .then(() => {
         this.loading = false;
@@ -59,9 +70,9 @@ export class FeatureFlagsSettingsComponent implements OnInit {
       })
       .catch((error: unknown) => {
         if (error instanceof HttpErrorResponse && error?.status === 401) {
-          this.authorizationParameters = null;
-          void this.trelloService.removeAuthorizationParameters();
-          void this.trelloService.showHttpUnauthorizedAlert();
+          this.authService.removeAuthorizationParameters().then(() => {
+            this.trelloService.showHttpUnauthorizedAlert().catch((e: unknown) => console.error(e));
+          }).catch((e: unknown) => console.error(e));
         } else {
           this.showError = true;
         }
@@ -80,35 +91,31 @@ export class FeatureFlagsSettingsComponent implements OnInit {
       this.loading = true;
       this.showError = false;
       Promise.all([
-        this.trelloService.getAuthorizationParameters(this.trelloPowerUpIframe),
+        this.authService.getAuthorizationParmeters(this.trelloPowerUpIframe),
         this.trelloService.getCardData(this.trelloPowerUpIframe),
       ]).then(value => {
         this.authorizationParameters = value[0];
         const card = value[1];
-
-        this.publicApiService
-          .createIntegrationLinksService(this.authorizationParameters.basicAuthUsername, this.authorizationParameters.basicAuthPassword)
-          .getIntegrationLinkDetails(IntegrationLinkType.Trello, card.id)
-          .subscribe((integrationLinkDetails) => {
-            this.integrationLinkDetails = integrationLinkDetails.details;
-            this.loading = false;
-            this.resize();
-          });
+        const authorizationParameters = this.authorizationParameters;
+        if (!authorizationParameters) {
+          this.integrationLinkDetails = null;
+          this.loading = false;
+          this.resize();
+          return;
+        }
+        this.fetchIntegrationLinks(authorizationParameters, card.id);
       })
         .catch((error: unknown) => {
-          if (error instanceof HttpErrorResponse && error?.status === 401) {
-            this.authorizationParameters = null;
-            void this.trelloService.removeAuthorizationParameters();
-            void this.trelloService.showHttpUnauthorizedAlert();
-          } else {
-            this.showError = true;
+          if (error instanceof Error) {
+            const errorMessage = ErrorHandler.getErrorMessage(error);
+            this.trelloService.showErrorAlert(errorMessage).catch((e: unknown) => console.error(e));
           }
+          this.showError = true;
           this.loading = false;
           this.resize();
           console.log(error);
         });
     });
-
   }
 
   onDeleteSettingRequested(data: DeleteSettingModel) {
@@ -148,8 +155,39 @@ export class FeatureFlagsSettingsComponent implements OnInit {
     void this.trelloService.setCardSettingData({ lastUpdatedAt: new Date(), skipRenderer: true });
   }
 
-  saveFailed() {
+  componentError(error: Error) {
+    const errorMessage = ErrorHandler.getErrorMessage(error);
+    this.trelloService.showErrorAlert(errorMessage).catch((e: unknown) => console.error(e));
     this.reloadSettings();
+  }
+
+  private fetchIntegrationLinks(authorizationParameters: AuthorizationParameters, cardId: string) {
+    this.publicApiService
+      .createIntegrationLinksService(authorizationParameters.basicAuthUsername, authorizationParameters.basicAuthPassword)
+      .getIntegrationLinkDetails(IntegrationLinkType.Trello, cardId)
+      .subscribe({
+        next: (integrationLinkDetails) => {
+          this.integrationLinkDetails = integrationLinkDetails.details;
+          this.loading = false;
+          this.resize();
+        },
+        error: (error: Error) => {
+          this.handleFetchError(error);
+        },
+      });
+  }
+
+  private handleFetchError(error: Error) {
+    let errorMessage: string;
+    if (error instanceof HttpErrorResponse && error?.status === 401) {
+      errorMessage = "Unauthorized access. Check your credentials and try again.";
+    } else {
+      errorMessage = ErrorHandler.getErrorMessage(error);
+    }
+    this.trelloService.showErrorAlert(errorMessage).catch((e: unknown) => console.error(e));
+    this.loading = false;
+    this.showError = true;
+    console.log(error);
   }
 
   onFormValuesChanged() {
@@ -165,12 +203,12 @@ export class FeatureFlagsSettingsComponent implements OnInit {
   }
 
   login(authorizationParameters: AuthorizationParameters) {
-    this.trelloService
+    this.authService
       .setAuthorizationParameters(authorizationParameters)
       .then(() => {
         this.reloadSettings();
       }).catch(() => {
-        console.log("trelloService setAuthorizationParameters failed.");
+        console.log("authService setAuthorizationParameters failed.");
       });
   }
 

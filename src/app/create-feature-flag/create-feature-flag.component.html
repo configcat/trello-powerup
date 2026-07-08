@@ -8,6 +8,7 @@
       [basicAuthUsername]="authorizationParameters.basicAuthUsername"
       [basicAuthPassword]="authorizationParameters.basicAuthPassword"
       (createInitiated)="add($event)"
-      (resizeRequested)="resize()" />
+      (resizeRequested)="resize()"
+      (componentError)="componentError($event)" />
   }
 </div>

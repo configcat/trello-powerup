@@ -8,6 +8,7 @@
       [authorizationParameters]="authorizationParameters"
       (linkInitiated)="add($event)"
       (resizeRequested)="resize()"
-      (selectDropdownPanelChangedReqested)="selectDropdownPanelChanged()" />
+      (selectDropdownPanelChangedReqested)="selectDropdownPanelChanged()"
+      (componentError)="componentError($event)" />
   }
 </div>

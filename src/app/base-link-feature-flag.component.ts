@@ -75,8 +75,10 @@ export abstract class BaseLinkFeatureFlagComponent implements OnInit {
                     this.onAddSuccess(linkFeatureFlagParameters);
                     return this.trelloService.closeModal();
                   }).catch((e: unknown) => {
-                    //TODO what to do
                     console.error(e);
+                    this.trelloService.showErrorAlert(ErrorHandler.getErrorMessage(e as Error))
+                      .catch((e: unknown) => console.error(e));
+                    return this.trelloService.closeModal();
                   });
               },
               error: (error: Error) => {

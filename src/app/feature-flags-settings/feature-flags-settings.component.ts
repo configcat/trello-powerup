@@ -54,35 +54,15 @@ export class FeatureFlagsSettingsComponent implements OnInit {
       const card = value[1];
       const cardSettingData = value[2];
       const authorizationParameters = this.authorizationParameters;
-      if (cardSettingData !== null) {
-        if (!authorizationParameters) {
-          this.loading = false;
-          this.resize();
-          return;
-        }
-
-        this.publicApiService
-          .createIntegrationLinksService(authorizationParameters.basicAuthUsername, authorizationParameters.basicAuthPassword)
-          .getIntegrationLinkDetails(IntegrationLinkType.Trello, card.id)
-          .subscribe({
-            next: (integrationLinkDetails) => {
-              this.integrationLinkDetails = integrationLinkDetails.details;
-              this.loading = false;
-              this.resize();
-            },
-            error: (error: Error) => {
-              let errorMessage: string;
-              if (error instanceof HttpErrorResponse && error?.status === 401) {
-                errorMessage = "Unauthorized access. Check your credentials and try again.";
-              } else {
-                errorMessage = ErrorHandler.getErrorMessage(error);
-              }
-              this.trelloService.showErrorAlert(errorMessage).catch((e: unknown) => console.error(e));
-              this.loading = false;
-              console.log(error);
-            },
-          });
+      if (cardSettingData === null) {
+        return;
       }
+      if (!authorizationParameters) {
+        this.loading = false;
+        this.resize();
+        return;
+      }
+      this.fetchIntegrationLinks(authorizationParameters, card.id);
     })
       .then(() => {
         this.loading = false;
@@ -123,24 +103,7 @@ export class FeatureFlagsSettingsComponent implements OnInit {
           this.resize();
           return;
         }
-
-        this.publicApiService
-          .createIntegrationLinksService(authorizationParameters.basicAuthUsername, authorizationParameters.basicAuthPassword)
-          .getIntegrationLinkDetails(IntegrationLinkType.Trello, card.id)
-          .subscribe({
-            next: (integrationLinkDetails) => {
-              this.integrationLinkDetails = integrationLinkDetails.details;
-              this.loading = false;
-              this.resize();
-            },
-            error: (error: Error) => {
-              const errorMessage = ErrorHandler.getErrorMessage(error);
-              this.trelloService.showErrorAlert(errorMessage).catch((e: unknown) => console.error(e));
-              this.loading = false;
-              this.showError = true;
-              console.log(error);
-            },
-          });
+        this.fetchIntegrationLinks(authorizationParameters, card.id);
       })
         .catch((error: unknown) => {
           if (error instanceof Error) {
@@ -153,7 +116,6 @@ export class FeatureFlagsSettingsComponent implements OnInit {
           console.log(error);
         });
     });
-
   }
 
   onDeleteSettingRequested(data: DeleteSettingModel) {
@@ -197,6 +159,35 @@ export class FeatureFlagsSettingsComponent implements OnInit {
     const errorMessage = ErrorHandler.getErrorMessage(error);
     this.trelloService.showErrorAlert(errorMessage).catch((e: unknown) => console.error(e));
     this.reloadSettings();
+  }
+
+  private fetchIntegrationLinks(authorizationParameters: AuthorizationParameters, cardId: string) {
+    this.publicApiService
+      .createIntegrationLinksService(authorizationParameters.basicAuthUsername, authorizationParameters.basicAuthPassword)
+      .getIntegrationLinkDetails(IntegrationLinkType.Trello, cardId)
+      .subscribe({
+        next: (integrationLinkDetails) => {
+          this.integrationLinkDetails = integrationLinkDetails.details;
+          this.loading = false;
+          this.resize();
+        },
+        error: (error: Error) => {
+          this.handleFetchError(error);
+        },
+      });
+  }
+
+  private handleFetchError(error: Error) {
+    let errorMessage: string;
+    if (error instanceof HttpErrorResponse && error?.status === 401) {
+      errorMessage = "Unauthorized access. Check your credentials and try again.";
+    } else {
+      errorMessage = ErrorHandler.getErrorMessage(error);
+    }
+    this.trelloService.showErrorAlert(errorMessage).catch((e: unknown) => console.error(e));
+    this.loading = false;
+    this.showError = true;
+    console.log(error);
   }
 
   onFormValuesChanged() {

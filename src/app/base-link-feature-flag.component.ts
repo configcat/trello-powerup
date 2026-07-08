@@ -70,10 +70,13 @@ export abstract class BaseLinkFeatureFlagComponent implements OnInit {
               { description: card.name, url: card.url })
             .subscribe({
               next: () => {
-                void this.trelloService.setCardSettingData({ lastUpdatedAt: new Date() })
+                this.trelloService.setCardSettingData({ lastUpdatedAt: new Date() })
                   .then(() => {
                     this.onAddSuccess(linkFeatureFlagParameters);
                     return this.trelloService.closeModal();
+                  }).catch((e: unknown) => {
+                    //TODO what to do
+                    console.error(e);
                   });
               },
               error: (error: Error) => {
@@ -84,14 +87,15 @@ export abstract class BaseLinkFeatureFlagComponent implements OnInit {
                   errorMessage = ErrorHandler.getErrorMessage(error);
                 }
                 this.onAddError(linkFeatureFlagParameters);
-                void this.trelloService.showErrorAlert(errorMessage);
+                this.trelloService.showErrorAlert(errorMessage).catch((e: unknown) => console.error(e));
                 console.log(error);
               },
             });
         }
       )
       .catch((error: unknown) => {
-        void this.trelloService.showErrorAlert(ErrorHandler.getErrorMessage(error as Error));
+        this.trelloService.showErrorAlert(ErrorHandler.getErrorMessage(error as Error))
+          .catch((e: unknown) => console.error(e));
         console.log(error);
       });
   }

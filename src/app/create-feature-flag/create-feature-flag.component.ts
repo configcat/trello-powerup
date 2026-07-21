@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, ChangeDetectionStrategy } from "@angular/core";
 import { SettingType } from "ng-configcat-publicapi";
 import { AuthorizationComponent, CreateFeatureFlagComponent, FormHelper } from "ng-configcat-publicapi-ui";
 import { BaseLinkFeatureFlagComponent } from "../base-link-feature-flag.component";
@@ -8,10 +8,8 @@ import { ErrorHandler } from "../services/error-handler";
   selector: "configcat-trello-create-feature-flag",
   templateUrl: "./create-feature-flag.component.html",
   styleUrls: ["./create-feature-flag.component.scss"],
-  imports: [
-    AuthorizationComponent,
-    CreateFeatureFlagComponent,
-  ],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [AuthorizationComponent, CreateFeatureFlagComponent],
 })
 export class CreateLinkFeatureFlagComponent extends BaseLinkFeatureFlagComponent {
   SettingTypeEnum = SettingType;

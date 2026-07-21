@@ -1,9 +1,10 @@
-import { Component, inject, OnInit } from "@angular/core";
+import { Component, inject, OnInit, ChangeDetectionStrategy } from "@angular/core";
 import { TrelloBootstrapService } from "../services/trello-bootsrap.service";
 
 @Component({
   selector: "configcat-trello-home",
   templateUrl: "./home.component.html",
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ["./home.component.scss"],
 })
 export class HomeComponent implements OnInit {
@@ -12,5 +13,4 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void {
     this.trelloBootstrapService.initialize();
   }
-
 }

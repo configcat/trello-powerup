@@ -1,8 +1,8 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "baseUrl": "./",
     "outDir": "./dist/out-tsc",
+    "rootDir": "./src",
     "sourceMap": true,
     "esModuleInterop": true,
     "strict": true,
@@ -18,6 +18,7 @@
     "typeRoots": [
       "node_modules/@types"
     ],
+    "types": ["trellopowerup", "node"],
     "useDefineForClassFields": false,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
@@ -32,7 +33,6 @@
     "strictInputAccessModifiers": true,
     "strictTemplates": true,
     "strictStandalone": true,
-    "fullTemplateTypeCheck": true,
     "extendedDiagnostics": {
       "defaultCategory": "error"
     }

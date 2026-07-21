@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject, OnInit } from "@angular/core";
 import { AuthorizationComponent, AuthorizationModel } from "ng-configcat-publicapi-ui";
 import { AuthService } from "../services/auth.service";
 import { TrelloService } from "../services/trello-service";
@@ -7,6 +7,7 @@ import { TrelloService } from "../services/trello-service";
   selector: "configcat-trello-authorization",
   templateUrl: "./authorization.component.html",
   styleUrls: ["./authorization.component.scss"],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [AuthorizationComponent],
 })
 export class AuthComponent implements OnInit {
@@ -19,13 +20,20 @@ export class AuthComponent implements OnInit {
 
   login(authorizationModel: AuthorizationModel) {
     this.authService
-      .setAuthorizationParameters({ basicAuthUsername: authorizationModel.basicAuthUsername, basicAuthPassword: authorizationModel.basicAuthPassword }, false)
+      .setAuthorizationParameters(
+        {
+          basicAuthUsername: authorizationModel.basicAuthUsername,
+          basicAuthPassword: authorizationModel.basicAuthPassword,
+        },
+        false
+      )
       .then(() => {
         this.trelloService.closePopup().catch(() => {
           console.log("trelloService closePopup failed.");
         });
         return this.trelloService.closeModal();
-      }).catch((error: unknown) => {
+      })
+      .catch((error: unknown) => {
         console.log("authService setAuthorizationParameters failed.", error);
       });
   }

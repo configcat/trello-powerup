@@ -1,4 +1,4 @@
-import { Component, DestroyRef, ElementRef, inject, OnInit, viewChild } from "@angular/core";
+import { ChangeDetectionStrategy, Component, DestroyRef, ElementRef, inject, OnInit, viewChild } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { MatDialog } from "@angular/material/dialog";
 import { RouterModule } from "@angular/router";
@@ -8,6 +8,7 @@ import { TrelloService } from "./services/trello-service";
 @Component({
   selector: "configcat-trello-root",
   templateUrl: "./app.component.html",
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [RouterModule],
 })
 export class AppComponent implements OnInit {
@@ -34,21 +35,17 @@ export class AppComponent implements OnInit {
       }
     });
 
-    const darkModeOn =
-    window.matchMedia
-    && window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const darkModeOn = window.matchMedia("(prefers-color-scheme: dark)").matches;
 
     // If dark mode is enabled then directly switch to the dark-theme
     if (darkModeOn) {
       this.themeService.setTheme(Theme.Dark);
     }
 
-    window
-      .matchMedia("(prefers-color-scheme: dark)")
-      .addEventListener("change", (e) => {
-        const turnOn = e.matches;
-        this.themeService.setTheme(turnOn ? Theme.Dark : Theme.Light);
-      });
+    window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", e => {
+      const turnOn = e.matches;
+      this.themeService.setTheme(turnOn ? Theme.Dark : Theme.Light);
+    });
   }
 
   resize(dialogId?: string): void {
@@ -64,9 +61,6 @@ export class AppComponent implements OnInit {
         }
         void this.trelloService.sizeToHeight(height);
       }
-
     }, 300);
   }
-
 }
-

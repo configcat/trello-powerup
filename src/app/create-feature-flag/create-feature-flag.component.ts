@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from "@angular/core";
+import { ChangeDetectionStrategy, Component } from "@angular/core";
 import { SettingType } from "ng-configcat-publicapi";
 import { AuthorizationComponent, CreateFeatureFlagComponent, FormHelper } from "ng-configcat-publicapi-ui";
 import { BaseLinkFeatureFlagComponent } from "../base-link-feature-flag.component";

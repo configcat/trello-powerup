@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, ChangeDetectionStrategy } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject, OnInit } from "@angular/core";
 import { AuthorizationComponent, AuthorizationModel } from "ng-configcat-publicapi-ui";
 import { AuthService } from "../services/auth.service";
 import { TrelloService } from "../services/trello-service";

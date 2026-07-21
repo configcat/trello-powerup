@@ -1,4 +1,4 @@
-import { Component, DestroyRef, ElementRef, inject, OnInit, viewChild, ChangeDetectionStrategy } from "@angular/core";
+import { ChangeDetectionStrategy, Component, DestroyRef, ElementRef, inject, OnInit, viewChild } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { MatDialog } from "@angular/material/dialog";
 import { RouterModule } from "@angular/router";
@@ -35,7 +35,7 @@ export class AppComponent implements OnInit {
       }
     });
 
-    const darkModeOn = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const darkModeOn = window.matchMedia("(prefers-color-scheme: dark)").matches;
 
     // If dark mode is enabled then directly switch to the dark-theme
     if (darkModeOn) {

@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from "@angular/core";
+import { ChangeDetectionStrategy, Component } from "@angular/core";
 import { AuthorizationComponent, LinkFeatureFlagComponent } from "ng-configcat-publicapi-ui";
 import { BaseLinkFeatureFlagComponent } from "../base-link-feature-flag.component";
 

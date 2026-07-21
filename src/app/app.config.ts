@@ -1,4 +1,4 @@
-import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi, withXhr } from "@angular/common/http";
+import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 import { ApplicationConfig, importProvidersFrom, provideZoneChangeDetection } from "@angular/core";
 import { MatNativeDateModule } from "@angular/material/core";
 import { MatDialogModule } from "@angular/material/dialog";
@@ -19,7 +19,7 @@ export const appConfig: ApplicationConfig = {
       withRouterConfig({ paramsInheritanceStrategy: "always" })
     ),
     { provide: HTTP_INTERCEPTORS, useClass: ForbiddenInterceptor, multi: true },
-    provideHttpClient(withXhr(), withInterceptorsFromDi()),
+    provideHttpClient(withInterceptorsFromDi()),
     {
       provide: CONFIGCAT_PUBLICAPI_UI_CONFIGURATION,
       useValue: { basePath: environment.publicApiBaseUrl, dashboardBasePath: environment.dashboardBasePath },

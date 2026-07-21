@@ -9,7 +9,7 @@ import {
   withRouterConfig,
 } from "@angular/router";
 import { CONFIGCAT_PUBLICAPI_UI_CONFIGURATION, provideConfigCatPublicApiUi } from "ng-configcat-publicapi-ui";
-import { environment } from "src/environments/environment";
+import { environment } from "../environments/environment";
 import { routes } from "./app-routing.module";
 import { ForbiddenInterceptor } from "./forbidden.interceptor";
 

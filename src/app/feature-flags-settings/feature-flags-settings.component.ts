@@ -1,9 +1,19 @@
 import { HttpErrorResponse } from "@angular/common/http";
-import { Component, DestroyRef, ElementRef, inject, OnInit, viewChild } from "@angular/core";
+import { ChangeDetectionStrategy, Component, DestroyRef, ElementRef, inject, OnInit, viewChild } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { MatDialog } from "@angular/material/dialog";
 import { EvaluationVersion, IntegrationLinkDetail, IntegrationLinkType } from "ng-configcat-publicapi";
-import { AuthorizationComponent, DeleteSettingDialogComponent, DeleteSettingDialogData, DeleteSettingDialogResult, DeleteSettingModel, FeatureFlagItemComponent, LoaderComponent, PublicApiService, SettingItemComponent } from "ng-configcat-publicapi-ui";
+import {
+  AuthorizationComponent,
+  DeleteSettingDialogComponent,
+  DeleteSettingDialogData,
+  DeleteSettingDialogResult,
+  DeleteSettingModel,
+  FeatureFlagItemComponent,
+  LoaderComponent,
+  PublicApiService,
+  SettingItemComponent,
+} from "ng-configcat-publicapi-ui";
 import { IFrame } from "trellopowerup/lib/powerup";
 import { AuthorizationParameters } from "../models/authorization-parameters";
 import { AuthService } from "../services/auth.service";
@@ -14,10 +24,10 @@ import { TrelloService } from "../services/trello-service";
   selector: "configcat-trello-feature-flags-settings",
   templateUrl: "./feature-flags-settings.component.html",
   styleUrls: ["./feature-flags-settings.component.scss"],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [AuthorizationComponent, SettingItemComponent, FeatureFlagItemComponent, LoaderComponent],
 })
 export class FeatureFlagsSettingsComponent implements OnInit {
-
   private readonly dialog = inject(MatDialog);
   private readonly publicApiService = inject(PublicApiService);
   private readonly authService = inject(AuthService);
@@ -35,44 +45,48 @@ export class FeatureFlagsSettingsComponent implements OnInit {
   readonly elementView = viewChild<ElementRef<HTMLElement>>("settingItem");
 
   ngOnInit(): void {
-    this.authService.authParametersSource
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(authParameters => {
-        this.authorizationParameters = authParameters;
-      });
+    this.authService.authParametersSource.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(authParameters => {
+      this.authorizationParameters = authParameters;
+    });
 
     this.trelloPowerUpIframe = this.trelloService.iframe();
-    this.trelloService.render(() => { this.reloadSettings(); }, this.trelloPowerUpIframe);
+    this.trelloService.render(() => {
+      this.reloadSettings();
+    }, this.trelloPowerUpIframe);
     this.loading = true;
     this.showError = false;
     Promise.all([
       this.authService.getAuthorizationParmeters(this.trelloPowerUpIframe),
       this.trelloService.getCardData(this.trelloPowerUpIframe),
       this.trelloService.getCardSettingData(this.trelloPowerUpIframe),
-    ]).then(value => {
-      this.authorizationParameters = value[0];
-      const card = value[1];
-      const cardSettingData = value[2];
-      const authorizationParameters = this.authorizationParameters;
-      if (cardSettingData === null) {
-        return;
-      }
-      if (!authorizationParameters) {
-        this.loading = false;
-        this.resize();
-        return;
-      }
-      this.fetchIntegrationLinks(authorizationParameters, card.id);
-    })
+    ])
+      .then(value => {
+        this.authorizationParameters = value[0];
+        const card = value[1];
+        const cardSettingData = value[2];
+        const authorizationParameters = this.authorizationParameters;
+        if (cardSettingData === null) {
+          return;
+        }
+        if (!authorizationParameters) {
+          this.loading = false;
+          this.resize();
+          return;
+        }
+        this.fetchIntegrationLinks(authorizationParameters, card.id);
+      })
       .then(() => {
         this.loading = false;
         this.resize();
       })
       .catch((error: unknown) => {
         if (error instanceof HttpErrorResponse && error?.status === 401) {
-          this.authService.removeAuthorizationParameters().then(() => {
-            this.trelloService.showHttpUnauthorizedAlert().catch((e: unknown) => console.error(e));
-          }).catch((e: unknown) => console.error(e));
+          this.authService
+            .removeAuthorizationParameters()
+            .then(() => {
+              this.trelloService.showHttpUnauthorizedAlert().catch((e: unknown) => console.error(e));
+            })
+            .catch((e: unknown) => console.error(e));
         } else {
           this.showError = true;
         }
@@ -93,18 +107,19 @@ export class FeatureFlagsSettingsComponent implements OnInit {
       Promise.all([
         this.authService.getAuthorizationParmeters(this.trelloPowerUpIframe),
         this.trelloService.getCardData(this.trelloPowerUpIframe),
-      ]).then(value => {
-        this.authorizationParameters = value[0];
-        const card = value[1];
-        const authorizationParameters = this.authorizationParameters;
-        if (!authorizationParameters) {
-          this.integrationLinkDetails = null;
-          this.loading = false;
-          this.resize();
-          return;
-        }
-        this.fetchIntegrationLinks(authorizationParameters, card.id);
-      })
+      ])
+        .then(value => {
+          this.authorizationParameters = value[0];
+          const card = value[1];
+          const authorizationParameters = this.authorizationParameters;
+          if (!authorizationParameters) {
+            this.integrationLinkDetails = null;
+            this.loading = false;
+            this.resize();
+            return;
+          }
+          this.fetchIntegrationLinks(authorizationParameters, card.id);
+        })
         .catch((error: unknown) => {
           if (error instanceof Error) {
             const errorMessage = ErrorHandler.getErrorMessage(error);
@@ -135,10 +150,9 @@ export class FeatureFlagsSettingsComponent implements OnInit {
         return;
       }
       if (result.button === "remove") {
-        void this.trelloService.removeSetting(data.environment.environmentId, data.setting.settingId)
-          .then(() => {
-            this.reloadSettings();
-          });
+        void this.trelloService.removeSetting(data.environment.environmentId, data.setting.settingId).then(() => {
+          this.reloadSettings();
+        });
       }
     });
   }
@@ -163,10 +177,13 @@ export class FeatureFlagsSettingsComponent implements OnInit {
 
   private fetchIntegrationLinks(authorizationParameters: AuthorizationParameters, cardId: string) {
     this.publicApiService
-      .createIntegrationLinksService(authorizationParameters.basicAuthUsername, authorizationParameters.basicAuthPassword)
+      .createIntegrationLinksService(
+        authorizationParameters.basicAuthUsername,
+        authorizationParameters.basicAuthPassword
+      )
       .getIntegrationLinkDetails(IntegrationLinkType.Trello, cardId)
       .subscribe({
-        next: (integrationLinkDetails) => {
+        next: integrationLinkDetails => {
           this.integrationLinkDetails = integrationLinkDetails.details;
           this.loading = false;
           this.resize();
@@ -207,7 +224,8 @@ export class FeatureFlagsSettingsComponent implements OnInit {
       .setAuthorizationParameters(authorizationParameters)
       .then(() => {
         this.reloadSettings();
-      }).catch(() => {
+      })
+      .catch(() => {
         console.log("authService setAuthorizationParameters failed.");
       });
   }
@@ -215,5 +233,4 @@ export class FeatureFlagsSettingsComponent implements OnInit {
   error() {
     this.resize();
   }
-
 }

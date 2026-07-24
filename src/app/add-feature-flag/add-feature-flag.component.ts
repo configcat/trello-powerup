@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { ChangeDetectionStrategy, Component } from "@angular/core";
 import { AuthorizationComponent, LinkFeatureFlagComponent } from "ng-configcat-publicapi-ui";
 import { BaseLinkFeatureFlagComponent } from "../base-link-feature-flag.component";
 
@@ -6,13 +6,10 @@ import { BaseLinkFeatureFlagComponent } from "../base-link-feature-flag.componen
   selector: "configcat-trello-add-feature-flag",
   templateUrl: "./add-feature-flag.component.html",
   styleUrls: ["./add-feature-flag.component.scss"],
-  imports: [
-    AuthorizationComponent,
-    LinkFeatureFlagComponent,
-  ],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [AuthorizationComponent, LinkFeatureFlagComponent],
 })
 export class AddFeatureFlagComponent extends BaseLinkFeatureFlagComponent {
-
   errorText: string | null = null;
 
   selectDropdownPanelChanged() {

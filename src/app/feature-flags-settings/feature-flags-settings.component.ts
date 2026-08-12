@@ -5,11 +5,13 @@ import { MatDialog } from "@angular/material/dialog";
 import { EvaluationVersion, IntegrationLinkDetail, IntegrationLinkType } from "ng-configcat-publicapi";
 import {
   AuthorizationComponent,
+  DEFAULT_CUSTOMIZE_FEATURE_FLAG,
   DeleteSettingDialogComponent,
   DeleteSettingDialogData,
   DeleteSettingDialogResult,
   DeleteSettingModel,
   FeatureFlagItemComponent,
+  ICustomizeFeatureFlag,
   LoaderComponent,
   PublicApiService,
   SettingItemComponent,
@@ -232,5 +234,9 @@ export class FeatureFlagsSettingsComponent implements OnInit {
 
   error() {
     this.resize();
+  }
+
+  getFeatureFlagCustomizeSettings(): ICustomizeFeatureFlag {
+    return { ...DEFAULT_CUSTOMIZE_FEATURE_FLAG, menuDeleteSettingText: "Remove from card" };
   }
 }

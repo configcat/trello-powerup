@@ -47,7 +47,7 @@
               }
               @if (integrationLinkDetail.config.evaluationVersion === EvaluationVersion.V2) {
                 <app-feature-flag-item
-                  deleteSettingText="Remove from card"
+                  [customize]="getFeatureFlagCustomizeSettings()"
                   [basicAuthUsername]="authorizationParameters.basicAuthUsername"
                   [basicAuthPassword]="authorizationParameters.basicAuthPassword"
                   [productId]="integrationLinkDetail.product.productId"

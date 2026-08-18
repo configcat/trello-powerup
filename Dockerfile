@@ -9,6 +9,7 @@ COPY package*.json /configcat-trello-powerup/
 WORKDIR /configcat-trello-powerup
 RUN npm install
 COPY ./ /configcat-trello-powerup/
+ENV NG_BUILD_OPTIMIZE_CHUNKS=false
 RUN npm run build
 
 FROM base AS final

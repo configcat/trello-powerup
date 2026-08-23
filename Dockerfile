@@ -19,7 +19,7 @@ ARG UID=101
 USER root
 COPY --from=builder /configcat-trello-powerup/dist/configcat-trello-powerup /usr/share/nginx/html
 COPY _headers /usr/share/nginx/html/
-RUN chown -R $UID:0 /usr/share/nginx/html /etc/nginx \
+RUN chown -R "$UID":0 /usr/share/nginx/html /etc/nginx \
     && chmod -R u+rwx,g+rwx /usr/share/nginx/html /etc/nginx
 USER $UID
 EXPOSE 8080

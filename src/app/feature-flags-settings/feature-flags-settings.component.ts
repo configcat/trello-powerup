@@ -1,3 +1,4 @@
+import { CdkScrollable } from "@angular/cdk/scrolling";
 import { HttpErrorResponse } from "@angular/common/http";
 import { ChangeDetectionStrategy, Component, DestroyRef, ElementRef, inject, OnInit, viewChild } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
@@ -27,7 +28,7 @@ import { TrelloService } from "../services/trello-service";
   templateUrl: "./feature-flags-settings.component.html",
   styleUrls: ["./feature-flags-settings.component.scss"],
   changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [AuthorizationComponent, SettingItemComponent, FeatureFlagItemComponent, LoaderComponent],
+  imports: [AuthorizationComponent, SettingItemComponent, FeatureFlagItemComponent, LoaderComponent, CdkScrollable],
 })
 export class FeatureFlagsSettingsComponent implements OnInit {
   private readonly dialog = inject(MatDialog);

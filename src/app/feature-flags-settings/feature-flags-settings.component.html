@@ -4,7 +4,7 @@
   } @else {
     <div class="container">
       @if (!authorizationParameters) {
-        <app-authorization (error)="error()" (authorized)="login($event)" />
+        <app-authorization (authorized)="login($event)" />
       } @else {
         @if (showError) {
           <div class="error">
@@ -41,8 +41,6 @@
                   [showEnvironmentName]="true"
                   (deleteSettingRequested)="onDeleteSettingRequested($event)"
                   (saveSucceeded)="saveSucceeded()"
-                  (loadSucceeded)="loadSucceeded()"
-                  (formValuesChanged)="onFormValuesChanged()"
                   (componentError)="componentError($event)" />
               }
               @if (integrationLinkDetail.config.evaluationVersion === EvaluationVersion.V2) {
@@ -57,9 +55,6 @@
                   [showEnvironmentName]="true"
                   (deleteSettingRequested)="onDeleteSettingRequested($event)"
                   (saveSucceeded)="saveSucceeded()"
-                  (loadSucceeded)="loadSucceeded()"
-                  (formValuesChanged)="onFormValuesChanged()"
-                  (expandedStateChanged)="expandedStateChanged()"
                   (componentError)="componentError($event)" />
               }
             </div>

@@ -41,6 +41,7 @@
                   [showEnvironmentName]="true"
                   (deleteSettingRequested)="onDeleteSettingRequested($event)"
                   (saveSucceeded)="saveSucceeded()"
+                  (loadFailed)="loadFailed($event)"
                   (componentError)="componentError($event)" />
               }
               @if (integrationLinkDetail.config.evaluationVersion === EvaluationVersion.V2) {
@@ -55,6 +56,7 @@
                   [showEnvironmentName]="true"
                   (deleteSettingRequested)="onDeleteSettingRequested($event)"
                   (saveSucceeded)="saveSucceeded()"
+                  (loadFailed)="loadFailed($event)"
                   (componentError)="componentError($event)" />
               }
             </div>

@@ -159,6 +159,11 @@ export class FeatureFlagsSettingsComponent implements OnInit {
     void this.trelloService.setCardSettingData({ lastUpdatedAt: new Date(), skipRenderer: true });
   }
 
+  loadFailed(error: Error) {
+    const errorMessage = ErrorHandler.getErrorMessage(error);
+    this.trelloService.showErrorAlert(errorMessage).catch((e: unknown) => console.error(e));
+  }
+
   componentError(error: Error) {
     const errorMessage = ErrorHandler.getErrorMessage(error);
     this.trelloService.showErrorAlert(errorMessage).catch((e: unknown) => console.error(e));

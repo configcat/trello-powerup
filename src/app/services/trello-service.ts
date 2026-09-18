@@ -33,6 +33,7 @@ export class TrelloService {
   }
 
   sizeToHeight(height: number, t: TrelloFrame = null) {
+    console.log("Sizing to height:", height);
     return (t ?? window["TrelloPowerUp"].iframe()).sizeTo(height);
   }
 

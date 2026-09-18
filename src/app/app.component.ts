@@ -19,7 +19,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   private readonly trelloService = inject(TrelloService);
   readonly resizeReference = viewChild<ElementRef<HTMLElement>>("resizeReference");
 
-  private latestContentHeight: number | null = null;
+  private latestResizeHeight: number | null = null;
 
   title = "configcat-trello-powerup";
   shouldResizeOnAfterAllClosed = false;
@@ -66,12 +66,10 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
     const changed$ = new Subject<void>();
     const resizeObserver = new ResizeObserver(() => {
-      console.log("Resize observed ref");
       changed$.next();
     });
     resizeObserver.observe(element);
     const mutationObserver = new MutationObserver(() => {
-      console.log("Mutation observed ref");
       changed$.next();
     });
     mutationObserver.observe(element, { childList: true, subtree: true, characterData: true });
@@ -98,12 +96,10 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
     const changed$ = new Subject<void>();
     const resizeObserver = new ResizeObserver(() => {
-      console.log("Resize observed dialog content");
       changed$.next();
     });
     resizeObserver.observe(containerElement);
     const mutationObserver = new MutationObserver(() => {
-      console.log("Mutation observed dialog content");
       changed$.next();
     });
     mutationObserver.observe(containerElement, { childList: true, subtree: true, characterData: true });
@@ -116,20 +112,17 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   resize(dialogId?: string): void {
-    console.log("Resizing ...");
     setTimeout(() => {
-      const contentHeight = this.resizeReference()?.nativeElement?.offsetHeight ?? 0;
-      let height = contentHeight < 700 ? contentHeight : 700;
+      let height = this.resizeReference()?.nativeElement?.offsetHeight ?? 0;
       if (dialogId) {
         const dialogHeight = document.getElementById(dialogId)?.offsetHeight ?? 0;
         // the extra 130 px is hard coded. because of the dialog content dinamically changes the height.
         height = height < dialogHeight ? dialogHeight + 130 : height;
       }
 
-      //check contentHeight. if not presented or 0 we should not call the resize
-      if (height > 0 && height !== this.latestContentHeight) {
-        console.log("Calculated content height:", height);
-        this.latestContentHeight = height;
+      //check height. if not presented, 0 or it matches the latest resize height we should not call the resize
+      if (height > 0 && height !== this.latestResizeHeight) {
+        this.latestResizeHeight = height;
         void this.trelloService.sizeToHeight(height);
       }
     }, 300);

@@ -73,14 +73,12 @@ export class FeatureFlagsSettingsComponent implements OnInit {
         }
         if (!authorizationParameters) {
           this.loading = false;
-          this.resize();
           return;
         }
         this.fetchIntegrationLinks(authorizationParameters, card.id);
       })
       .then(() => {
         this.loading = false;
-        this.resize();
       })
       .catch((error: unknown) => {
         if (error instanceof HttpErrorResponse && error?.status === 401) {
@@ -95,7 +93,6 @@ export class FeatureFlagsSettingsComponent implements OnInit {
         }
         this.integrationLinkDetails = null;
         this.loading = false;
-        this.resize();
         console.log(error);
       });
   }
@@ -118,7 +115,6 @@ export class FeatureFlagsSettingsComponent implements OnInit {
           if (!authorizationParameters) {
             this.integrationLinkDetails = null;
             this.loading = false;
-            this.resize();
             return;
           }
           this.fetchIntegrationLinks(authorizationParameters, card.id);
@@ -130,7 +126,6 @@ export class FeatureFlagsSettingsComponent implements OnInit {
           }
           this.showError = true;
           this.loading = false;
-          this.resize();
           console.log(error);
         });
     });
@@ -160,16 +155,13 @@ export class FeatureFlagsSettingsComponent implements OnInit {
     });
   }
 
-  loadSucceeded() {
-    this.resize();
-  }
-
-  expandedStateChanged() {
-    this.resize();
-  }
-
   saveSucceeded() {
     void this.trelloService.setCardSettingData({ lastUpdatedAt: new Date(), skipRenderer: true });
+  }
+
+  loadFailed(error: Error) {
+    const errorMessage = ErrorHandler.getErrorMessage(error);
+    this.trelloService.showErrorAlert(errorMessage).catch((e: unknown) => console.error(e));
   }
 
   componentError(error: Error) {
@@ -189,7 +181,6 @@ export class FeatureFlagsSettingsComponent implements OnInit {
         next: integrationLinkDetails => {
           this.integrationLinkDetails = integrationLinkDetails.details;
           this.loading = false;
-          this.resize();
         },
         error: (error: Error) => {
           this.handleFetchError(error);
@@ -210,18 +201,6 @@ export class FeatureFlagsSettingsComponent implements OnInit {
     console.log(error);
   }
 
-  onFormValuesChanged() {
-    this.resize();
-  }
-
-  resize() {
-    setTimeout(() => {
-      const contentHeight = this.elementView()?.nativeElement?.offsetHeight;
-      const height = contentHeight && contentHeight < 700 ? contentHeight : 700;
-      void this.trelloService.sizeToHeight(height, this.trelloPowerUpIframe);
-    }, 300);
-  }
-
   login(authorizationParameters: AuthorizationParameters) {
     this.authService
       .setAuthorizationParameters(authorizationParameters)
@@ -231,10 +210,6 @@ export class FeatureFlagsSettingsComponent implements OnInit {
       .catch(() => {
         console.log("authService setAuthorizationParameters failed.");
       });
-  }
-
-  error() {
-    this.resize();
   }
 
   getFeatureFlagCustomizeSettings(): ICustomizeFeatureFlag {

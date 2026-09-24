@@ -3,12 +3,26 @@
 // Limit the "Manage predefined variations" dialog table content height.
 html {
     overflow-y: hidden;
-    
+
     body{
         .mat-mdc-dialog-container {
+            .mat-mdc-dialog-content{
+                max-height: none;
+                overflow: visible;
+            }
+
             .mat-mdc-dialog-content.mdc-dialog__content.dialog-table{
                 max-height: 250px;
+                overflow: auto;
             }
         }
+
+        .mat-mdc-select-panel {
+
+            // The minimum height and width for the select panel to ensure it is not too small.
+            min-width: 20em;
+            min-height: 5em;
+        }
     }
-}
+}  
+

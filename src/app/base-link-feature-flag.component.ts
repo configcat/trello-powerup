@@ -82,7 +82,7 @@ export abstract class BaseLinkFeatureFlagComponent implements OnInit {
                   });
               },
               error: (error: Error) => {
-                let errorMessage: string;
+                let errorMessage: string | null;
                 if (error instanceof HttpErrorResponse && error?.status === 409) {
                   errorMessage = "Integration link already exists.";
                 } else {

@@ -189,7 +189,7 @@ export class FeatureFlagsSettingsComponent implements OnInit {
   }
 
   private handleFetchError(error: Error) {
-    let errorMessage: string;
+    let errorMessage: string | null;
     if (error instanceof HttpErrorResponse && error?.status === 401) {
       errorMessage = "Unauthorized access. Check your credentials and try again.";
     } else {

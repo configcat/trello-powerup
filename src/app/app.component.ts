@@ -1,9 +1,9 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, DestroyRef, ElementRef, inject, OnInit, viewChild } from "@angular/core";
+import { ChangeDetectionStrategy, Component, DestroyRef, ElementRef, inject, OnInit, viewChild } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
-import { RouterModule } from "@angular/router";
+import { NavigationEnd, Router, RouterModule } from "@angular/router";
 import { Theme, ThemeService } from "ng-configcat-publicapi-ui";
-import { debounceTime, Subject } from "rxjs";
+import { debounceTime, filter, Subject } from "rxjs";
 import { TrelloService } from "./services/trello-service";
 
 @Component({
@@ -12,19 +12,29 @@ import { TrelloService } from "./services/trello-service";
   changeDetection: ChangeDetectionStrategy.Eager,
   imports: [RouterModule],
 })
-export class AppComponent implements OnInit, AfterViewInit {
+export class AppComponent implements OnInit {
   private readonly themeService = inject(ThemeService);
   private readonly dialog = inject(MatDialog);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly router = inject(Router);
   private readonly trelloService = inject(TrelloService);
   readonly resizeReference = viewChild<ElementRef<HTMLElement>>("resizeReference");
 
   private latestResizeHeight: number | null = null;
+  private resizeReferenceObserverCleanup: (() => void) | null = null;
 
   title = "configcat-trello-powerup";
   shouldResizeOnAfterAllClosed = false;
 
   ngOnInit(): void {
+    this.router.events
+      .pipe(
+        filter((event): event is NavigationEnd => event instanceof NavigationEnd),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe(event => this.updateResizeReferenceObserver(event.urlAfterRedirects));
+    this.destroyRef.onDestroy(() => this.stopResizeReferenceObserver());
+
     this.dialog.afterOpened.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(result => {
       this.resize(result.id);
       this.observeDialogContentChanges(result);
@@ -52,17 +62,29 @@ export class AppComponent implements OnInit, AfterViewInit {
     });
   }
 
-  ngAfterViewInit(): void {
-    this.observeResizeReferenceChanges();
+  private updateResizeReferenceObserver(url: string): void {
+    // home component should not have a resize observer, because home initialize TrelloPowerUp itself and we can't use iframe resizing there.
+    const routePath = url.split(/[?#]/, 1)[0];
+    if (routePath === "" || routePath === "/") {
+      this.stopResizeReferenceObserver();
+      return;
+    }
+
+    this.resizeReferenceObserverCleanup ??= this.observeResizeReferenceChanges();
+  }
+
+  private stopResizeReferenceObserver(): void {
+    this.resizeReferenceObserverCleanup?.();
+    this.resizeReferenceObserverCleanup = null;
   }
 
   // Watches the background page content (behind any open dialog) for changes, the same way
   // observeDialogContentChanges watches a dialog, so route content that loads asynchronously
   // is also picked up instead of only resizing once on navigation.
-  private observeResizeReferenceChanges(): void {
+  private observeResizeReferenceChanges(): (() => void) | null {
     const element = this.resizeReference()?.nativeElement;
     if (!element) {
-      return;
+      return null;
     }
     const changed$ = new Subject<void>();
     const resizeObserver = new ResizeObserver(() => {
@@ -73,17 +95,19 @@ export class AppComponent implements OnInit, AfterViewInit {
       changed$.next();
     });
     mutationObserver.observe(element, { childList: true, subtree: true, characterData: true });
-    changed$.pipe(debounceTime(50), takeUntilDestroyed(this.destroyRef)).subscribe(() => {
+    const subscription = changed$.pipe(debounceTime(50), takeUntilDestroyed(this.destroyRef)).subscribe(() => {
       // A dialog resize is already driven by observeDialogContentChanges, so skip while one is open.
       if (!this.dialog.openDialogs.length) {
         this.resize();
       }
     });
-    this.destroyRef.onDestroy(() => {
+
+    return () => {
+      subscription.unsubscribe();
       changed$.complete();
       resizeObserver.disconnect();
       mutationObserver.disconnect();
-    });
+    };
   }
 
   // The initial resize() call happens right after the dialog opens, before content that loads

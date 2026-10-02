@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, DestroyRef, ElementRef, inject, OnInit, viewChild } from "@angular/core";
+import { ChangeDetectionStrategy, Component, DestroyRef, ElementRef, inject, OnInit, viewChild } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { NavigationEnd, Router, RouterModule } from "@angular/router";
@@ -12,7 +12,7 @@ import { TrelloService } from "./services/trello-service";
   changeDetection: ChangeDetectionStrategy.Eager,
   imports: [RouterModule],
 })
-export class AppComponent implements OnInit, AfterViewInit {
+export class AppComponent implements OnInit {
   private readonly themeService = inject(ThemeService);
   private readonly dialog = inject(MatDialog);
   private readonly destroyRef = inject(DestroyRef);
@@ -60,10 +60,6 @@ export class AppComponent implements OnInit, AfterViewInit {
       const turnOn = e.matches;
       this.themeService.setTheme(turnOn ? Theme.Dark : Theme.Light);
     });
-  }
-
-  ngAfterViewInit(): void {
-    this.updateResizeReferenceObserver(this.router.url);
   }
 
   private updateResizeReferenceObserver(url: string): void {

@@ -165,7 +165,10 @@ export class TrelloService {
     return detailName + ": " + detail.status;
   }
 
-  showErrorAlert(message: string) {
+  showErrorAlert(message: string | null): Promise<void> {
+    if (!message) {
+      return Promise.resolve();
+    }
     return window["TrelloPowerUp"].iframe()
       .alert({
         message: message,

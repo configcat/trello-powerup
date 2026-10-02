@@ -46,7 +46,7 @@ export class ErrorHandler {
     }
   }
 
-  public static getErrorMessage(error: Error): string {
+  public static getErrorMessage(error: Error): string | null {
     if (error instanceof HttpErrorResponse) {
       switch (error?.status ?? 0) {
         case 400:
@@ -64,6 +64,8 @@ export class ErrorHandler {
           return "You have reached the limits of your plan.";
         case 403:
           return "You have no permission to execute this action.";
+        case 429:
+          return null;
         default:
           return "Something went wrong on our side. This is not your fault. Please try again.";
       }

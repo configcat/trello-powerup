@@ -5,7 +5,8 @@
     </div>
   } @else {
     <app-link-feature-flag
-      [authorizationParameters]="authorizationParameters"
+      [basicAuthUsername]="authorizationParameters.basicAuthUsername"
+      [basicAuthPassword]="authorizationParameters.basicAuthPassword"
       (linkInitiated)="add($event)"
       (resizeRequested)="resize()"
       (selectDropdownPanelChangedReqested)="selectDropdownPanelChanged()"

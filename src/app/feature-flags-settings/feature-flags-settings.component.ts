@@ -56,77 +56,68 @@ export class FeatureFlagsSettingsComponent implements OnInit {
     this.trelloService.render(() => {
       this.reloadSettings();
     }, this.trelloPowerUpIframe);
-    this.loading = true;
-    this.showError = false;
-    Promise.all([
-      this.authService.getAuthorizationParmeters(this.trelloPowerUpIframe),
-      this.trelloService.getCardData(this.trelloPowerUpIframe),
-      this.trelloService.getCardSettingData(this.trelloPowerUpIframe),
-    ])
-      .then(value => {
-        this.authorizationParameters = value[0];
-        const card = value[1];
-        const cardSettingData = value[2];
-        const authorizationParameters = this.authorizationParameters;
-        if (cardSettingData === null) {
-          return;
-        }
-        if (!authorizationParameters) {
-          this.loading = false;
-          return;
-        }
-        this.fetchIntegrationLinks(authorizationParameters, card.id);
-      })
-      .then(() => {
-        this.loading = false;
-      })
-      .catch((error: unknown) => {
-        if (error instanceof HttpErrorResponse && error?.status === 401) {
-          this.authService
-            .removeAuthorizationParameters()
-            .then(() => {
-              this.trelloService.showHttpUnauthorizedAlert().catch((e: unknown) => console.error(e));
-            })
-            .catch((e: unknown) => console.error(e));
-        } else {
-          this.showError = true;
-        }
-        this.integrationLinkDetails = null;
-        this.loading = false;
-        console.log(error);
-      });
+
+    void this.loadSettings();
   }
 
-  reloadSettings() {
-    void this.trelloService.getCardSettingData(this.trelloPowerUpIframe).then(cardSettingData => {
-      if (cardSettingData?.skipRenderer) {
-        return;
-      }
-      this.loading = true;
-      this.showError = false;
-      Promise.all([
+  reloadSettings(): void {
+    void this.reloadSettingsInternal();
+  }
+
+  private async loadSettings(): Promise<void> {
+    this.loading = true;
+    this.showError = false;
+    try {
+      const [authorizationParameters, card, cardSettingData] = await Promise.all([
         this.authService.getAuthorizationParmeters(this.trelloPowerUpIframe),
         this.trelloService.getCardData(this.trelloPowerUpIframe),
-      ])
-        .then(value => {
-          this.authorizationParameters = value[0];
-          const card = value[1];
-          const authorizationParameters = this.authorizationParameters;
-          if (!authorizationParameters) {
-            this.integrationLinkDetails = null;
-            this.loading = false;
-            return;
-          }
-          this.fetchIntegrationLinks(authorizationParameters, card.id);
-        })
-        .catch((error: unknown) => {
-          console.log(error);
-          this.showError = true;
-          this.loading = false;
-          const errorMessage = ErrorHandler.getErrorMessage(error as Error);
-          void this.trelloService.showErrorAlert(errorMessage);
-        });
-    });
+        this.trelloService.getCardSettingData(this.trelloPowerUpIframe),
+      ]);
+      this.authorizationParameters = authorizationParameters;
+      if (cardSettingData !== null && authorizationParameters) {
+        this.fetchIntegrationLinks(authorizationParameters, card.id);
+      }
+      this.loading = false;
+    } catch (error: unknown) {
+      if (error instanceof HttpErrorResponse && error?.status === 401) {
+        this.authService
+          .removeAuthorizationParameters()
+          .then(() => {
+            this.trelloService.showHttpUnauthorizedAlert().catch((e: unknown) => console.error(e));
+          })
+          .catch((e: unknown) => console.error(e));
+      } else {
+        this.showError = true;
+      }
+      this.integrationLinkDetails = null;
+      this.loading = false;
+      console.log(error);
+    }
+  }
+
+  private async reloadSettingsInternal(): Promise<void> {
+    this.loading = true;
+    this.showError = false;
+    try {
+      const [authorizationParameters, card, cardSettingData] = await Promise.all([
+        this.authService.getAuthorizationParmeters(this.trelloPowerUpIframe),
+        this.trelloService.getCardData(this.trelloPowerUpIframe),
+        this.trelloService.getCardSettingData(this.trelloPowerUpIframe),
+      ]);
+      this.authorizationParameters = authorizationParameters;
+      if (!authorizationParameters || cardSettingData?.skipRenderer) {
+        this.loading = false;
+        this.integrationLinkDetails = null;
+        return;
+      }
+      this.fetchIntegrationLinks(authorizationParameters, card.id);
+    } catch (error: unknown) {
+      console.log(error);
+      this.showError = true;
+      this.loading = false;
+      const errorMessage = ErrorHandler.getErrorMessage(error as Error);
+      void this.trelloService.showErrorAlert(errorMessage);
+    }
   }
 
   onDeleteSettingRequested(data: DeleteSettingModel) {

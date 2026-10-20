@@ -18,7 +18,10 @@ const environmentConst = {
 
 export const environment = Object.keys(environmentConst)
   .reduce<Record<string, unknown>>(
-    (acc, key) => (acc[key] = bypassConstantFolding(environmentConst[key as keyof typeof environmentConst]), acc),
+    (acc, key) => {
+      acc[key] = bypassConstantFolding(environmentConst[key as keyof typeof environmentConst]);
+      return acc;
+    },
     {}
   ) as typeof environmentConst;
 

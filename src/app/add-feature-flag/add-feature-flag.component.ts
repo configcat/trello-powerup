@@ -5,7 +5,6 @@ import { BaseLinkFeatureFlagComponent } from "../base-link-feature-flag.componen
 @Component({
   selector: "configcat-trello-add-feature-flag",
   templateUrl: "./add-feature-flag.component.html",
-  styleUrls: ["./add-feature-flag.component.scss"],
   changeDetection: ChangeDetectionStrategy.Eager,
   imports: [AuthorizationComponent, LinkFeatureFlagComponent],
 })

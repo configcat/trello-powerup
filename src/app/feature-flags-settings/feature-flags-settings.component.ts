@@ -120,13 +120,11 @@ export class FeatureFlagsSettingsComponent implements OnInit {
           this.fetchIntegrationLinks(authorizationParameters, card.id);
         })
         .catch((error: unknown) => {
-          if (error instanceof Error) {
-            const errorMessage = ErrorHandler.getErrorMessage(error);
-            this.trelloService.showErrorAlert(errorMessage).catch((e: unknown) => console.error(e));
-          }
+          console.log(error);
           this.showError = true;
           this.loading = false;
-          console.log(error);
+          const errorMessage = ErrorHandler.getErrorMessage(error as Error);
+          void this.trelloService.showErrorAlert(errorMessage);
         });
     });
   }
@@ -160,14 +158,16 @@ export class FeatureFlagsSettingsComponent implements OnInit {
   }
 
   loadFailed(error: Error) {
+    console.error(error);
     const errorMessage = ErrorHandler.getErrorMessage(error);
-    this.trelloService.showErrorAlert(errorMessage).catch((e: unknown) => console.error(e));
+    void this.trelloService.showErrorAlert(errorMessage);
   }
 
   componentError(error: Error) {
-    const errorMessage = ErrorHandler.getErrorMessage(error);
-    this.trelloService.showErrorAlert(errorMessage).catch((e: unknown) => console.error(e));
+    console.error(error);
     this.reloadSettings();
+    const errorMessage = ErrorHandler.getErrorMessage(error);
+    void this.trelloService.showErrorAlert(errorMessage);
   }
 
   private fetchIntegrationLinks(authorizationParameters: AuthorizationParameters, cardId: string) {
@@ -189,16 +189,16 @@ export class FeatureFlagsSettingsComponent implements OnInit {
   }
 
   private handleFetchError(error: Error) {
+    console.error(error);
+    this.loading = false;
+    this.showError = true;
     let errorMessage: string | null;
     if (error instanceof HttpErrorResponse && error?.status === 401) {
       errorMessage = "Unauthorized access. Check your credentials and try again.";
     } else {
       errorMessage = ErrorHandler.getErrorMessage(error);
     }
-    this.trelloService.showErrorAlert(errorMessage).catch((e: unknown) => console.error(e));
-    this.loading = false;
-    this.showError = true;
-    console.log(error);
+    void this.trelloService.showErrorAlert(errorMessage);
   }
 
   login(authorizationParameters: AuthorizationParameters) {

@@ -8,26 +8,7 @@ export class ErrorHandler {
     if (error instanceof HttpErrorResponse) {
       switch (error?.status ?? 0) {
         case 400:
-          let unknownFieldName = false;
-          for (const fieldName in error.error) {
-            const errorMessage = FormHelper.getHttpErrorResponseMessage(error, fieldName);
-
-            if (errorMessage) {
-              let jsonFieldName = fieldName;
-              if (jsonFieldName.length > 0) {
-                jsonFieldName = jsonFieldName[0].toLowerCase() + jsonFieldName.slice(1);
-              }
-
-              if (Object.prototype.hasOwnProperty.call(formGroup.controls, jsonFieldName)) {
-                formGroup.controls[jsonFieldName].setErrors({ serverSide: errorMessage });
-              } else {
-                unknownFieldName = true;
-              }
-            }
-          }
-          if (unknownFieldName) {
-            formGroup.setErrors({ serverSide: "Something went wrong." });
-          }
+          ErrorHandler.handleHTTP400Errors(error, formGroup);
           break;
         case 402:
           formGroup.setErrors({ serverSide: "You have reached the limits of your plan." });
@@ -43,6 +24,29 @@ export class ErrorHandler {
       formGroup.setErrors({
         serverSide: "Something went wrong on our side. This is not your fault. Please try again.",
       });
+    }
+  }
+
+  private static handleHTTP400Errors(error: HttpErrorResponse, formGroup: FormGroup) {
+    let unknownFieldName = false;
+    for (const fieldName in error.error) {
+      const errorMessage = FormHelper.getHttpErrorResponseMessage(error, fieldName);
+
+      if (errorMessage) {
+        let jsonFieldName = fieldName;
+        if (jsonFieldName.length > 0) {
+          jsonFieldName = jsonFieldName[0].toLowerCase() + jsonFieldName.slice(1);
+        }
+
+        if (Object.hasOwn(formGroup.controls, jsonFieldName)) {
+          formGroup.controls[jsonFieldName].setErrors({ serverSide: errorMessage });
+        } else {
+          unknownFieldName = true;
+        }
+      }
+    }
+    if (unknownFieldName) {
+      formGroup.setErrors({ serverSide: "Something went wrong." });
     }
   }
 

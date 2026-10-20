@@ -7,7 +7,6 @@ import { ErrorHandler } from "../services/error-handler";
 @Component({
   selector: "configcat-trello-create-feature-flag",
   templateUrl: "./create-feature-flag.component.html",
-  styleUrls: ["./create-feature-flag.component.scss"],
   changeDetection: ChangeDetectionStrategy.Eager,
   imports: [AuthorizationComponent, CreateFeatureFlagComponent],
 })

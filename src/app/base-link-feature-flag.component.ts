@@ -75,9 +75,7 @@ export abstract class BaseLinkFeatureFlagComponent implements OnInit {
                     this.onAddSuccess(linkFeatureFlagParameters);
                     return this.trelloService.closeModal();
                   }).catch((e: unknown) => {
-                    console.error(e);
-                    this.trelloService.showErrorAlert(ErrorHandler.getErrorMessage(e as Error))
-                      .catch((e: unknown) => console.error(e));
+                    void this.trelloService.showErrorAlert(ErrorHandler.getErrorMessage(e as Error));
                     return this.trelloService.closeModal();
                   });
               },
@@ -89,22 +87,22 @@ export abstract class BaseLinkFeatureFlagComponent implements OnInit {
                   errorMessage = ErrorHandler.getErrorMessage(error);
                 }
                 this.onAddError(linkFeatureFlagParameters);
-                this.trelloService.showErrorAlert(errorMessage).catch((e: unknown) => console.error(e));
                 console.log(error);
+                void this.trelloService.showErrorAlert(errorMessage);
               },
             });
         }
       )
       .catch((error: unknown) => {
-        this.trelloService.showErrorAlert(ErrorHandler.getErrorMessage(error as Error))
-          .catch((e: unknown) => console.error(e));
         console.log(error);
+        void this.trelloService.showErrorAlert(ErrorHandler.getErrorMessage(error as Error));
       });
   }
 
   componentError(error: Error) {
+    console.log(error);
     const errorMessage = ErrorHandler.getErrorMessage(error);
-    this.trelloService.showErrorAlert(errorMessage).catch((e: unknown) => console.error(e));
+    void this.trelloService.showErrorAlert(errorMessage);
   }
 
   resize() {

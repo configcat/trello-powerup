@@ -48,10 +48,9 @@ export class TrelloService {
         if (setCardSettingData) {
           return this.setCardSettingData({ lastUpdatedAt: new Date() }, t);
         }
-        return;
+        return void 0;
       })
       .then(() => {
-        console.log("The auth success");
         return void (t ?? window["TrelloPowerUp"].iframe())
           .alert({
             message: "Authorized to ConfigCat 🎉",
@@ -138,21 +137,22 @@ export class TrelloService {
 
       return firstValueFrom(this.publicApiService
         .createIntegrationLinksService(authorizationParameters.basicAuthUsername, authorizationParameters.basicAuthPassword)
-        .getIntegrationLinkDetails(IntegrationLinkType.Trello, card.id)).then(linkDetails => {
-        if (linkDetails?.details && linkDetails.details.length > 0) {
-          return linkDetails.details.map(detail => {
-            return {
-              text: linkDetails.details!.length > 1 ? this.convertDetailDataToText(detail) : detail.status,
-              icon: CONFIGCAT_ICON,
-              color: "green",
-            } as CardBadge;
-          });
-        }
-        return [] as CardBadge[];
-      }).catch(() => {
-        /* intentionally empty */
-        return [] as CardBadge[];
-      });
+        .getIntegrationLinkDetails(IntegrationLinkType.Trello, card.id))
+        .then(linkDetails => {
+          if (linkDetails?.details && linkDetails.details.length > 0) {
+            return linkDetails.details.map(detail => {
+              return {
+                text: linkDetails.details!.length > 1 ? this.convertDetailDataToText(detail) : detail.status,
+                icon: CONFIGCAT_ICON,
+                color: "green",
+              } as CardBadge;
+            });
+          }
+          return [] as CardBadge[];
+        }).catch(() => {
+          /* intentionally empty */
+          return [] as CardBadge[];
+        });
 
     });
   }

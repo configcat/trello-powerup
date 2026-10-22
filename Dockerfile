@@ -9,7 +9,7 @@ RUN sed -i 's/\r//' /start.sh
 FROM node:24.15-alpine AS builder
 COPY package*.json /configcat-trello-powerup/
 WORKDIR /configcat-trello-powerup
-RUN npm install
+RUN npm ci --ignore-scripts
 COPY ./ /configcat-trello-powerup/
 ENV NG_BUILD_OPTIMIZE_CHUNKS=false
 RUN npm run build

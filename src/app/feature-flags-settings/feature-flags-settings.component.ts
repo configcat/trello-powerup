@@ -99,15 +99,19 @@ export class FeatureFlagsSettingsComponent implements OnInit {
     this.loading = true;
     this.showError = false;
     try {
-      const [authorizationParameters, card, cardSettingData] = await Promise.all([
+      const cardSettingData = await this.trelloService.getCardSettingData(this.trelloPowerUpIframe);
+      if (cardSettingData?.skipRenderer) {
+        this.loading = false;
+        return;
+      }
+      const [authorizationParameters, card] = await Promise.all([
         this.authService.getAuthorizationParmeters(this.trelloPowerUpIframe),
         this.trelloService.getCardData(this.trelloPowerUpIframe),
-        this.trelloService.getCardSettingData(this.trelloPowerUpIframe),
       ]);
       this.authorizationParameters = authorizationParameters;
-      if (!authorizationParameters || cardSettingData?.skipRenderer) {
-        this.loading = false;
+      if (!authorizationParameters) {
         this.integrationLinkDetails = null;
+        this.loading = false;
         return;
       }
       this.fetchIntegrationLinks(authorizationParameters, card.id);

@@ -48,10 +48,9 @@ export class TrelloService {
         if (setCardSettingData) {
           return this.setCardSettingData({ lastUpdatedAt: new Date() }, t);
         }
-        return;
+        return void 0;
       })
       .then(() => {
-        console.log("The auth success");
         return void (t ?? window["TrelloPowerUp"].iframe())
           .alert({
             message: "Authorized to ConfigCat 🎉",
@@ -80,12 +79,13 @@ export class TrelloService {
 
   updateCardSettingDataLastUpdatedAt() {
     return this.getCardSettingData().then(setting => {
-      if (!setting) {
-        setting = { lastUpdatedAt: new Date() };
+      if (setting) {
+        setting.lastUpdatedAt = new Date();
+        setting.skipRenderer = false;
+      } else {
+        setting = { lastUpdatedAt: new Date(), skipRenderer: false };
       }
 
-      setting.lastUpdatedAt = new Date();
-      setting.skipRenderer = false;
       return this.setCardSettingData(setting);
     });
   }
@@ -122,23 +122,22 @@ export class TrelloService {
     return (t ?? window["TrelloPowerUp"].iframe()).card("id", "name", "url");
   }
 
-  getBadgeData(t: CallbackHandler): Promise<CardBadge[]> {
-    return Promise.all([
+  async getBadgeData(t: CallbackHandler): Promise<CardBadge[]> {
+    const [authorizationParameters, setting, card] = await Promise.all([
       this.getAuthorizationParameters(t),
       this.getCardSettingData(t),
       this.getCardData(t),
-    ]).then(value => {
-      const authorizationParameters = value[0];
-      const setting = value[1];
-      const card = value[2];
+    ]);
 
-      if (!setting || !card || !authorizationParameters) {
-        return [] as CardBadge[];
-      }
+    if (!setting || !card || !authorizationParameters) {
+      return [] as CardBadge[];
+    }
 
-      return firstValueFrom(this.publicApiService
+    return firstValueFrom(
+      this.publicApiService
         .createIntegrationLinksService(authorizationParameters.basicAuthUsername, authorizationParameters.basicAuthPassword)
-        .getIntegrationLinkDetails(IntegrationLinkType.Trello, card.id)).then(linkDetails => {
+        .getIntegrationLinkDetails(IntegrationLinkType.Trello, card.id))
+      .then(linkDetails => {
         if (linkDetails?.details && linkDetails.details.length > 0) {
           return linkDetails.details.map(detail => {
             return {
@@ -153,8 +152,6 @@ export class TrelloService {
         /* intentionally empty */
         return [] as CardBadge[];
       });
-
-    });
   }
 
   convertDetailDataToText(detail: IntegrationLinkDetail): string {

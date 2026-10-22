@@ -28,9 +28,9 @@ export class AuthComponent implements OnInit {
         false
       )
       .then(() => {
-        this.trelloService.closePopup().catch(() => {
-          console.log("trelloService closePopup failed.");
-        });
+        return this.trelloService.closePopup();
+      })
+      .then(() => {
         return this.trelloService.closeModal();
       })
       .catch((error: unknown) => {
